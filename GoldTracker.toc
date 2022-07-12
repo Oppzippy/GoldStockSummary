@@ -1,0 +1,10 @@
+## Interface: 90205
+## Title: Gold Tracker
+## Notes: Track gold including guild bank money across characters.
+## Author: Oppzippy
+## Version: @project-version@
+## OptionalDeps: Ace3, LibCopyPaste-1.0
+## SavedVariables: GoldTrackerDB
+
+libs.xml
+Core.lua
