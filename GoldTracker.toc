@@ -3,8 +3,10 @@
 ## Notes: Track gold including guild bank money across characters.
 ## Author: Oppzippy
 ## Version: @project-version@
-## OptionalDeps: Ace3, LibCopyPaste-1.0
+## OptionalDeps: Ace3, LibCopyPaste-1.0, lib-st
 ## SavedVariables: GoldTrackerDB
 
-libs.xml
-Core.lua
+Libs.xml
+GoldTracker.lua
+Modules\Tracker.lua
+Transformers\CharacterTransformer.lua
