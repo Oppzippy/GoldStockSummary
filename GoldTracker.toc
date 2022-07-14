@@ -12,4 +12,8 @@ Libs.xml
 DB\Defaults.lua
 GoldTracker.lua
 Modules\Tracker.lua
-Internal\TrackedMoneyToCharacterMoneyTable.lua
+Internal\DataTableConversion.lua
+Internal\MoneyTableConversion.lua
+Internal\ScrollingTableConversion.lua
+UI\CharacterScrollingTable.lua
+UI\Widgets\ScrollingTable.lua
