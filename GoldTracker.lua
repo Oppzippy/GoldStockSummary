@@ -10,7 +10,8 @@ local Core = AceAddon:NewAddon("GoldTracker", "AceConsole-3.0", "AceEvent-3.0")
 
 local dbDefaults = {
 	global = {
-		characterSnapshots = {},
+		characters = {},
+		guilds = {},
 	}
 }
 
