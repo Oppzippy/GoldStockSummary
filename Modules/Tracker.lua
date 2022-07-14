@@ -8,16 +8,18 @@ local Tracker = AceAddon:GetAddon("GoldTracker"):NewModule("Tracker", "AceConsol
 
 function Tracker:OnInitialize()
 	self.db = ns.db
-	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
-	self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateGuild")
-	self:RegisterEvent("GUILD_RANKS_UPDATE", "UpdateGuildBankMoney")
-	self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
-	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
 end
 
 function Tracker:OnEnable()
 	self:UpdateMoney()
 	self:UpdateGuild()
+	self:UpdateGuildOwner()
+
+	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
+	self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateGuild")
+	self:RegisterEvent("GUILD_RANKS_UPDATE", "UpdateGuildOwner")
+	self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
+	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
 end
 
 function Tracker:UpdateMoney()
@@ -31,45 +33,18 @@ function Tracker:UpdateGuildBankMoney()
 end
 
 function Tracker:UpdateGuild()
+	local character = self:GetCharacter()
+	if IsInGuild() then
+		character.guild = self:GetGuildNameAndRealm()
+	else
+		character.guild = nil
+	end
+end
+
+function Tracker:UpdateGuildOwner()
 	if not IsInGuild() then return end
-	local guildName, _, _, guildRealm = GetGuildInfo("player")
-	if not guildRealm then
-		guildRealm = GetRealmName()
-	end
-	local guild = string.format("%s-%s", guildName, guildRealm)
-
-	local db = self.db.global
-	if not db.guilds[guild] then
-		db.guilds[guild] = {}
-	end
-	db.guilds[guild].owner = self:GetGuildOwner()
-end
-
----@param copper number
-function Tracker:SetMoney(copper)
-	local name = UnitName("player")
-	local realm = GetRealmName()
-	local character = string.format("%s-%s", name, realm)
-	local db = self.db.global
-	if not db.characters[character] then
-		db.characters[character] = {}
-	end
-	db.characters[character].copper = copper
-	db.characters[character].lastUpdate = time()
-end
-
----@param copper number
-function Tracker:SetGuildMoney(copper)
-	local guildName, _, _, guildRealm = GetGuildInfo("player")
-	if not guildRealm then
-		guildRealm = GetRealmName()
-	end
-	local guild = string.format("%s-%s", guildName, guildRealm)
-	local db = self.db.global
-	if not db.guilds[guild] then
-		db.guilds[guild] = {}
-	end
-	db.guilds[guild].copper = copper
+	local guild = self:GetGuild()
+	guild.owner = self:GetGuildOwner()
 end
 
 ---@return string
@@ -81,4 +56,51 @@ function Tracker:GetGuildOwner()
 		end
 	end
 	error(string.format("Unable to determine guild owner: %d members", (GetNumGuildMembers())))
+end
+
+---@param copper number
+function Tracker:SetMoney(copper)
+	local character = self:GetCharacter()
+	character.copper = copper
+	character.lastUpdate = time()
+end
+
+---@param copper number
+function Tracker:SetGuildMoney(copper)
+	local guild = self:GetGuild()
+	guild.copper = copper
+end
+
+---@return TrackedCharacter
+function Tracker:GetCharacter()
+	local nameAndRealm = self:GetCharacterNameAndRealm()
+	local db = self.db.global
+	if not db.characters[nameAndRealm] then
+		db.characters[nameAndRealm] = {}
+	end
+	return db.characters[nameAndRealm]
+end
+
+---@return TrackedGuild
+function Tracker:GetGuild()
+	local nameAndRealm = self:GetGuildNameAndRealm()
+	local db = self.db.global
+	if not db.guilds[nameAndRealm] then
+		db.guilds[nameAndRealm] = {}
+	end
+	return db.guilds[nameAndRealm]
+end
+
+function Tracker:GetCharacterNameAndRealm()
+	local name = UnitName("player")
+	local realm = GetRealmName()
+	return string.format("%s-%s", name, realm)
+end
+
+function Tracker:GetGuildNameAndRealm()
+	local guildName, _, _, guildRealm = GetGuildInfo("player")
+	if not guildRealm then
+		guildRealm = GetRealmName()
+	end
+	return string.format("%s-%s", guildName, guildRealm)
 end

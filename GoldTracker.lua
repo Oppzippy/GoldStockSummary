@@ -8,15 +8,8 @@ local ScrollingTable = LibStub("ScrollingTable")
 ---@class GoldTrackerCore : AceConsole-3.0, AceEvent-3.0, AceAddon
 local Core = AceAddon:NewAddon("GoldTracker", "AceConsole-3.0", "AceEvent-3.0")
 
-local dbDefaults = {
-	global = {
-		characters = {},
-		guilds = {},
-	}
-}
-
 function Core:OnInitialize()
-	self.db = AceDB:New("GoldTrackerDB", dbDefaults, true)
+	self.db = AceDB:New("GoldTrackerDB", ns.dbDefaults, true)
 	ns.db = self.db
 
 	self:RegisterChatCommand("goldtracker", "SlashCommand")

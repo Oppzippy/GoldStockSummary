@@ -1,5 +1,5 @@
 local luaunit = require("luaunit")
-local TrackedMoneyToCharacterMoneyTable = require("Internal.TrackedMoneyToCharacterMoneyTable")
+local MoneyTableConversion = require("Internal.MoneyTableConversion")
 
 TestTrackedMoneyToCharacterMoneyTable = {}
 
@@ -13,7 +13,7 @@ function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 		},
 	}
 
-	local result = TrackedMoneyToCharacterMoneyTable(characters)
+	local result = MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(characters)
 
 	luaunit.assertEquals(#result, 2)
 	local expected = {
@@ -59,7 +59,7 @@ function TestTrackedMoneyToCharacterMoneyTable:TestGuilds()
 		},
 	}
 
-	local result = TrackedMoneyToCharacterMoneyTable(characters, guilds)
+	local result = MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(characters, guilds)
 
 	local expected = {
 		{

@@ -9,6 +9,7 @@
 ## SavedVariables: GoldTrackerDB
 
 Libs.xml
+DB\Defaults.lua
 GoldTracker.lua
 Modules\Tracker.lua
-Transformers\CharacterTransformer.lua
+Internal\TrackedMoneyToCharacterMoneyTable.lua
