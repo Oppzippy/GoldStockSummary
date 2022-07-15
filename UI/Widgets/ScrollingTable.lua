@@ -8,6 +8,7 @@ local methods = {
 		self.scrollingTable:EnableSelection(false)
 	end,
 	OnRelease = function(self)
+		self.scrollingTable:ClearSelection()
 		self.scrollingTable:SetData({})
 	end,
 	SetDisplayCols = function(self, ...)
@@ -31,6 +32,14 @@ local methods = {
 }
 
 do
+	local function postHook(object, method, func)
+		local oldFunc = object[method]
+		object[method] = function(...)
+			oldFunc(...)
+			func()
+		end
+	end
+
 	local function constructor()
 		local scrollingTable = ScrollingTable:CreateST({})
 		scrollingTable:Hide()
@@ -40,6 +49,16 @@ do
 			frame = scrollingTable.frame,
 			scrollingTable = scrollingTable,
 		}
+
+		-- lib-st doesn't have an event for selection change, so we have to hook related functions
+		local function fireSelectionChanged()
+			if not widget:IsReleasing() then
+				widget:Fire("OnSelectionChanged")
+			end
+		end
+
+		postHook(scrollingTable, "SetSelection", fireSelectionChanged)
+		postHook(scrollingTable, "ClearSelection", fireSelectionChanged)
 
 		for method, func in next, methods do
 			widget[method] = func

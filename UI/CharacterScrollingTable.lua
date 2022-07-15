@@ -54,6 +54,7 @@ function CharacterScrollingTable:Show(columns, data)
 	local delete = AceGUI:Create("Button")
 	---@cast delete AceGUIButton
 	delete:SetText("Delete Selected Character")
+	delete:SetDisabled(true)
 	delete:SetCallback("OnClick", function()
 		local selectedIndex = self.frames.scrollingTable:GetSelection()
 		if not selectedIndex then return end
@@ -64,6 +65,10 @@ function CharacterScrollingTable:Show(columns, data)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
 	end)
 	frame:AddChild(delete)
+
+	self.frames.scrollingTable:SetCallback("OnSelectionChanged", function()
+		delete:SetDisabled(self.frames.scrollingTable:GetSelection() == nil)
+	end)
 
 	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
 end
