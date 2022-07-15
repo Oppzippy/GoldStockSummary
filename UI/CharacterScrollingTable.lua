@@ -18,16 +18,23 @@ function CharacterScrollingTable:Show(columns, data)
 	self.frames.frame = frame
 	frame:EnableResize(false)
 	frame:SetTitle("Character Gold")
+	frame:SetLayout("Flow")
 	frame:SetCallback("OnClose", function()
 		self:Hide()
 	end)
 
+	-- The headings of the scrolling table overlap the top of the frame without a spacer
+	local spacer = AceGUI:Create("SimpleGroup")
+	---@cast spacer AceGUISimpleGroup
+	spacer:SetHeight(10)
+	frame:AddChild(spacer)
+
 	self.frames.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
+	-- self.frames.scrollingTable:SetFullWidth(true)
 	self.frames.scrollingTable:SetDisplayCols(columns)
 	self.frames.scrollingTable:SetData(data)
 	self.frames.scrollingTable:EnableSelection(true)
 	frame:AddChild(self.frames.scrollingTable)
-	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
 
 	local search = AceGUI:Create("EditBox")
 	---@cast search AceGUIEditBox
@@ -57,6 +64,8 @@ function CharacterScrollingTable:Show(columns, data)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
 	end)
 	frame:AddChild(delete)
+
+	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
 end
 
 function CharacterScrollingTable:Hide()
