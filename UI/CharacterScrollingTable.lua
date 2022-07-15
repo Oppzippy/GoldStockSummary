@@ -30,7 +30,6 @@ function CharacterScrollingTable:Show(columns, data)
 	frame:AddChild(spacer)
 
 	self.frames.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
-	-- self.frames.scrollingTable:SetFullWidth(true)
 	self.frames.scrollingTable:SetDisplayCols(columns)
 	self.frames.scrollingTable:SetData(data)
 	self.frames.scrollingTable:EnableSelection(true)
