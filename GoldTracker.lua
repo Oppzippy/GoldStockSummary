@@ -16,7 +16,7 @@ function Core:OnInitialize()
 end
 
 function Core:SlashCommand(args)
-	self:CharacterGoldTable()
+	self:ShowCharacterGoldTable()
 end
 
 function Core:CharacterGoldTable()
@@ -25,5 +25,15 @@ function Core:CharacterGoldTable()
 	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable)
 	local columns = ns.ScrollingTableConversion.FieldsToScrollingTableColumns(fields)
 
+	return dataTable, columns
+end
+
+function Core:ShowCharacterGoldTable()
+	local dataTable, columns = self:CharacterGoldTable()
 	ns.CharacterScrollingTable:Show(columns, dataTable)
+	ns.CharacterScrollingTable:RegisterCallback("OnDelete", function(_, nameAndRealm)
+		self.db.global.characters[nameAndRealm] = nil
+		local newDataTable = self:CharacterGoldTable()
+		ns.CharacterScrollingTable:SetData(newDataTable)
+	end)
 end

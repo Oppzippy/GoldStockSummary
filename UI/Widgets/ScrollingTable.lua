@@ -5,6 +5,7 @@ local ScrollingTable = LibStub("ScrollingTable")
 
 local methods = {
 	OnAcquire = function(self)
+		self.scrollingTable:EnableSelection(false)
 	end,
 	OnRelease = function(self)
 		self.scrollingTable:SetData({})
@@ -14,6 +15,18 @@ local methods = {
 	end,
 	SetData = function(self, ...)
 		self.scrollingTable:SetData(...)
+	end,
+	SetFilter = function(self, ...)
+		self.scrollingTable:SetFilter(...)
+	end,
+	EnableSelection = function(self, flag)
+		self.scrollingTable:EnableSelection(flag)
+	end,
+	GetSelection = function(self, ...)
+		return self.scrollingTable:GetSelection()
+	end,
+	GetRow = function(self, ...)
+		return self.scrollingTable:GetRow(...)
 	end,
 }
 
