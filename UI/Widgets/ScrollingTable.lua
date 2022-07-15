@@ -6,6 +6,7 @@ local ScrollingTable = LibStub("ScrollingTable")
 local methods = {
 	OnAcquire = function(self)
 		self.scrollingTable:EnableSelection(false)
+		self.scrollingTable:SetFilter(function() return true end)
 	end,
 	OnRelease = function(self)
 		self.scrollingTable:ClearSelection()

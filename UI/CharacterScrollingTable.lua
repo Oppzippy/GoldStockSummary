@@ -16,6 +16,7 @@ function CharacterScrollingTable:Show(columns, data)
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
 	self.frames.frame = frame
+	frame:PauseLayout()
 	frame:EnableResize(false)
 	frame:SetTitle("Character Gold")
 	frame:SetLayout("Flow")
@@ -42,7 +43,7 @@ function CharacterScrollingTable:Show(columns, data)
 	search:SetCallback("OnTextChanged", function(_, _, text)
 		self.frames.scrollingTable:SetFilter(function(_, row)
 			local query = text:lower()
-			local name, realm = row[1], row[2]
+			local name, realm = row.cols[1].value, row.cols[2].value
 			local nameAndRealm = string.format("%s-%s", name, realm)
 			return nameAndRealm:lower():find(query, nil, true)
 		end)
@@ -59,9 +60,10 @@ function CharacterScrollingTable:Show(columns, data)
 		if not selectedIndex then return end
 
 		local row = self.frames.scrollingTable:GetRow(selectedIndex)
-		local name, realm = row[1], row[2]
+		local name, realm = row.cols[1].value, row.cols[2].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
+		frame:SetStatusText("Deleted " .. nameAndRealm)
 	end)
 	frame:AddChild(delete)
 
@@ -70,6 +72,8 @@ function CharacterScrollingTable:Show(columns, data)
 	end)
 
 	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
+	frame:ResumeLayout()
+	frame:DoLayout()
 end
 
 function CharacterScrollingTable:Hide()
