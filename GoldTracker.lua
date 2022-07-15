@@ -23,14 +23,16 @@ function Core:CharacterGoldTable()
 	local db = self.db.global
 	local moneyTable = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(db.characters, db.guilds)
 	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable)
+	local scrollingTable = ns.ScrollingTableConversion.DataTableToScrollingTableData(fields, dataTable)
 	local columns = ns.ScrollingTableConversion.FieldsToScrollingTableColumns(fields)
 
-	return dataTable, columns
+	return scrollingTable, columns
 end
 
 function Core:ShowCharacterGoldTable()
-	local dataTable, columns = self:CharacterGoldTable()
-	ns.CharacterScrollingTable:Show(columns, dataTable)
+	local data, columns = self:CharacterGoldTable()
+
+	ns.CharacterScrollingTable:Show(columns, data)
 	ns.CharacterScrollingTable:RegisterCallback("OnDelete", function(_, nameAndRealm)
 		self.db.global.characters[nameAndRealm] = nil
 		local newDataTable = self:CharacterGoldTable()

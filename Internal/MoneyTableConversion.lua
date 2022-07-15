@@ -24,7 +24,6 @@ function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
 	local moneyTable = {}
 	for nameAndRealm, info in next, characters do
 		local name, realm = string.match(nameAndRealm, "(.*)-(.*)")
-		local lastUpdate = info.lastUpdate and date("%Y-%m-%d %I:%M:%S %p", info.lastUpdate)
 
 		local totalCopper = info.copper
 		local guildBankCopper
@@ -39,7 +38,7 @@ function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
 			copper = totalCopper,
 			guildBankCopper = guildBankCopper,
 			personalCopper = info.copper,
-			lastUpdate = lastUpdate,
+			lastUpdate = info.lastUpdate,
 		}
 	end
 

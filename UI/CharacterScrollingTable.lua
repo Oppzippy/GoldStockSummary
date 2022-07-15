@@ -24,7 +24,7 @@ function CharacterScrollingTable:Show(columns, data)
 
 	self.frames.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
 	self.frames.scrollingTable:SetDisplayCols(columns)
-	self.frames.scrollingTable:SetData(data, true)
+	self.frames.scrollingTable:SetData(data)
 	self.frames.scrollingTable:EnableSelection(true)
 	frame:AddChild(self.frames.scrollingTable)
 	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
@@ -72,7 +72,7 @@ end
 
 ---@param data CharacterMoneyTable
 function CharacterScrollingTable:SetData(data)
-	self.frames.scrollingTable:SetData(data, true)
+	self.frames.scrollingTable:SetData(data)
 end
 
 ns.CharacterScrollingTable = CharacterScrollingTable
