@@ -48,7 +48,4 @@ end
 local export = {
 	Create = CreateMoneyTableCollection,
 }
-if ns then
-	ns.MoneyTableCollection = export
-end
-return export
+ns.MoneyTableCollection = export

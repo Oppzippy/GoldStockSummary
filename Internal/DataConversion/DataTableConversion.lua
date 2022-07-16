@@ -19,7 +19,4 @@ function export.CharacterMoneyTableToDataTable(moneyTable, fields)
 	return dataTable, ns.Util.CloneTableShallow(fields)
 end
 
-if ns then
-	ns.DataTableConversion = export
-end
-return export
+ns.DataTableConversion = export

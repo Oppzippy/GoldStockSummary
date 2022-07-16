@@ -71,7 +71,4 @@ function export.FromMoneyTables(fields, collection)
 	return FieldsToScrollingTableColumns(fields, collection), MoneyTableCollectionToScrollingTableData(fields, collection)
 end
 
-if ns then
-	ns.ScrollingTableConversion = export
-end
-return export
+ns.ScrollingTableConversion = export

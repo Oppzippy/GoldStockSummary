@@ -30,7 +30,4 @@ local export = {
 	Create = CreateMoneyTableEntry,
 	Nil = CreateMoneyTableEntry("nil", nil)
 }
-if ns then
-	ns.MoneyTableEntry = export
-end
-return export
+ns.MoneyTableEntry = export

@@ -15,7 +15,4 @@ function export.LocalizeFields(fields)
 	return localized
 end
 
-if ns then
-	ns.ColumnLocalizer = export
-end
-return export
+ns.ColumnLocalizer = export

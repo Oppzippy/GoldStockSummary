@@ -39,7 +39,4 @@ function export.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
 	}, entries)
 end
 
-if ns then
-	ns.MoneyTableConversion = export
-end
-return export
+ns.MoneyTableConversion = export

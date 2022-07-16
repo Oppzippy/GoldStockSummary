@@ -33,8 +33,4 @@ do
 	end
 end
 
-
-if ns then
-	ns.Util = export
-end
-return export
+ns.Util = export
