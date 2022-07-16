@@ -4,10 +4,10 @@ local export = {}
 
 ---@alias DataTable (string|number)[][]
 
-local fields = { "name", "realm", "copper", "personalCopper", "guildBankCopper", "lastUpdate" }
----@param moneyTable CharacterMoneyTable
+---@param moneyTable table
+---@param fields string[]
 ---@return DataTable, string[]
-function export.CharacterMoneyTableToDataTable(moneyTable)
+function export.CharacterMoneyTableToDataTable(moneyTable, fields)
 	local dataTable = {}
 	for i, entry in ipairs(moneyTable) do
 		local row = {}

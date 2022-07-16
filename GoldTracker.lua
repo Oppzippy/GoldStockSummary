@@ -47,15 +47,7 @@ end
 function Core:OnExportCSV()
 	local db = self.db.global
 	local moneyTable = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(db.characters, db.guilds)
-	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable)
-
-	local transformers = {
-		ns.DataTableTransformers.CopperToGold,
-		ns.DataTableTransformers.TimestampToRFC3339,
-	}
-	for _, transformer in ipairs(transformers) do
-		transformer(fields, dataTable)
-	end
+	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable, { "name", "realm" })
 
 	ViragDevTool_AddData(fields)
 	ViragDevTool_AddData(dataTable)

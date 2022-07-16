@@ -9,13 +9,29 @@ local export = {}
 
 ---@alias CharacterMoneyTable CharacterMoneyTableEntry[]
 
+local characterMoneyTableEntryFieldOrder = {
+	"name",
+	"realm",
+	"copper",
+	"gold",
+	"personalCopper",
+	"personalGold",
+	"guildBankCopper",
+	"guildBankGold",
+	"lastUpdateTimestamp",
+	"lastUpdate",
+}
 ---@class CharacterMoneyTableEntry
 ---@field name string
 ---@field realm string
 ---@field copper number
+---@field gold number
 ---@field personalCopper number
+---@field personalGold number
 ---@field guildBankCopper? number
----@field lastUpdate? number
+---@field guildBankGold? number
+---@field lastUpdateTimestamp? integer
+---@field lastUpdate? string
 
 ---@param characters table<string, TrackedCharacter>
 ---@param guilds? table<string, TrackedGuild>
@@ -32,14 +48,29 @@ function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
 			totalCopper = totalCopper + guildBankCopper
 		end
 
-		moneyTable[#moneyTable + 1] = {
+		---@type CharacterMoneyTableEntry
+		local entry = {
 			name = name,
 			realm = realm,
 			copper = totalCopper,
 			guildBankCopper = guildBankCopper,
 			personalCopper = info.copper,
-			lastUpdate = info.lastUpdate,
+			lastUpdateTimestamp = info.lastUpdate,
 		}
+
+		entry.gold = entry.copper / 10000 -- COPPER_PER_GOLD
+		entry.personalGold = entry.personalCopper / 10000 -- COPPER_PER_GOLD
+		entry.guildBankGold = entry.guildBankCopper / 10000 -- COPPER_PER_GOLD
+
+		local lastUpdate = date("%Y-%m-%d %I:%M %p", entry.lastUpdateTimestamp)
+		if type(lastUpdate) == "string" then
+			entry.lastUpdate = lastUpdate
+		else
+			error("expected string")
+		end
+
+
+		moneyTable[#moneyTable + 1] = entry
 	end
 
 	return moneyTable
@@ -47,5 +78,6 @@ end
 
 if ns then
 	ns.MoneyTableConversion = export
+	ns.CharacterMoneyTableEntryFieldOrder = characterMoneyTableEntryFieldOrder
 end
 return export
