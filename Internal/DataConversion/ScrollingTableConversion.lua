@@ -6,41 +6,27 @@ local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
-
-local scrollingTableColumns = {
-	name = {
-		name = L["columns/name"],
-		width = 100,
-	},
-	realm = {
-		name = L["columns/realm"],
-		width = 100,
-	},
-	totalMoney = {
-		name = L["columns/totalMoney"],
-		width = 135,
-	},
-	personalMoney = {
-		name = L["columns/personalMoney"],
-		width = 135,
-	},
-	guildBankMoney = {
-		name = L["columns/guildBankMoney"],
-		width = 135,
-	},
-	lastUpdate = {
-		name = L["columns/lastUpdate"],
-		width = 150,
-	},
-}
-
+local columnWidthByType = setmetatable({
+	string = 100,
+	copper = 135,
+	gold = 135,
+	timestamp = 150,
+}, {
+	__index = function(t, key)
+		return t[key] or 100
+	end,
+})
 
 ---@param fields string[]
+---@param collection MoneyTableCollection
 ---@return table
-local function FieldsToScrollingTableColumns(fields)
+local function FieldsToScrollingTableColumns(fields, collection)
 	local columns = {}
 	for i, field in ipairs(fields) do
-		columns[i] = scrollingTableColumns[field]
+		columns[i] = {
+			name = L["columns/" .. field],
+			width = columnWidthByType[collection:GetFieldType(field)]
+		}
 	end
 	return columns
 end
@@ -80,9 +66,9 @@ local function MoneyTableCollectionToScrollingTableData(fields, moneyTables)
 end
 
 ---@param fields string[]
----@param moneyTables MoneyTableCollection
-function export.FromMoneyTables(fields, moneyTables)
-	return FieldsToScrollingTableColumns(fields), MoneyTableCollectionToScrollingTableData(fields, moneyTables)
+---@param collection MoneyTableCollection
+function export.FromMoneyTables(fields, collection)
+	return FieldsToScrollingTableColumns(fields, collection), MoneyTableCollectionToScrollingTableData(fields, collection)
 end
 
 if ns then

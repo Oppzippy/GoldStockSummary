@@ -7,7 +7,6 @@ local export = {}
 ---@param guilds? table<string, TrackedGuild>
 ---@return MoneyTableCollection
 function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
-	---@type MoneyTable[]
 	local entries = {}
 	for nameAndRealm, info in next, characters do
 		local name, realm = string.match(nameAndRealm, "(.*)-(.*)")
@@ -19,19 +18,25 @@ function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
 			totalCopper = totalCopper + guildBankCopper
 		end
 
-		---@type MoneyTable
 		local entry = {
-			name = ns.MoneyTableEntry.Create("string", name),
-			realm = ns.MoneyTableEntry.Create("string", realm),
-			totalMoney = ns.MoneyTableEntry.Create("copper", totalCopper),
-			personalMoney = ns.MoneyTableEntry.Create("copper", info.copper),
-			guildBankMoney = ns.MoneyTableEntry.Create("copper", guildBankCopper),
-			lastUpdate = ns.MoneyTableEntry.Create("timestamp", info.lastUpdate)
+			name = name,
+			realm = realm,
+			totalMoney = totalCopper,
+			personalMoney = info.copper,
+			guildBankMoney = guildBankCopper,
+			lastUpdate = info.lastUpdate,
 		}
 		entries[#entries + 1] = entry
 	end
 
-	return ns.MoneyTableCollection.Create(entries)
+	return ns.MoneyTableCollection.Create({
+		name = "string",
+		realm = "string",
+		totalMoney = "copper",
+		personalMoney = "copper",
+		guildBankMoney = "copper",
+		lastUpdate = "timestamp",
+	}, entries)
 end
 
 if ns then

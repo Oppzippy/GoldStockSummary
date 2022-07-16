@@ -2,14 +2,28 @@
 local _, ns = ...
 
 ---@class MoneyTableCollection
----@field moneyTables (MoneyTable)[]
+---@field schema table<string, MoneyTableEntryType>
+---@field moneyTables table<string, unknown>[]
 local MoneyTableCollectionPrototype = {}
 
-local function CreateMoneyTableCollection(moneyTables)
+---@param schema table<string, MoneyTableEntryType>
+---@param entries table<string, unknown>[]
+---@return MoneyTableCollection
+local function CreateMoneyTableCollection(schema, entries)
+	local moneyTables = {}
+	for i, entry in ipairs(entries) do
+		moneyTables[i] = entry
+	end
+
 	local collection = setmetatable({
+		schema = schema,
 		moneyTables = moneyTables,
 	}, { __index = MoneyTableCollectionPrototype })
 	return collection
+end
+
+function MoneyTableCollectionPrototype:GetFieldType(field)
+	return self.schema[field]
 end
 
 ---@param fields string[] Field order
@@ -19,7 +33,12 @@ function MoneyTableCollectionPrototype:ToRows(fields)
 	for i, moneyTable in ipairs(self.moneyTables) do
 		local row = {}
 		for j, field in ipairs(fields) do
-			row[j] = moneyTable[field] or ns.MoneyTableEntry.Nil
+			local type = self.schema[field]
+			if type and moneyTable[field] then
+				row[j] = ns.MoneyTableEntry.Create(type, moneyTable[field])
+			else
+				row[j] = ns.MoneyTableEntry.Nil
+			end
 		end
 		rows[i] = row
 	end
