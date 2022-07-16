@@ -1,0 +1,1 @@
+---@alias MoneyTable table<string, MoneyTableEntry>

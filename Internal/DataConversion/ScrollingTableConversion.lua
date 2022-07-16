@@ -6,6 +6,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
+
 local scrollingTableColumns = {
 	name = {
 		name = L["columns/name"],
@@ -15,16 +16,16 @@ local scrollingTableColumns = {
 		name = L["columns/realm"],
 		width = 100,
 	},
-	copper = {
-		name = L["columns/copper"],
+	totalMoney = {
+		name = L["columns/totalMoney"],
 		width = 135,
 	},
-	personalCopper = {
-		name = L["columns/personalCopper"],
+	personalMoney = {
+		name = L["columns/personalMoney"],
 		width = 135,
 	},
-	guildBankCopper = {
-		name = L["columns/guildBankCopper"],
+	guildBankMoney = {
+		name = L["columns/guildBankMoney"],
 		width = 135,
 	},
 	lastUpdate = {
@@ -36,23 +37,13 @@ local scrollingTableColumns = {
 
 ---@param fields string[]
 ---@return table
-function export.FieldsToScrollingTableColumns(fields)
+local function FieldsToScrollingTableColumns(fields)
 	local columns = {}
 	for i, field in ipairs(fields) do
 		columns[i] = scrollingTableColumns[field]
 	end
 	return columns
 end
-
-local moneyColumns = {
-	copper = true,
-	personalCopper = true,
-	guildBankCopper = true,
-}
-
-local dateColumns = {
-	lastUpdate = true,
-}
 
 local function cellUpdateText(text)
 	return function(rowFrame, cellFrame, data, cols, row, realRow, column, fShow, table, ...)
@@ -63,20 +54,22 @@ local function cellUpdateText(text)
 end
 
 ---@param fields string[]
----@param dataTable DataTable
-function export.DataTableToScrollingTableData(fields, dataTable)
+---@param moneyTables MoneyTableCollection
+local function MoneyTableCollectionToScrollingTableData(fields, moneyTables)
 	local scrollingTable = {}
-	for i, row in ipairs(dataTable) do
+
+	local moneyTableRows = moneyTables:ToRows(fields)
+	for i, row in ipairs(moneyTableRows) do
 		scrollingTable[i] = {
 			cols = {},
 		}
-		for j, columnName in ipairs(fields) do
+		for j, entry in ipairs(row) do
 			local col = {
-				value = row[j]
+				value = entry:GetValue(),
 			}
-			if moneyColumns[columnName] then
+			if entry:GetType() == "copper" or entry:GetType() == "gold" then
 				col.DoCellUpdate = cellUpdateText(col.value and GetMoneyString(col.value, true) or "")
-			elseif dateColumns[columnName] then
+			elseif entry:GetType() == "timestamp" then
 				col.DoCellUpdate = cellUpdateText(col.value and date("%Y-%m-%d %I:%M %p", col.value) or "")
 			end
 
@@ -84,6 +77,12 @@ function export.DataTableToScrollingTableData(fields, dataTable)
 		end
 	end
 	return scrollingTable
+end
+
+---@param fields string[]
+---@param moneyTables MoneyTableCollection
+function export.FromMoneyTables(fields, moneyTables)
+	return FieldsToScrollingTableColumns(fields), MoneyTableCollectionToScrollingTableData(fields, moneyTables)
 end
 
 if ns then

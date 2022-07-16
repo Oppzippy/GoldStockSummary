@@ -19,23 +19,23 @@ function Core:SlashCommand(args)
 	self:ShowCharacterGoldTable()
 end
 
-function Core:CharacterGoldTable()
-	local db = self.db.global
-	local moneyTable = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(db.characters, db.guilds)
-	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable)
-	local scrollingTable = ns.ScrollingTableConversion.DataTableToScrollingTableData(fields, dataTable)
-	local columns = ns.ScrollingTableConversion.FieldsToScrollingTableColumns(fields)
-
-	return scrollingTable, columns
-end
-
 function Core:ShowCharacterGoldTable()
-	local data, columns = self:CharacterGoldTable()
+	local columns, data = self:CharacterGoldTable()
 
 	ns.CharacterScrollingTable:Show(columns, data)
 	ns.CharacterScrollingTable.RegisterCallback(self, "OnDelete", "OnDeleteCharacter")
 	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportJSON")
 	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportCSV")
+end
+
+function Core:CharacterGoldTable()
+	local db = self.db.global
+	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(db.characters, db.guilds)
+
+	local fields = { "name", "realm", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
+	local scrollingTableColumns, scrollingTableData = ns.ScrollingTableConversion.FromMoneyTables(fields, collection)
+
+	return scrollingTableColumns, scrollingTableData
 end
 
 function Core:OnDeleteCharacter(_, nameAndRealm)

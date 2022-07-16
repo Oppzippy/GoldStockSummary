@@ -1,8 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Include file="DataConversion\Include.xml" />
-	<Include file="MoneyTable\Include.xml" />
-
-	<Script file="ColumnLocalizer.lua" />
-	<Script file="Util.lua" />
+	<Script file="MoneyTable.lua" />
+	<Script file="MoneyTableCollection.lua" />
+	<Script file="MoneyTableEntry.lua" />
 </Ui>
