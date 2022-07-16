@@ -2,6 +2,6 @@ local luaunit = require("luaunit")
 
 require("Tests.WoWEnvironment")
 
-require("Tests.TrackedMoneyToMoneyTable")
+DoWoWFile("Tests/TrackedMoneyToMoneyTable.lua")
 
 os.exit(luaunit.LuaUnit.run())

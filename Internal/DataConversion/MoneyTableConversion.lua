@@ -6,7 +6,7 @@ local export = {}
 ---@param characters table<string, TrackedCharacter>
 ---@param guilds? table<string, TrackedGuild>
 ---@return MoneyTableCollection
-function export.TrackedMoneyToCharacterMoneyTable(characters, guilds)
+function export.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
 	local entries = {}
 	for nameAndRealm, info in next, characters do
 		local name, realm = string.match(nameAndRealm, "(.*)-(.*)")

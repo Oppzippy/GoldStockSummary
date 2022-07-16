@@ -1,7 +1,20 @@
+---@class ns
+local _, ns = ...
+
 local luaunit = require("luaunit")
-local MoneyTableConversion = require("Internal.MoneyTableConversion")
 
 TestTrackedMoneyToCharacterMoneyTable = {}
+
+local function resultValues(results)
+	local values = {}
+	for i, result in next, results do
+		values[i] = {}
+		for j, entry in next, result do
+			values[i][j] = entry:GetValue()
+		end
+	end
+	return values
+end
 
 function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 	local characters = {
@@ -13,21 +26,22 @@ function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 		},
 	}
 
-	local result = MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(characters)
+	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(characters)
+	local result = resultValues(collection:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" }))
 
 	luaunit.assertEquals(#result, 2)
 	local expected = {
 		{
-			name = "Test",
-			realm = "Illidan",
-			copper = 5,
-			personalCopper = 5,
+			"Test",
+			"Illidan",
+			5,
+			5,
 		},
 		{
-			name = "Test2",
-			realm = "Illidan",
-			copper = 10,
-			personalCopper = 10,
+			"Test2",
+			"Illidan",
+			10,
+			10,
 		},
 	}
 	luaunit.assertItemsEquals(result, expected)
@@ -59,28 +73,29 @@ function TestTrackedMoneyToCharacterMoneyTable:TestGuilds()
 		},
 	}
 
-	local result = MoneyTableConversion.TrackedMoneyToCharacterMoneyTable(characters, guilds)
+	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
+	local result = resultValues(collection:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" }))
 
 	local expected = {
 		{
-			name = "Test",
-			realm = "Illidan",
-			copper = 15,
-			personalCopper = 5,
-			guildBankCopper = 10,
+			"Test",
+			"Illidan",
+			15,
+			5,
+			10,
 		},
 		{
-			name = "Test2",
-			realm = "Illidan",
-			copper = 10,
-			personalCopper = 10,
+			"Test2",
+			"Illidan",
+			10,
+			10,
 		},
 		{
-			name = "Test3",
-			realm = "Illidan",
-			copper = 1,
-			guildBankCopper = 0,
-			personalCopper = 1,
+			"Test3",
+			"Illidan",
+			1,
+			1,
+			0,
 		}
 	}
 	luaunit.assertItemsEquals(result, expected)
