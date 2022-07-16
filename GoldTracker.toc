@@ -5,15 +5,15 @@
 ## Notes: Track gold including guild bank money across characters.
 ## Author: Oppzippy
 ## Version: @project-version@
-## OptionalDeps: Ace3, LibCopyPaste-1.0, lib-st
+## OptionalDeps: Ace3, LibCopyPaste-1.0, lib-st, LibJSON
 ## SavedVariables: GoldTrackerDB
 
 Libs.xml
+Locales\Include.xml
+Internal\Include.xml
+
 DB\Defaults.lua
 GoldTracker.lua
 Modules\Tracker.lua
-Internal\DataTableConversion.lua
-Internal\MoneyTableConversion.lua
-Internal\ScrollingTableConversion.lua
 UI\CharacterScrollingTable.lua
 UI\Widgets\ScrollingTable.lua

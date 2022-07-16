@@ -2,29 +2,33 @@
 local _, ns = ...
 local export = {}
 
+local AceLocale = LibStub("AceLocale-3.0")
+
+local L = AceLocale:GetLocale("GoldTracker")
+
 local scrollingTableColumns = {
 	name = {
-		name = "Name",
+		name = L["columns/name"],
 		width = 100,
 	},
 	realm = {
-		name = "Realm",
+		name = L["columns/realm"],
 		width = 100,
 	},
 	copper = {
-		name = "Copper",
+		name = L["columns/copper"],
 		width = 135,
 	},
 	personalCopper = {
-		name = "Personal Copper",
+		name = L["columns/personalCopper"],
 		width = 135,
 	},
 	guildBankCopper = {
-		name = "Guild Bank Copper",
+		name = L["columns/guildBankCopper"],
 		width = 135,
 	},
 	lastUpdate = {
-		name = "Last Update",
+		name = L["columns/lastUpdate"],
 		width = 150,
 	},
 }

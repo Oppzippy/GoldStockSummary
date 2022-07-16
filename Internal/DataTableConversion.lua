@@ -16,7 +16,7 @@ function export.CharacterMoneyTableToDataTable(moneyTable)
 		end
 		dataTable[i] = row
 	end
-	return dataTable, fields
+	return dataTable, ns.Util.CloneTableShallow(fields)
 end
 
 if ns then

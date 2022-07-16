@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Include file="DataTableTransformers\Include.xml" />
+
+	<Script file="ColumnLocalizer.lua" />
+	<Script file="DataTableConversion.lua" />
+	<Script file="MoneyTableConversion.lua" />
+	<Script file="ScrollingTableConversion.lua" />
+	<Script file="Util.lua" />
+</Ui>

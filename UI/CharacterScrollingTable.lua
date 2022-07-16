@@ -3,6 +3,9 @@ local _, ns = ...
 
 local CallbackHandler = LibStub("CallbackHandler-1.0")
 local AceGUI = LibStub("AceGUI-3.0")
+local AceLocale = LibStub("AceLocale-3.0")
+
+local L = AceLocale:GetLocale("GoldTracker")
 
 local CharacterScrollingTable = {
 	frames = {},
@@ -18,7 +21,7 @@ function CharacterScrollingTable:Show(columns, data)
 	self.frames.frame = frame
 	frame:PauseLayout()
 	frame:EnableResize(false)
-	frame:SetTitle("Character Gold")
+	frame:SetTitle(L.character_gold)
 	frame:SetLayout("Flow")
 	frame:SetCallback("OnClose", function()
 		self:Hide()
@@ -53,7 +56,7 @@ function CharacterScrollingTable:Show(columns, data)
 
 	local delete = AceGUI:Create("Button")
 	---@cast delete AceGUIButton
-	delete:SetText("Delete Selected Character")
+	delete:SetText(L.delete_selected_character)
 	delete:SetDisabled(true)
 	delete:SetCallback("OnClick", function()
 		local selectedIndex = self.frames.scrollingTable:GetSelection()
@@ -63,9 +66,25 @@ function CharacterScrollingTable:Show(columns, data)
 		local name, realm = row.cols[1].value, row.cols[2].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
-		frame:SetStatusText("Deleted " .. nameAndRealm)
+		frame:SetStatusText(L.deleted_character:format(nameAndRealm))
 	end)
 	frame:AddChild(delete)
+
+	local exportCSV = AceGUI:Create("Button")
+	---@cast exportCSV AceGUIButton
+	exportCSV:SetText(L.export_csv)
+	exportCSV:SetCallback("OnClick", function()
+		self.callbacks:Fire("OnExportCSV")
+	end)
+	frame:AddChild(exportCSV)
+
+	local exportJSON = AceGUI:Create("Button")
+	---@cast exportJSON AceGUIButton
+	exportJSON:SetText(L.export_json)
+	exportJSON:SetCallback("OnClick", function()
+		self.callbacks:Fire("OnExportJSON")
+	end)
+	frame:AddChild(exportJSON)
 
 	self.frames.scrollingTable:SetCallback("OnSelectionChanged", function()
 		delete:SetDisabled(self.frames.scrollingTable:GetSelection() == nil)

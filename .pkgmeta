@@ -16,6 +16,8 @@ externals:
   Libs/lib-st:
     url: https://github.com/ddumont/lib-st.git
     tag: latest
+  Libs/json.lua:
+    url: https://github.com/Oppzippy/json.lua.git
 
 ignore:
   - README.md
