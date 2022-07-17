@@ -23,11 +23,12 @@ function TestMoneyTableConvertTypes:TestConvertTypes()
 	}, entries)
 
 	local newMoneyTable = moneyTable:ConvertTypes({
-		copper = "string",
-	}, {
-		copper = function(value)
-			return tostring(value)
-		end
+		copper = {
+			type = "string",
+			converter = function(value)
+				return tostring(value)
+			end,
+		},
 	})
 
 	local expectedSchema = {

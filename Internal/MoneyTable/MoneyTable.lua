@@ -46,6 +46,9 @@ function MoneyTablePrototype:ToRows(fields)
 	return rows
 end
 
+---@param newSchema table<string, MoneyTableEntryType>
+---@param func fun(entry: table<string, unknown>): table<string, unknown>
+---@return MoneyTable
 function MoneyTablePrototype:Map(newSchema, func)
 	local entries = {}
 	for i, entry in ipairs(self.entries) do
@@ -54,6 +57,9 @@ function MoneyTablePrototype:Map(newSchema, func)
 	return CreateMoneyTable(newSchema, entries)
 end
 
+---@param newSchema table<string, MoneyTableEntryType>
+---@param func fun(value: unknown, field: string): unknown
+---@return MoneyTable
 function MoneyTablePrototype:MapFields(newSchema, func)
 	return self:Map(newSchema, function(entry)
 		local newEntry = {}
@@ -64,16 +70,24 @@ function MoneyTablePrototype:MapFields(newSchema, func)
 	end)
 end
 
-function MoneyTablePrototype:ConvertTypes(conversions, convertors)
+---@class MoneyTableTypeConverter
+---@field type string
+---@field converter fun(value: unknown, field: string): unknown
+
+---@param converters table<MoneyTableEntryType, MoneyTableTypeConverter>
+---@return MoneyTable
+function MoneyTablePrototype:ConvertTypes(converters)
 	local newSchema = {}
 	for field, type in next, self.schema do
-		newSchema[field] = conversions[type] or type
+		local converter = converters[type]
+		newSchema[field] = converter and converter.type or type
 	end
 
 	return self:MapFields(newSchema, function(value, field)
 		local type = self:GetFieldType(field)
-		if conversions[type] then
-			return convertors[type](value, field)
+		local converter = converters[type]
+		if converter then
+			return converter.converter(value, field)
 		end
 		return value
 	end)
