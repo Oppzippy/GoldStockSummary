@@ -3,6 +3,19 @@ local _, ns = ...
 
 local date = date or os.date
 
+local AceLocale = LibStub("AceLocale-3.0")
+local L = AceLocale:GetLocale("GoldTracker")
+
+---@param fields string[]
+---@return string[]
+local function LocalizeFields(fields)
+	local localized = {}
+	for i, field in next, fields do
+		localized[i] = L["columns/" .. field]
+	end
+	return localized
+end
+
 ---@param fields string[]
 ---@param moneyTable MoneyTable
 ---@return string
@@ -22,11 +35,16 @@ local function ToCSV(fields, moneyTable)
 
 	local rows = moneyTable:ToRows(fields)
 
-	local csvLines = {}
-	for i, row in ipairs(rows) do
-		csvLines[i] = table.concat(row, ",")
+	local numFields = #fields
+	local csvParts = { table.concat(LocalizeFields(fields), ",") }
+	for _, row in ipairs(rows) do
+		csvParts[#csvParts + 1] = "\n"
+		for j = 1, numFields do
+			csvParts[#csvParts + 1] = row[j]
+			csvParts[#csvParts + 1] = ","
+		end
 	end
-	return table.concat(csvLines, "\n")
+	return table.concat(csvParts)
 end
 
 ---@class ns.MoneyTable.To

@@ -49,10 +49,9 @@ end
 function Core:OnExportCSV()
 	local db = self.db.global
 	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
-	local localizedFields = ns.FieldLocalizer.LocalizeFields(characterFields)
 	local csv = ns.MoneyTable.To.CSV(characterFields, moneyTable)
 
-	return string.format("%s\n%s", localizedFields, csv)
+	LibStub("LibCopyPaste-1.0"):Copy("GoldTracker", csv)
 end
 
 function Core:OnExportJSON()
