@@ -1,6 +1,8 @@
 ---@class ns
 local _, ns = ...
 
+local date = date or os.date
+
 ---@param fields string[]
 ---@param moneyTable MoneyTable
 ---@return string
@@ -13,7 +15,7 @@ local function ToCSV(fields, moneyTable)
 		timestamp = {
 			type = "string",
 			converter = function(value)
-				return value and os.date("!%Y-%m-%dT%TZ", value)
+				return value and date("!%Y-%m-%dT%TZ", value)
 			end,
 		},
 	})

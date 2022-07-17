@@ -2,6 +2,7 @@
 local _, ns = ...
 
 local JSON = LibStub("json.lua")
+local date = date or os.date
 
 ---@param moneyTable MoneyTable
 ---@return string
@@ -18,7 +19,7 @@ local function ToJSON(moneyTable)
 		timestamp = {
 			type = "string",
 			converter = function(value)
-				return value and os.date("!%Y-%m-%dT%TZ", value)
+				return value and date("!%Y-%m-%dT%TZ", value)
 			end,
 		},
 	})
