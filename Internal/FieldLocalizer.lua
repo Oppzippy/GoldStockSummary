@@ -7,6 +7,7 @@ local L = AceLocale:GetLocale("GoldTracker")
 local export = {}
 
 ---@param fields string[]
+---@return string[]
 function export.LocalizeFields(fields)
 	local localized = {}
 	for i, field in next, fields do
@@ -15,4 +16,4 @@ function export.LocalizeFields(fields)
 	return localized
 end
 
-ns.ColumnLocalizer = export
+ns.FieldLocalizer = export

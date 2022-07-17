@@ -18,14 +18,14 @@ local columnWidthByType = setmetatable({
 })
 
 ---@param fields string[]
----@param collection MoneyTableCollection
+---@param moneyTable MoneyTable
 ---@return table
-local function FieldsToScrollingTableColumns(fields, collection)
+local function FieldsToScrollingTableColumns(fields, moneyTable)
 	local columns = {}
 	for i, field in ipairs(fields) do
 		columns[i] = {
 			name = L["columns/" .. field],
-			width = columnWidthByType[collection:GetFieldType(field)]
+			width = columnWidthByType[moneyTable:GetFieldType(field)]
 		}
 	end
 	return columns
@@ -40,22 +40,24 @@ local function cellUpdateText(text)
 end
 
 ---@param fields string[]
----@param moneyTables MoneyTableCollection
-local function MoneyTableCollectionToScrollingTableData(fields, moneyTables)
+---@param moneyTable MoneyTable
+local function MoneyTableToScrollingTableData(fields, moneyTable)
 	local scrollingTable = {}
 
-	local moneyTableRows = moneyTables:ToRows(fields)
-	for i, row in ipairs(moneyTableRows) do
+	local rows = moneyTable:ToRows(fields)
+	for i, row in ipairs(rows) do
 		scrollingTable[i] = {
 			cols = {},
 		}
-		for j, entry in ipairs(row) do
+		for j, field in ipairs(fields) do
+			local entry = row[j]
+			local entryType = moneyTable:GetFieldType(field)
 			local col = {
-				value = entry:GetValue(),
+				value = entry,
 			}
-			if entry:GetType() == "copper" or entry:GetType() == "gold" then
+			if entryType == "copper" or entryType == "gold" then
 				col.DoCellUpdate = cellUpdateText(col.value and GetMoneyString(col.value, true) or "")
-			elseif entry:GetType() == "timestamp" then
+			elseif entryType == "timestamp" then
 				col.DoCellUpdate = cellUpdateText(col.value and date("%Y-%m-%d %I:%M %p", col.value) or "")
 			end
 
@@ -66,9 +68,11 @@ local function MoneyTableCollectionToScrollingTableData(fields, moneyTables)
 end
 
 ---@param fields string[]
----@param collection MoneyTableCollection
-function export.FromMoneyTables(fields, collection)
-	return FieldsToScrollingTableColumns(fields, collection), MoneyTableCollectionToScrollingTableData(fields, collection)
+---@param moneyTable MoneyTable
+local function ToScrollingTable(fields, moneyTable)
+	return FieldsToScrollingTableColumns(fields, moneyTable), MoneyTableToScrollingTableData(fields, moneyTable)
 end
 
-ns.ScrollingTableConversion = export
+---@class ns.MoneyTable.To
+local To = ns.MoneyTable.To
+To.ScrollingTable = ToScrollingTable

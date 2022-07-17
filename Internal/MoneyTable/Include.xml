@@ -1,6 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+	<Script file="Namespace.lua" />
 	<Script file="MoneyTable.lua" />
-	<Script file="MoneyTableCollection.lua" />
-	<Script file="MoneyTableEntry.lua" />
+	<Script file="From\FromTrackedMoney.lua" />
+	<Script file="To\ToCSV.lua" />
+	<Script file="To\ToJSON.lua" />
+	<Script file="To\ToScrollingTable.lua" />
 </Ui>

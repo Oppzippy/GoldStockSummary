@@ -28,12 +28,14 @@ function Core:ShowCharacterGoldTable()
 	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportCSV")
 end
 
+local characterFields = { "name", "realm", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
+
 function Core:CharacterGoldTable()
 	local db = self.db.global
-	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(db.characters, db.guilds)
+	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
 
-	local fields = { "name", "realm", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
-	local scrollingTableColumns, scrollingTableData = ns.ScrollingTableConversion.FromMoneyTables(fields, collection)
+	local scrollingTableColumns, scrollingTableData = ns.MoneyTable.To.ScrollingTable(characterFields,
+		moneyTable)
 
 	return scrollingTableColumns, scrollingTableData
 end
@@ -46,16 +48,17 @@ end
 
 function Core:OnExportCSV()
 	local db = self.db.global
-	local moneyTable = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(db.characters, db.guilds)
-	local dataTable, fields = ns.DataTableConversion.CharacterMoneyTableToDataTable(moneyTable, { "name", "realm" })
+	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
+	local localizedFields = ns.FieldLocalizer.LocalizeFields(characterFields)
+	local csv = ns.MoneyTable.To.CSV(characterFields, moneyTable)
 
-	ViragDevTool_AddData(fields)
-	ViragDevTool_AddData(dataTable)
+	return string.format("%s\n%s", localizedFields, csv)
 end
 
 function Core:OnExportJSON()
 	local db = self.db.global
-	local moneyTable = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(db.characters, db.guilds)
-	local json = JSON.encode(moneyTable)
-	print(json)
+	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
+	local json = ns.MoneyTable.To.JSON(moneyTable)
+
+	LibStub("LibCopyPaste-1.0"):Copy("GoldTracker", json)
 end

@@ -5,17 +5,6 @@ local luaunit = require("luaunit")
 
 TestTrackedMoneyToCharacterMoneyTable = {}
 
-local function resultValues(results)
-	local values = {}
-	for i, result in next, results do
-		values[i] = {}
-		for j, entry in next, result do
-			values[i][j] = entry:GetValue()
-		end
-	end
-	return values
-end
-
 function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 	local characters = {
 		["Test-Illidan"] = {
@@ -26,8 +15,8 @@ function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 		},
 	}
 
-	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(characters)
-	local result = resultValues(collection:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" }))
+	local moneyTable = ns.MoneyTable.From.TrackedMoney(characters)
+	local result = moneyTable:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" })
 
 	luaunit.assertEquals(#result, 2)
 	local expected = {
@@ -73,8 +62,8 @@ function TestTrackedMoneyToCharacterMoneyTable:TestGuilds()
 		},
 	}
 
-	local collection = ns.MoneyTableConversion.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
-	local result = resultValues(collection:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" }))
+	local moneyTable = ns.MoneyTable.From.TrackedMoney(characters, guilds)
+	local result = moneyTable:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" })
 
 	local expected = {
 		{

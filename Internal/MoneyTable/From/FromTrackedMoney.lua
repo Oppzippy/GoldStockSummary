@@ -1,12 +1,10 @@
 ---@class ns
 local _, ns = ...
 
-local export = {}
-
 ---@param characters table<string, TrackedCharacter>
 ---@param guilds? table<string, TrackedGuild>
----@return MoneyTableCollection
-function export.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
+---@return MoneyTable
+local function FromTrackedMoney(characters, guilds)
 	local entries = {}
 	for nameAndRealm, info in next, characters do
 		local name, realm = string.match(nameAndRealm, "(.*)-(.*)")
@@ -29,7 +27,7 @@ function export.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
 		entries[#entries + 1] = entry
 	end
 
-	return ns.MoneyTableCollection.Create({
+	return ns.MoneyTable.Create({
 		name = "string",
 		realm = "string",
 		totalMoney = "copper",
@@ -39,4 +37,6 @@ function export.TrackedMoneyToCharacterMoneyTableCollection(characters, guilds)
 	}, entries)
 end
 
-ns.MoneyTableConversion = export
+---@class ns.MoneyTable.From
+local From = ns.MoneyTable.From
+From.TrackedMoney = FromTrackedMoney

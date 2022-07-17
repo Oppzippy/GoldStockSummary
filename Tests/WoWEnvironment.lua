@@ -12,16 +12,17 @@ end
 --Libraries
 DoWoWFile("Libs/LibStub/LibStub.lua")
 DoWoWFile("Libs/AceLocale-3.0/AceLocale-3.0.lua")
+DoWoWFile("Libs/json.lua/json.lua")
 
 -- Locales
 DoWoWFile("Locales/enUS.lua")
 
 --- Internal
-DoWoWFile("Internal/DataConversion/DataTableConversion.lua")
-DoWoWFile("Internal/DataConversion/MoneyTableConversion.lua")
-DoWoWFile("Internal/DataConversion/ScrollingTableConversion.lua")
+DoWoWFile("Internal/MoneyTable/Namespace.lua")
+DoWoWFile("Internal/MoneyTable/From/FromTrackedMoney.lua")
+DoWoWFile("Internal/MoneyTable/To/ToCSV.lua")
+DoWoWFile("Internal/MoneyTable/To/ToJSON.lua")
+DoWoWFile("Internal/MoneyTable/To/ToScrollingTable.lua")
 DoWoWFile("Internal/MoneyTable/MoneyTable.lua")
-DoWoWFile("Internal/MoneyTable/MoneyTableCollection.lua")
-DoWoWFile("Internal/MoneyTable/MoneyTableEntry.lua")
-DoWoWFile("Internal/ColumnLocalizer.lua")
+DoWoWFile("Internal/FieldLocalizer.lua")
 DoWoWFile("Internal/Util.lua")
