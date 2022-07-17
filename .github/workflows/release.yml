@@ -13,6 +13,14 @@ jobs:
         run: sudo apt-get install luarocks
       - name: Install luaunit
         run: sudo luarocks install luaunit
+      - name: Fetch dependencies
+        uses: BigWigsMods/packager@v2
+        with:
+          # Skip all tasks other than checking out external repositories
+          args: -c -d -l -u -z
+      - name: Copy Libs directory
+        run: cp -r .release/*/Libs .
+
       - name: Run tests
         run: lua Tests/Test.lua
       - name: Package and release
