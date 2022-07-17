@@ -17,7 +17,7 @@ jobs:
         uses: BigWigsMods/packager@v2
         with:
           # Skip all tasks other than checking out external repositories
-          args: -c -d -l -u -z
+          args: -c -d -l -z
       - name: Copy Libs directory
         run: cp -r .release/*/Libs .
 
@@ -26,6 +26,9 @@ jobs:
       - name: Package and release
         if: github.ref == 'refs/heads/master'
         uses: BigWigsMods/packager@v2
+        with:
+          # We already have externals so no need to fetch them again
+          args: -e -o
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
