@@ -41,7 +41,9 @@ local function ToCSV(fields, moneyTable)
 		csvParts[#csvParts + 1] = "\n"
 		for j = 1, numFields do
 			csvParts[#csvParts + 1] = row[j]
-			csvParts[#csvParts + 1] = ","
+			if j ~= numFields then
+				csvParts[#csvParts + 1] = ","
+			end
 		end
 	end
 	return table.concat(csvParts)
