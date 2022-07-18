@@ -5,7 +5,7 @@
 ## Notes: Track gold including guild bank money across characters.
 ## Author: Oppzippy
 ## Version: @project-version@
-## OptionalDeps: Ace3, LibCopyPaste-1.0, lib-st, LibJSON
+## OptionalDeps: Ace3, lib-st, LibJSON
 ## SavedVariables: GoldTrackerDB
 
 Libs.xml

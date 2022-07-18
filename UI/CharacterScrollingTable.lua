@@ -8,7 +8,7 @@ local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale("GoldTracker")
 
 local CharacterScrollingTable = {
-	frames = {},
+	widgets = {},
 }
 CharacterScrollingTable.callbacks = CallbackHandler:New(CharacterScrollingTable)
 
@@ -18,7 +18,7 @@ function CharacterScrollingTable:Show(columns, data)
 	if self:IsVisible() then return end
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
-	self.frames.frame = frame
+	self.widgets.frame = frame
 	frame:PauseLayout()
 	frame:EnableResize(false)
 	frame:SetTitle(L.character_gold)
@@ -33,18 +33,18 @@ function CharacterScrollingTable:Show(columns, data)
 	spacer:SetHeight(10)
 	frame:AddChild(spacer)
 
-	self.frames.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
-	self.frames.scrollingTable:SetDisplayCols(columns)
-	self.frames.scrollingTable:SetData(data)
-	self.frames.scrollingTable:EnableSelection(true)
-	frame:AddChild(self.frames.scrollingTable)
+	self.widgets.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
+	self.widgets.scrollingTable:SetDisplayCols(columns)
+	self.widgets.scrollingTable:SetData(data)
+	self.widgets.scrollingTable:EnableSelection(true)
+	frame:AddChild(self.widgets.scrollingTable)
 
 	local search = AceGUI:Create("EditBox")
 	---@cast search AceGUIEditBox
 	search:SetLabel("Search")
 	search:DisableButton(true)
 	search:SetCallback("OnTextChanged", function(_, _, text)
-		self.frames.scrollingTable:SetFilter(function(_, row)
+		self.widgets.scrollingTable:SetFilter(function(_, row)
 			local query = text:lower()
 			local name, realm = row.cols[1].value, row.cols[2].value
 			local nameAndRealm = string.format("%s-%s", name, realm)
@@ -59,10 +59,10 @@ function CharacterScrollingTable:Show(columns, data)
 	delete:SetText(L.delete_selected_character)
 	delete:SetDisabled(true)
 	delete:SetCallback("OnClick", function()
-		local selectedIndex = self.frames.scrollingTable:GetSelection()
+		local selectedIndex = self.widgets.scrollingTable:GetSelection()
 		if not selectedIndex then return end
 
-		local row = self.frames.scrollingTable:GetRow(selectedIndex)
+		local row = self.widgets.scrollingTable:GetRow(selectedIndex)
 		local name, realm = row.cols[1].value, row.cols[2].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
@@ -86,29 +86,57 @@ function CharacterScrollingTable:Show(columns, data)
 	end)
 	frame:AddChild(exportJSON)
 
-	self.frames.scrollingTable:SetCallback("OnSelectionChanged", function()
-		delete:SetDisabled(self.frames.scrollingTable:GetSelection() == nil)
+	local exportContainer = AceGUI:Create("SimpleGroup")
+	---@cast exportContainer AceGUISimpleGroup
+	self.widgets.exportContainer = exportContainer
+	exportContainer:SetFullWidth(true)
+	exportContainer:SetFullHeight(true)
+	frame:AddChild(exportContainer)
+
+	self.widgets.scrollingTable:SetCallback("OnSelectionChanged", function()
+		delete:SetDisabled(self.widgets.scrollingTable:GetSelection() == nil)
 	end)
 
-	frame:SetWidth(self.frames.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
+	frame:SetWidth(self.widgets.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
 	frame:ResumeLayout()
 	frame:DoLayout()
 end
 
 function CharacterScrollingTable:Hide()
-	if self.frames.frame then
-		self.frames.frame:Release()
-		self.frames = {}
+	if self.widgets.frame then
+		self.widgets.frame:Release()
+		self.widgets = {}
 	end
 end
 
 function CharacterScrollingTable:IsVisible()
-	return self.frames.frame ~= nil
+	return self.widgets.frame ~= nil
 end
 
----@param data CharacterMoneyTable
 function CharacterScrollingTable:SetData(data)
-	self.frames.scrollingTable:SetData(data)
+	self.widgets.scrollingTable:SetData(data)
+end
+
+---@param text string
+function CharacterScrollingTable:SetExportText(text)
+	self.widgets.exportContainer:ReleaseChildren()
+
+	local editBox
+	---@cast editBox AceGUIEditBox
+	if text:find("\n", nil, true) then
+		self.widgets.exportContainer:SetLayout("Fill")
+		editBox = AceGUI:Create("MultiLineEditBox")
+	else
+		self.widgets.exportContainer:SetLayout("List")
+		editBox = AceGUI:Create("EditBox")
+		editBox:SetFullWidth(true)
+	end
+	editBox:DisableButton(true)
+	editBox:SetLabel("Export")
+	editBox:SetText(text)
+	editBox:SetFocus()
+	editBox:HighlightText(0, #text)
+	self.widgets.exportContainer:AddChild(editBox)
 end
 
 ns.CharacterScrollingTable = CharacterScrollingTable

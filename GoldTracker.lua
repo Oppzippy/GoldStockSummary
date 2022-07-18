@@ -51,7 +51,7 @@ function Core:OnExportCSV()
 	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
 	local csv = ns.MoneyTable.To.CSV(characterFields, moneyTable)
 
-	LibStub("LibCopyPaste-1.0"):Copy("GoldTracker", csv)
+	ns.CharacterScrollingTable:SetExportText(csv)
 end
 
 function Core:OnExportJSON()
@@ -59,5 +59,5 @@ function Core:OnExportJSON()
 	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
 	local json = ns.MoneyTable.To.JSON(moneyTable)
 
-	LibStub("LibCopyPaste-1.0"):Copy("GoldTracker", json)
+	ns.CharacterScrollingTable:SetExportText(json)
 end
