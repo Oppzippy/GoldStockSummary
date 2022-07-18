@@ -36,17 +36,15 @@ local function ToCSV(fields, moneyTable)
 	local rows = moneyTable:ToRows(fields)
 
 	local numFields = #fields
-	local csvParts = { table.concat(LocalizeFields(fields), ",") }
+	local csvLines = { table.concat(LocalizeFields(fields), ",") }
 	for _, row in ipairs(rows) do
-		csvParts[#csvParts + 1] = "\n"
+		local line = {}
 		for j = 1, numFields do
-			csvParts[#csvParts + 1] = row[j]
-			if j ~= numFields then
-				csvParts[#csvParts + 1] = ","
-			end
+			line[j] = row[j] or ""
 		end
+		csvLines[#csvLines + 1] = table.concat(line, ",")
 	end
-	return table.concat(csvParts)
+	return table.concat(csvLines, "\n")
 end
 
 ---@class ns.MoneyTable.To
