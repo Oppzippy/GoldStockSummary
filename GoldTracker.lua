@@ -42,7 +42,7 @@ end
 
 function Core:OnDeleteCharacter(_, nameAndRealm)
 	self.db.global.characters[nameAndRealm] = nil
-	local newDataTable = self:CharacterGoldTable()
+	local _, newDataTable = self:CharacterGoldTable()
 	ns.CharacterScrollingTable:SetData(newDataTable)
 end
 

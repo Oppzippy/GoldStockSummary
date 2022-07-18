@@ -66,7 +66,7 @@ function CharacterScrollingTable:Show(columns, data)
 		local name, realm = row.cols[1].value, row.cols[2].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
-		frame:SetStatusText(L.deleted_character:format(nameAndRealm))
+		frame:SetStatusText(L.deleted_item:format(nameAndRealm))
 	end)
 	frame:AddChild(delete)
 

@@ -5,6 +5,7 @@ L.character_gold = "Character Gold"
 L.export_csv = "Export CSV"
 L.export_json = "Export JSON"
 L.delete_selected_character = "Delete Selected Character"
+L.deleted_item = "Deleted %s"
 
 L["columns/name"] = "Name"
 L["columns/realm"] = "Realm"
