@@ -28,7 +28,7 @@ function Core:ShowCharacterGoldTable()
 	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportCSV")
 end
 
-local characterFields = { "name", "realm", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
+local characterFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
 
 function Core:CharacterGoldTable()
 	local db = self.db.global

@@ -11,6 +11,7 @@ function Tracker:OnInitialize()
 end
 
 function Tracker:OnEnable()
+	self:UpdateFaction()
 	self:UpdateMoney()
 	self:UpdateGuild()
 	self:UpdateGuildOwner()
@@ -22,13 +23,22 @@ function Tracker:OnEnable()
 	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
 end
 
+function Tracker:UpdateFaction()
+	local character = self:GetCharacter()
+	local faction = UnitFactionGroup("player")
+	character.faction = faction and faction:lower() or "neutral"
+end
+
 function Tracker:UpdateMoney()
-	self:SetMoney(GetMoney())
+	local character = self:GetCharacter()
+	character.copper = GetMoney()
+	character.lastUpdate = time()
 end
 
 function Tracker:UpdateGuildBankMoney()
 	if IsInGuild() then
-		self:SetGuildMoney(GetGuildBankMoney())
+		local guild = self:GetGuild()
+		guild.copper = GetGuildBankMoney()
 	end
 end
 
@@ -56,19 +66,6 @@ function Tracker:GetGuildOwner()
 		end
 	end
 	error(string.format("Unable to determine guild owner: %d members", (GetNumGuildMembers())))
-end
-
----@param copper number
-function Tracker:SetMoney(copper)
-	local character = self:GetCharacter()
-	character.copper = copper
-	character.lastUpdate = time()
-end
-
----@param copper number
-function Tracker:SetGuildMoney(copper)
-	local guild = self:GetGuild()
-	guild.copper = copper
 end
 
 ---@return TrackedCharacter

@@ -1,19 +1,17 @@
 ---@class ns
 local _, ns = ...
-local export = {}
 
 local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
 local columnWidthByType = setmetatable({
-	string = 100,
 	copper = 135,
 	gold = 135,
-	timestamp = 150,
+	timestamp = 135,
 }, {
-	__index = function(t, key)
-		return t[key] or 100
+	__index = function()
+		return 100
 	end,
 })
 
@@ -32,7 +30,7 @@ local function FieldsToScrollingTableColumns(fields, moneyTable)
 end
 
 local function cellUpdateText(text)
-	return function(rowFrame, cellFrame, data, cols, row, realRow, column, fShow, table, ...)
+	return function(_, cellFrame, _, _, _, _, _, fShow)
 		if fShow then
 			cellFrame.text:SetText(text)
 		end
@@ -59,6 +57,8 @@ local function MoneyTableToScrollingTableData(fields, moneyTable)
 				col.DoCellUpdate = cellUpdateText(col.value and GetMoneyString(col.value, true) or "")
 			elseif entryType == "timestamp" then
 				col.DoCellUpdate = cellUpdateText(col.value and date("%Y-%m-%d %I:%M %p", col.value) or "")
+			elseif entryType == "faction" then
+				col.DoCellUpdate = cellUpdateText(col.value and L[col.value] or "")
 			end
 
 			scrollingTable[i].cols[j] = col

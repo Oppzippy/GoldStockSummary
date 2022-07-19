@@ -19,6 +19,7 @@ local function FromTrackedMoney(characters, guilds)
 		local entry = {
 			name = name,
 			realm = realm,
+			faction = info.faction,
 			totalMoney = totalCopper,
 			personalMoney = info.copper,
 			guildBankMoney = guildBankCopper,
@@ -30,6 +31,7 @@ local function FromTrackedMoney(characters, guilds)
 	return ns.MoneyTable.Create({
 		name = "string",
 		realm = "string",
+		faction = "faction",
 		totalMoney = "copper",
 		personalMoney = "copper",
 		guildBankMoney = "copper",

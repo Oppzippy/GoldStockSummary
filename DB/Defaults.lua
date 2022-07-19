@@ -7,6 +7,7 @@ local _, ns = ...
 ---@class TrackedCharacter
 ---@field copper number
 ---@field lastUpdate integer
+---@field faction "alliance"|"horde"|"neutral"
 ---@field guild? string
 
 ---@class TrackedGuild

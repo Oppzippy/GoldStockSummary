@@ -1,7 +1,7 @@
 ---@class ns
 local _, ns = ...
 
----@alias MoneyTableEntryType "string"|"timestamp"|"copper"|"gold"
+---@alias MoneyTableEntryType "string"|"timestamp"|"copper"|"gold"|"faction"
 
 ---@class MoneyTable
 ---@field schema table<string, MoneyTableEntryType>

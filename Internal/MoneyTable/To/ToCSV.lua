@@ -31,6 +31,12 @@ local function ToCSV(fields, moneyTable)
 				return value and date("!%Y-%m-%dT%TZ", value)
 			end,
 		},
+		faction = {
+			type = "string",
+			converter = function(value)
+				return L[value]
+			end,
+		},
 	})
 
 	local rows = moneyTable:ToRows(fields)
