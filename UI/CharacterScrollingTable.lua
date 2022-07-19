@@ -13,7 +13,7 @@ local CharacterScrollingTable = {
 CharacterScrollingTable.callbacks = CallbackHandler:New(CharacterScrollingTable)
 
 ---@param columns string[]
----@param data CharacterMoneyTable
+---@param data table
 function CharacterScrollingTable:Show(columns, data)
 	if self:IsVisible() then return end
 	local frame = AceGUI:Create("Frame")

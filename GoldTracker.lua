@@ -3,7 +3,6 @@ local _, ns = ...
 
 local AceAddon = LibStub("AceAddon-3.0")
 local AceDB = LibStub("AceDB-3.0")
-local JSON = LibStub("json.lua")
 
 ---@class GoldTrackerCore : AceConsole-3.0, AceEvent-3.0, AceAddon
 local Core = AceAddon:NewAddon("GoldTracker", "AceConsole-3.0", "AceEvent-3.0")
