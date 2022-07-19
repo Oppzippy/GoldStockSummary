@@ -13,14 +13,22 @@ end
 function Tracker:OnEnable()
 	self:UpdateFaction()
 	self:UpdateMoney()
-	self:UpdateGuild()
-	self:UpdateGuildOwner()
 
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
-	self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateGuild")
 	self:RegisterEvent("GUILD_RANKS_UPDATE", "UpdateGuildOwner")
+	self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateGuildAndOwner")
 	self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
 	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
+end
+
+function Tracker:PLAYER_ENTERING_WORLD(_, _, isReloadingUI)
+	-- GetGuildInfo will return nil until PLAYER_GUILD_UPDATE fires.
+	-- If it's a /reload, GetGuildInfo is available right away, but PLAYER_GUILD_UPDATE will not fire
+	if isReloadingUI then
+		self.isGetGuildInfoReady = true
+		self:UpdateGuildAndOwner()
+	end
 end
 
 function Tracker:UpdateFaction()
@@ -35,26 +43,26 @@ function Tracker:UpdateMoney()
 	character.lastUpdate = time()
 end
 
+function Tracker:UpdateGuildAndOwner()
+	self.isGetGuildInfoReady = true
+	local character = self:GetCharacter()
+	character.guild = IsInGuild() and self:GetGuildNameAndRealm()
+
+	self:UpdateGuildOwner()
+end
+
+function Tracker:UpdateGuildOwner()
+	if self.isGetGuildInfoReady and IsInGuild() then
+		local guild = self:GetGuild()
+		guild.owner = self:GetGuildOwner()
+	end
+end
+
 function Tracker:UpdateGuildBankMoney()
 	if IsInGuild() then
 		local guild = self:GetGuild()
 		guild.copper = GetGuildBankMoney()
 	end
-end
-
-function Tracker:UpdateGuild()
-	local character = self:GetCharacter()
-	if IsInGuild() then
-		character.guild = self:GetGuildNameAndRealm()
-	else
-		character.guild = nil
-	end
-end
-
-function Tracker:UpdateGuildOwner()
-	if not IsInGuild() then return end
-	local guild = self:GetGuild()
-	guild.owner = self:GetGuildOwner()
 end
 
 ---@return string
