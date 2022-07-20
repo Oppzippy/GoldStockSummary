@@ -4,7 +4,7 @@ local _, ns = ...
 local AceAddon = LibStub("AceAddon-3.0")
 
 ---@class Tracker : AceConsole-3.0, AceEvent-3.0, AceAddon
-local Tracker = AceAddon:GetAddon("GoldTracker"):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0")
+local Tracker = AceAddon:GetAddon("GoldTracker"):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 
 function Tracker:OnInitialize()
 	self.db = ns.db
@@ -14,20 +14,29 @@ function Tracker:OnEnable()
 	self:UpdateFaction()
 	self:UpdateMoney()
 
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
-	self:RegisterEvent("GUILD_RANKS_UPDATE", "UpdateGuildOwner")
-	self:RegisterEvent("PLAYER_GUILD_UPDATE", "UpdateGuildAndOwner")
 	self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
 	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
+
+	-- These events can fire many times quickly. No point in repeatedly updating the same thing.
+	self:RegisterBucketEvent("GUILD_RANKS_UPDATE", 1, "UpdateOwner")
+	self:RegisterBucketEvent("PLAYER_GUILD_UPDATE", 1, "UpdateGuildAndOwner")
+
+	C_Timer.After(0, function()
+		-- GetGuildInfo will return nil until PLAYER_GUILD_UPDATE fires, but it's inconsistent and doesn't always fire when logging in.
+		-- It seems to always be ready by the first frame, so we can just wait until then.
+		-- TODO switch to https://wowpedia.fandom.com/wiki/FIRST_FRAME_RENDERED if classic supports it
+		self.isFirstFrameRendered = true
+		self:UpdateGuildAndOwner()
+	end)
 end
 
-function Tracker:PLAYER_ENTERING_WORLD(_, _, isReloadingUI)
-	-- GetGuildInfo will return nil until PLAYER_GUILD_UPDATE fires.
-	-- If it's a /reload, GetGuildInfo is available right away, but PLAYER_GUILD_UPDATE will not fire
-	if isReloadingUI then
-		self.isGetGuildInfoReady = true
-		self:UpdateGuildAndOwner()
+function Tracker:IsInBrokenState()
+	-- When events fire, these functions can return conflicting information.
+	if IsInGuild() then
+		return GetGuildInfo("player") == nil or GetNumGuildMembers() == 0
+	else
+		return GetGuildInfo("player") ~= nil or GetNumGuildMembers() ~= 0
 	end
 end
 
@@ -44,15 +53,25 @@ function Tracker:UpdateMoney()
 end
 
 function Tracker:UpdateGuildAndOwner()
-	self.isGetGuildInfoReady = true
-	local character = self:GetCharacter()
-	character.guild = IsInGuild() and self:GetGuildNameAndRealm()
+	if self:IsInBrokenState() then
+		C_Timer.After(1, function()
+			self:UpdateGuildAndOwner()
+		end)
+	end
 
-	self:UpdateGuildOwner()
+	local character = self:GetCharacter()
+	character.guild = IsInGuild() and self:GetGuildNameAndRealm() or nil
+	self:UpdateOwner()
 end
 
-function Tracker:UpdateGuildOwner()
-	if self.isGetGuildInfoReady and IsInGuild() then
+function Tracker:UpdateOwner()
+	if self:IsInBrokenState() then
+		C_Timer.After(1, function()
+			self:UpdateOwner()
+		end)
+	end
+
+	if IsInGuild() then
 		local guild = self:GetGuild()
 		guild.owner = self:GetGuildOwner()
 	end
