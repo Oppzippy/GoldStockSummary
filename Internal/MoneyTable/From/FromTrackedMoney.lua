@@ -12,7 +12,7 @@ local function FromTrackedMoney(characters, guilds)
 		local totalCopper = info.copper
 		local guildBankCopper
 		if info.guild and guilds and guilds[info.guild] and guilds[info.guild].owner == nameAndRealm then
-			guildBankCopper = guilds[info.guild].copper
+			guildBankCopper = guilds[info.guild].copper or 0
 			totalCopper = totalCopper + guildBankCopper
 		end
 
