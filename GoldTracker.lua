@@ -12,10 +12,19 @@ function Core:OnInitialize()
 	ns.db = self.db
 
 	self:RegisterChatCommand("goldtracker", "SlashCommand")
+	self:RegisterMessage("GoldTracker_ToggleUI", "ToggleUI")
 end
 
 function Core:SlashCommand(args)
 	self:ShowCharacterGoldTable()
+end
+
+function Core:ToggleUI()
+	if ns.CharacterScrollingTable:IsVisible() then
+		ns.CharacterScrollingTable:Hide()
+	else
+		self:ShowCharacterGoldTable()
+	end
 end
 
 function Core:ShowCharacterGoldTable()

@@ -9,6 +9,7 @@ L.deleted_item = "Deleted %s"
 L.alliance = "Alliance"
 L.horde = "Horde"
 L.neutral = "Neutral"
+L.show_minimap_icon = "Show Minimap Icon"
 
 L["columns/name"] = "Name"
 L["columns/realm"] = "Realm"

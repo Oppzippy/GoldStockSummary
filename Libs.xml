@@ -12,5 +12,7 @@
 	<Include file="Libs\AceDB-3.0\AceDB-3.0.xml"/>
 	<Include file="Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml"/>
 	<Include file="Libs\AceBucket-3.0\AceBucket-3.0.xml"/>
+	<Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
+	<Include file="Libs\LibDBIcon-1.0\lib.xml"/>
 	@end-non-debug@-->
 </Ui>

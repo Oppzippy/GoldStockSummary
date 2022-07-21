@@ -22,7 +22,12 @@ local dbDefaults = {
 		characters = {},
 		---@type table<string, TrackedGuild>
 		guilds = {},
-	}
+	},
+	profile = {
+		minimapIcon = {
+			hide = false,
+		},
+	},
 }
 
 ns.dbDefaults = dbDefaults
