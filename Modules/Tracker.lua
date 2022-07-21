@@ -3,14 +3,14 @@ local _, ns = ...
 
 local AceAddon = LibStub("AceAddon-3.0")
 
----@class Tracker : AceConsole-3.0, AceEvent-3.0, AceAddon
-local Tracker = AceAddon:GetAddon("GoldTracker"):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
+---@class TrackerModule : AceConsole-3.0, AceEvent-3.0
+local module = AceAddon:GetAddon("GoldTracker"):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 
-function Tracker:OnInitialize()
+function module:OnInitialize()
 	self.db = ns.db
 end
 
-function Tracker:OnEnable()
+function module:OnEnable()
 	self:UpdateFaction()
 	self:UpdateMoney()
 
@@ -31,7 +31,7 @@ function Tracker:OnEnable()
 	end)
 end
 
-function Tracker:IsInBrokenState()
+function module:IsInBrokenState()
 	-- When events fire, these functions can return conflicting information.
 	if IsInGuild() then
 		return GetGuildInfo("player") == nil or GetNumGuildMembers() == 0
@@ -40,19 +40,19 @@ function Tracker:IsInBrokenState()
 	end
 end
 
-function Tracker:UpdateFaction()
+function module:UpdateFaction()
 	local character = self:GetCharacter()
 	local faction = UnitFactionGroup("player")
 	character.faction = faction and faction:lower() or "neutral"
 end
 
-function Tracker:UpdateMoney()
+function module:UpdateMoney()
 	local character = self:GetCharacter()
 	character.copper = GetMoney()
 	character.lastUpdate = time()
 end
 
-function Tracker:UpdateGuildAndOwner()
+function module:UpdateGuildAndOwner()
 	if self:IsInBrokenState() then
 		C_Timer.After(1, function()
 			self:UpdateGuildAndOwner()
@@ -64,7 +64,7 @@ function Tracker:UpdateGuildAndOwner()
 	self:UpdateOwner()
 end
 
-function Tracker:UpdateOwner()
+function module:UpdateOwner()
 	if self:IsInBrokenState() then
 		C_Timer.After(1, function()
 			self:UpdateOwner()
@@ -77,7 +77,7 @@ function Tracker:UpdateOwner()
 	end
 end
 
-function Tracker:UpdateGuildBankMoney()
+function module:UpdateGuildBankMoney()
 	if IsInGuild() then
 		local guild = self:GetGuild()
 		guild.copper = GetGuildBankMoney()
@@ -85,7 +85,7 @@ function Tracker:UpdateGuildBankMoney()
 end
 
 ---@return string
-function Tracker:GetGuildOwner()
+function module:GetGuildOwner()
 	for i = 1, GetNumGuildMembers() do
 		local name, _, rankIndex = GetGuildRosterInfo(i)
 		if rankIndex == 0 then
@@ -96,7 +96,7 @@ function Tracker:GetGuildOwner()
 end
 
 ---@return TrackedCharacter
-function Tracker:GetCharacter()
+function module:GetCharacter()
 	local nameAndRealm = self:GetCharacterNameAndRealm()
 	local db = self.db.global
 	if not db.characters[nameAndRealm] then
@@ -106,7 +106,7 @@ function Tracker:GetCharacter()
 end
 
 ---@return TrackedGuild
-function Tracker:GetGuild()
+function module:GetGuild()
 	local nameAndRealm = self:GetGuildNameAndRealm()
 	local db = self.db.global
 	if not db.guilds[nameAndRealm] then
@@ -115,13 +115,13 @@ function Tracker:GetGuild()
 	return db.guilds[nameAndRealm]
 end
 
-function Tracker:GetCharacterNameAndRealm()
+function module:GetCharacterNameAndRealm()
 	local name = UnitName("player")
 	local realm = GetRealmName()
 	return string.format("%s-%s", name, realm)
 end
 
-function Tracker:GetGuildNameAndRealm()
+function module:GetGuildNameAndRealm()
 	local guildName, _, _, guildRealm = GetGuildInfo("player")
 	if not guildRealm then
 		guildRealm = GetRealmName()

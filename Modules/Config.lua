@@ -8,14 +8,14 @@ local LDBIcon = LibStub("LibDBIcon-1.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
----@class Config : AceAddon, AceEvent-3.0
-local Config = AceAddon:GetAddon("GoldTracker"):NewModule("Config", "AceEvent-3.0")
+---@class ConfigModule : AceEvent-3.0
+local module = AceAddon:GetAddon("GoldTracker"):NewModule("Config", "AceEvent-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
-Config.optionsTable = {
+module.optionsTable = {
 	type = "group",
-	handler = Config,
+	handler = module,
 	order = 1,
 	args = {
 		showMinimapIcon = {
@@ -28,7 +28,7 @@ Config.optionsTable = {
 	},
 }
 
-function Config:OnInitialize()
+function module:OnInitialize()
 	self.db = ns.db
 
 	local dataObject = LDB:NewDataObject(addonName, {
@@ -48,11 +48,11 @@ function Config:OnInitialize()
 	AceConfigDialog:AddToBlizOptions(addonName, L.goldtracker)
 end
 
-function Config:IsMinimapIconShown()
+function module:IsMinimapIconShown()
 	return not self.db.profile.minimapIcon.hide
 end
 
-function Config:SetMinimapIconShown(_, val)
+function module:SetMinimapIconShown(_, val)
 	self.db.profile.minimapIcon.hide = not val
 	if val then
 		LDBIcon:Show(addonName)
