@@ -1,7 +1,6 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("GoldTracker", "enUS", true)
 
 L.goldtracker = "GoldTracker"
-L.character_gold = "Character Gold"
 L.export_csv = "Export CSV"
 L.export_json = "Export JSON"
 L.delete_selected_character = "Delete Selected Character"
@@ -10,6 +9,8 @@ L.alliance = "Alliance"
 L.horde = "Horde"
 L.neutral = "Neutral"
 L.show_minimap_icon = "Show Minimap Icon"
+L.characters = "Characters"
+L.realms = "Realms"
 
 L["columns/name"] = "Name"
 L["columns/realm"] = "Realm"

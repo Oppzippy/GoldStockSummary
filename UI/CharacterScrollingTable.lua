@@ -17,28 +17,26 @@ AceEvent:Embed(CharacterScrollingTable)
 ---@param data table
 function CharacterScrollingTable:Show(columns, data)
 	if self:IsVisible() then return end
-	local frame = AceGUI:Create("Frame")
-	---@cast frame AceGUIFrame
-	self.widgets.frame = frame
-	frame:PauseLayout()
-	frame:EnableResize(false)
-	frame:SetTitle(L.character_gold)
-	frame:SetLayout("Flow")
-	frame:SetCallback("OnClose", function()
-		self:Hide()
+	local group = AceGUI:Create("SimpleGroup")
+	---@cast group AceGUISimpleGroup
+	self.widgets.frame = group
+	group:PauseLayout()
+	group:SetLayout("Flow")
+	group:SetCallback("OnRelease", function()
+		self:OnRelease()
 	end)
 
 	-- The headings of the scrolling table overlap the top of the frame without a spacer
 	local spacer = AceGUI:Create("SimpleGroup")
 	---@cast spacer AceGUISimpleGroup
 	spacer:SetHeight(10)
-	frame:AddChild(spacer)
+	group:AddChild(spacer)
 
 	self.widgets.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
 	self.widgets.scrollingTable:SetDisplayCols(columns)
 	self.widgets.scrollingTable:SetData(data)
 	self.widgets.scrollingTable:EnableSelection(true)
-	frame:AddChild(self.widgets.scrollingTable)
+	group:AddChild(self.widgets.scrollingTable)
 
 	local search = AceGUI:Create("EditBox")
 	---@cast search AceGUIEditBox
@@ -53,7 +51,7 @@ function CharacterScrollingTable:Show(columns, data)
 		end)
 	end)
 	search:SetFullWidth(true)
-	frame:AddChild(search)
+	group:AddChild(search)
 
 	local delete = AceGUI:Create("Button")
 	---@cast delete AceGUIButton
@@ -69,7 +67,7 @@ function CharacterScrollingTable:Show(columns, data)
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self:SendMessage("GoldTracker_DeleteCharacter", nameAndRealm)
 	end)
-	frame:AddChild(delete)
+	group:AddChild(delete)
 
 	local exportCSV = AceGUI:Create("Button")
 	---@cast exportCSV AceGUIButton
@@ -77,7 +75,7 @@ function CharacterScrollingTable:Show(columns, data)
 	exportCSV:SetCallback("OnClick", function()
 		self:SendMessage("GoldTracker_ExportCharacters", "csv")
 	end)
-	frame:AddChild(exportCSV)
+	group:AddChild(exportCSV)
 
 	local exportJSON = AceGUI:Create("Button")
 	---@cast exportJSON AceGUIButton
@@ -85,27 +83,28 @@ function CharacterScrollingTable:Show(columns, data)
 	exportJSON:SetCallback("OnClick", function()
 		self:SendMessage("GoldTracker_ExportCharacters", "json")
 	end)
-	frame:AddChild(exportJSON)
+	group:AddChild(exportJSON)
 
 	local exportContainer = AceGUI:Create("SimpleGroup")
 	---@cast exportContainer AceGUISimpleGroup
 	self.widgets.exportContainer = exportContainer
 	exportContainer:SetFullWidth(true)
 	exportContainer:SetFullHeight(true)
-	frame:AddChild(exportContainer)
+	group:AddChild(exportContainer)
 
 	self.widgets.scrollingTable:SetCallback("OnSelectionChanged", function()
 		delete:SetDisabled(self.widgets.scrollingTable:GetSelection() == nil)
 	end)
 
-	frame:SetWidth(self.widgets.scrollingTable.frame:GetWidth() + frame.frame.RightEdge:GetWidth())
-	frame:ResumeLayout()
-	frame:DoLayout()
+	group:SetWidth(self.widgets.scrollingTable.frame:GetWidth())
+	group:ResumeLayout()
+	group:DoLayout()
+
+	return group
 end
 
-function CharacterScrollingTable:Hide()
+function CharacterScrollingTable:OnRelease()
 	if self.widgets.frame then
-		self.widgets.frame:Release()
 		self.widgets = {}
 	end
 end

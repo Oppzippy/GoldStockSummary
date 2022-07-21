@@ -17,8 +17,8 @@ function Core:OnInitialize()
 end
 
 function Core:ToggleUI()
-	if ns.CharacterScrollingTable:IsVisible() then
-		ns.CharacterScrollingTable:Hide()
+	if ns.MainUI:IsVisible() then
+		ns.MainUI:Hide()
 	else
 		self:ShowCharacterGoldTable()
 	end
@@ -27,7 +27,7 @@ end
 function Core:ShowCharacterGoldTable()
 	local columns, data = self:CharacterGoldTable()
 
-	ns.CharacterScrollingTable:Show(columns, data)
+	ns.MainUI:Show(columns, data)
 end
 
 local characterFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
