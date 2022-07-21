@@ -11,12 +11,7 @@ function Core:OnInitialize()
 	self.db = AceDB:New("GoldTrackerDB", ns.dbDefaults, true)
 	ns.db = self.db
 
-	self:RegisterChatCommand("goldtracker", "SlashCommand")
 	self:RegisterMessage("GoldTracker_ToggleUI", "ToggleUI")
-end
-
-function Core:SlashCommand(args)
-	self:ShowCharacterGoldTable()
 end
 
 function Core:ToggleUI()
