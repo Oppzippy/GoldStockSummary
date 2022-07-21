@@ -1,16 +1,17 @@
 ---@class ns
 local _, ns = ...
 
-local CallbackHandler = LibStub("CallbackHandler-1.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
+---@class CharactersTab : AceEvent-3.0
 local CharacterScrollingTable = {
 	widgets = {},
 }
-CharacterScrollingTable.callbacks = CallbackHandler:New(CharacterScrollingTable)
+AceEvent:Embed(CharacterScrollingTable)
 
 ---@param columns string[]
 ---@param data table
@@ -66,8 +67,7 @@ function CharacterScrollingTable:Show(columns, data)
 		-- TODO attach the data to the row somehow rather than depending on column order
 		local name, realm = row.cols[3].value, row.cols[1].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
-		self.callbacks:Fire("OnDelete", nameAndRealm)
-		frame:SetStatusText(L.deleted_item:format(nameAndRealm))
+		self:SendMessage("GoldTracker_DeleteCharacter", nameAndRealm)
 	end)
 	frame:AddChild(delete)
 
@@ -75,7 +75,7 @@ function CharacterScrollingTable:Show(columns, data)
 	---@cast exportCSV AceGUIButton
 	exportCSV:SetText(L.export_csv)
 	exportCSV:SetCallback("OnClick", function()
-		self.callbacks:Fire("OnExportCSV")
+		self:SendMessage("GoldTracker_ExportCharacters", "csv")
 	end)
 	frame:AddChild(exportCSV)
 
@@ -83,7 +83,7 @@ function CharacterScrollingTable:Show(columns, data)
 	---@cast exportJSON AceGUIButton
 	exportJSON:SetText(L.export_json)
 	exportJSON:SetCallback("OnClick", function()
-		self.callbacks:Fire("OnExportJSON")
+		self:SendMessage("GoldTracker_ExportCharacters", "json")
 	end)
 	frame:AddChild(exportJSON)
 
@@ -119,7 +119,7 @@ function CharacterScrollingTable:SetData(data)
 end
 
 ---@param text string
-function CharacterScrollingTable:SetExportText(text)
+function CharacterScrollingTable:OnSetExportCharactersOutput(_, text)
 	self.widgets.exportContainer:ReleaseChildren()
 
 	local editBox
@@ -140,4 +140,5 @@ function CharacterScrollingTable:SetExportText(text)
 	self.widgets.exportContainer:AddChild(editBox)
 end
 
+CharacterScrollingTable:RegisterMessage("GoldTracker_SetExportCharactersOutput", "OnSetExportCharactersOutput")
 ns.CharacterScrollingTable = CharacterScrollingTable

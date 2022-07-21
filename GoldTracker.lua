@@ -12,6 +12,8 @@ function Core:OnInitialize()
 	ns.db = self.db
 
 	self:RegisterMessage("GoldTracker_ToggleUI", "ToggleUI")
+	self:RegisterMessage("GoldTracker_DeleteCharacter", "OnDeleteCharacter")
+	self:RegisterMessage("GoldTracker_ExportCharacters", "OnExportCharacters")
 end
 
 function Core:ToggleUI()
@@ -26,9 +28,6 @@ function Core:ShowCharacterGoldTable()
 	local columns, data = self:CharacterGoldTable()
 
 	ns.CharacterScrollingTable:Show(columns, data)
-	ns.CharacterScrollingTable.RegisterCallback(self, "OnDelete", "OnDeleteCharacter")
-	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportJSON")
-	ns.CharacterScrollingTable.RegisterCallback(self, "OnExportCSV")
 end
 
 local characterFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
@@ -43,24 +42,24 @@ function Core:CharacterGoldTable()
 	return scrollingTableColumns, scrollingTableData
 end
 
+---@param nameAndRealm string
 function Core:OnDeleteCharacter(_, nameAndRealm)
 	self.db.global.characters[nameAndRealm] = nil
 	local _, newDataTable = self:CharacterGoldTable()
 	ns.CharacterScrollingTable:SetData(newDataTable)
 end
 
-function Core:OnExportCSV()
+---@param format string
+function Core:OnExportCharacters(_, format)
 	local db = self.db.global
 	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
-	local csv = ns.MoneyTable.To.CSV(characterFields, moneyTable)
 
-	ns.CharacterScrollingTable:SetExportText(csv)
-end
+	local output = ""
+	if format == "csv" then
+		output = ns.MoneyTable.To.CSV(characterFields, moneyTable)
+	elseif format == "json" then
+		output = ns.MoneyTable.To.JSON(moneyTable)
+	end
 
-function Core:OnExportJSON()
-	local db = self.db.global
-	local moneyTable = ns.MoneyTable.From.TrackedMoney(db.characters, db.guilds)
-	local json = ns.MoneyTable.To.JSON(moneyTable)
-
-	ns.CharacterScrollingTable:SetExportText(json)
+	self:SendMessage("GoldTracker_SetExportCharactersOutput", output)
 end
