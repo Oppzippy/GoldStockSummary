@@ -63,7 +63,8 @@ function CharacterScrollingTable:Show(columns, data)
 		if not selectedIndex then return end
 
 		local row = self.widgets.scrollingTable:GetRow(selectedIndex)
-		local name, realm = row.cols[1].value, row.cols[2].value
+		-- TODO attach the data to the row somehow rather than depending on column order
+		local name, realm = row.cols[3].value, row.cols[1].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
 		self.callbacks:Fire("OnDelete", nameAndRealm)
 		frame:SetStatusText(L.deleted_item:format(nameAndRealm))
