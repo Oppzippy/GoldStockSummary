@@ -20,16 +20,13 @@ The following fields are exported:
 
 ### CSV
 
-When using CSV output, the unit used for money is gold.
-
-Export to CSV will output columns in the following order. Note that the column names are localized.
-Realm, Faction, Name, Total Money, Personal Money, Guild Bank Money, Last Update
+When using CSV output, the unit used for money is gold. Note that the column names are localized.
 
 ### JSON
 
 When using JSON output, the unit used for money is copper.
 
-Schema:
+Characters Schema:
 
 ```ts
 {
@@ -42,4 +39,28 @@ Schema:
   guildMoney?: string;
   lastUpdate?: string; // ISO 8601
 }[]
+```
+
+```ts
+type Characters = {
+  realm: string;
+  faction: "alliance" | "horde" | "neutral";
+  // Money is a string since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
+  totalMoney: string;
+  personalMoney: string;
+  guildMone: string;
+}[];
+```
+
+Realms Schema:
+
+```ts
+type Realms = {
+  realm: string;
+  faction: "alliance" | "horde" | "neutral";
+  // Money is a string since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
+  totalMoney: string;
+  personalMoney: string;
+  guildMoney: string;
+}[];
 ```
