@@ -14,8 +14,26 @@ local methods = {
 		self.scrollingTable:SetData({})
 		self.scrollingTable:Hide()
 	end,
-	SetDisplayCols = function(self, ...)
-		self.scrollingTable:SetDisplayCols(...)
+	SetDisplayCols = function(self, cols, ...)
+		self.scrollingTable:SetDisplayCols(cols, ...)
+
+		local numCols = #cols
+		for i, col in next, self.scrollingTable.head.cols do
+			if i <= numCols then
+				col:Show()
+			else
+				col:Hide()
+			end
+		end
+		for _, row in next, self.scrollingTable.rows do
+			for i, col in next, row.cols do
+				if i <= numCols then
+					col:Show()
+				else
+					col:Hide()
+				end
+			end
+		end
 	end,
 	SetData = function(self, ...)
 		self.scrollingTable:SetData(...)
