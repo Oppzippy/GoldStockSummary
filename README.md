@@ -29,7 +29,7 @@ When using JSON output, the unit used for money is copper.
 Characters Schema:
 
 ```ts
-{
+type Characters = {
   name: string;
   realm: string;
   faction: "alliance" | "horde" | "neutral";
@@ -38,17 +38,6 @@ Characters Schema:
   personalMoney: string;
   guildMoney?: string;
   lastUpdate?: string; // ISO 8601
-}[]
-```
-
-```ts
-type Characters = {
-  realm: string;
-  faction: "alliance" | "horde" | "neutral";
-  // Money is a string since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
-  totalMoney: string;
-  personalMoney: string;
-  guildMone: string;
 }[];
 ```
 
