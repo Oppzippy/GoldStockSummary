@@ -8,14 +8,14 @@ local AceEvent = LibStub("AceEvent-3.0")
 local L = AceLocale:GetLocale("GoldTracker")
 
 ---@class CharactersTab : AceEvent-3.0
-local CharacterScrollingTable = {
+local CharactersTab = {
 	widgets = {},
 }
-AceEvent:Embed(CharacterScrollingTable)
+AceEvent:Embed(CharactersTab)
 
 ---@param columns string[]
 ---@param data table
-function CharacterScrollingTable:Show(columns, data)
+function CharactersTab:Show(columns, data)
 	if self:IsVisible() then return end
 	local group = AceGUI:Create("SimpleGroup")
 	---@cast group AceGUISimpleGroup
@@ -103,22 +103,22 @@ function CharacterScrollingTable:Show(columns, data)
 	return group
 end
 
-function CharacterScrollingTable:OnRelease()
+function CharactersTab:OnRelease()
 	if self.widgets.frame then
 		self.widgets = {}
 	end
 end
 
-function CharacterScrollingTable:IsVisible()
+function CharactersTab:IsVisible()
 	return self.widgets.frame ~= nil
 end
 
-function CharacterScrollingTable:SetData(data)
+function CharactersTab:SetData(data)
 	self.widgets.scrollingTable:SetData(data)
 end
 
 ---@param text string
-function CharacterScrollingTable:OnSetExportCharactersOutput(_, text)
+function CharactersTab:OnSetExportCharactersOutput(_, text)
 	self.widgets.exportContainer:ReleaseChildren()
 
 	local editBox
@@ -139,5 +139,5 @@ function CharacterScrollingTable:OnSetExportCharactersOutput(_, text)
 	self.widgets.exportContainer:AddChild(editBox)
 end
 
-CharacterScrollingTable:RegisterMessage("GoldTracker_SetExportCharactersOutput", "OnSetExportCharactersOutput")
-ns.CharacterScrollingTable = CharacterScrollingTable
+CharactersTab:RegisterMessage("GoldTracker_SetExportCharactersOutput", "OnSetExportCharactersOutput")
+ns.CharacterScrollingTable = CharactersTab

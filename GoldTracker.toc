@@ -15,6 +15,4 @@ Internal\Include.xml
 DB\Defaults.lua
 GoldTracker.lua
 Modules\Include.xml
-UI\MainUI.lua
-UI\CharacterScrollingTable.lua
-UI\Widgets\ScrollingTable.lua
+UI\Include.xml
