@@ -15,7 +15,7 @@ function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 		},
 	}
 
-	local moneyTable = ns.MoneyTable.From.TrackedMoney(characters)
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(characters, {}))
 	local result = moneyTable:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" })
 
 	luaunit.assertEquals(#result, 2)
@@ -62,7 +62,7 @@ function TestTrackedMoneyToCharacterMoneyTable:TestGuilds()
 		},
 	}
 
-	local moneyTable = ns.MoneyTable.From.TrackedMoney(characters, guilds)
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(characters, guilds))
 	local result = moneyTable:ToRows({ "name", "realm", "totalMoney", "personalMoney", "guildBankMoney" })
 
 	local expected = {

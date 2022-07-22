@@ -28,7 +28,7 @@ function TrackedMoneyPrototype:GetCharacterCopper(name, realm)
 	if character.guild then
 		local guild = self.guilds[character.guild]
 		---@cast guild TrackedGuild
-		if guild and guild.copper then
+		if guild and guild.copper and guild.owner == nameAndRealm then
 			guildCopper = guild.copper
 		end
 	end

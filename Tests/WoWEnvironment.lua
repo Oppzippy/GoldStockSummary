@@ -19,9 +19,11 @@ DoWoWFile("Locales/enUS.lua")
 
 --- Internal
 DoWoWFile("Internal/MoneyTable/Namespace.lua")
-DoWoWFile("Internal/MoneyTable/From/FromTrackedMoney.lua")
+DoWoWFile("Internal/MoneyTable/Factory/Characters.lua")
+DoWoWFile("Internal/MoneyTable/Factory/Realms.lua")
 DoWoWFile("Internal/MoneyTable/To/ToCSV.lua")
 DoWoWFile("Internal/MoneyTable/To/ToJSON.lua")
 DoWoWFile("Internal/MoneyTable/To/ToScrollingTable.lua")
 DoWoWFile("Internal/MoneyTable/MoneyTable.lua")
+DoWoWFile("Internal/TrackedMoney.lua")
 DoWoWFile("Internal/Util.lua")
