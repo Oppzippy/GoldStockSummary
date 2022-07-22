@@ -45,7 +45,7 @@ function CharactersTab:Show(columns, data)
 	search:SetCallback("OnTextChanged", function(_, _, text)
 		self.widgets.scrollingTable:SetFilter(function(_, row)
 			local query = text:lower()
-			local name, realm = row.cols[1].value, row.cols[2].value
+			local name, realm = row.cols[3].value, row.cols[1].value
 			local nameAndRealm = string.format("%s-%s", name, realm)
 			return nameAndRealm:lower():find(query, nil, true)
 		end)
