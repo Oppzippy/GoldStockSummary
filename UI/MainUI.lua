@@ -13,9 +13,8 @@ local MainUI = {
 }
 AceEvent:Embed(MainUI)
 
----@param columns string[]
----@param data table
-function MainUI:Show(columns, data)
+---@param getTableData table<string, fun(): string[], table>
+function MainUI:Show(getTableData)
 	if self:IsVisible() then return end
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
@@ -34,10 +33,13 @@ function MainUI:Show(columns, data)
 	tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
 		tabGroup:ReleaseChildren()
 		if group == "characters" then
-			local charactersTab = ns.CharacterScrollingTable:Show(columns, data)
+			local charactersTab = ns.CharactersTab:Show(getTableData[group])
 			frame:SetWidth(charactersTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
 			tabGroup:AddChild(charactersTab)
 		elseif group == "realms" then
+			local realmsTab = ns.RealmsTab:Show(getTableData[group])
+			frame:SetWidth(realmsTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
+			tabGroup:AddChild(realmsTab)
 		end
 	end)
 

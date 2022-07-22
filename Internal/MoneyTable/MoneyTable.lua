@@ -5,11 +5,11 @@ local _, ns = ...
 
 ---@class MoneyTable
 ---@field schema table<string, MoneyTableEntryType>
----@field entries table<string, unknown>[]
+---@field entries unknown[]
 local MoneyTablePrototype = {}
 
 ---@param schema table<string, MoneyTableEntryType>
----@param entries table<string, unknown>[]
+---@param entries unknown[]
 ---@return MoneyTable
 local function CreateMoneyTable(schema, entries)
 	local moneyTable = setmetatable({
@@ -34,11 +34,11 @@ end
 ---@return unknown[][]
 function MoneyTablePrototype:ToRows(fields)
 	local rows = {}
-	for i, moneyTable in ipairs(self.entries) do
+	for i, entry in ipairs(self.entries) do
 		local row = {}
 		for j, field in ipairs(fields) do
 			if self.schema[field] then
-				row[j] = moneyTable[field]
+				row[j] = entry[field]
 			end
 		end
 		rows[i] = row

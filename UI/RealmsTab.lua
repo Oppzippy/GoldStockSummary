@@ -7,14 +7,14 @@ local AceEvent = LibStub("AceEvent-3.0")
 
 local L = AceLocale:GetLocale("GoldTracker")
 
----@class CharactersTab : AceEvent-3.0
-local CharactersTab = {
+---@class RealmsTab : AceEvent-3.0
+local RealmsTab = {
 	widgets = {},
 }
-AceEvent:Embed(CharactersTab)
+AceEvent:Embed(RealmsTab)
 
 ---@param getTableData fun(): string[], table
-function CharactersTab:Show(getTableData)
+function RealmsTab:Show(getTableData)
 	if self:IsVisible() then error("already shown") end
 	local columns, data = getTableData()
 	self.getTableData = getTableData
@@ -47,35 +47,18 @@ function CharactersTab:Show(getTableData)
 	search:SetCallback("OnTextChanged", function(_, _, text)
 		self.widgets.scrollingTable:SetFilter(function(_, row)
 			local query = text:lower()
-			local name, realm = row.cols[3].value, row.cols[1].value
-			local nameAndRealm = string.format("%s-%s", name, realm)
-			return nameAndRealm:lower():find(query, nil, true)
+			local realm = row.cols[1].value
+			return realm:lower():find(query, nil, true)
 		end)
 	end)
 	search:SetFullWidth(true)
 	group:AddChild(search)
 
-	local delete = AceGUI:Create("Button")
-	---@cast delete AceGUIButton
-	delete:SetText(L.delete_selected_character)
-	delete:SetDisabled(true)
-	delete:SetCallback("OnClick", function()
-		local selectedIndex = self.widgets.scrollingTable:GetSelection()
-		if not selectedIndex then return end
-
-		local row = self.widgets.scrollingTable:GetRow(selectedIndex)
-		-- TODO attach the data to the row somehow rather than depending on column order
-		local name, realm = row.cols[3].value, row.cols[1].value
-		local nameAndRealm = string.format("%s-%s", name, realm)
-		self:SendMessage("GoldTracker_DeleteCharacter", nameAndRealm)
-	end)
-	group:AddChild(delete)
-
 	local exportCSV = AceGUI:Create("Button")
 	---@cast exportCSV AceGUIButton
 	exportCSV:SetText(L.export_csv)
 	exportCSV:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportCharacters", "csv")
+		self:SendMessage("GoldTracker_ExportRealms", "csv")
 	end)
 	group:AddChild(exportCSV)
 
@@ -83,7 +66,7 @@ function CharactersTab:Show(getTableData)
 	---@cast exportJSON AceGUIButton
 	exportJSON:SetText(L.export_json)
 	exportJSON:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportCharacters", "json")
+		self:SendMessage("GoldTracker_ExportRealms", "json")
 	end)
 	group:AddChild(exportJSON)
 
@@ -94,10 +77,6 @@ function CharactersTab:Show(getTableData)
 	exportContainer:SetFullHeight(true)
 	group:AddChild(exportContainer)
 
-	self.widgets.scrollingTable:SetCallback("OnSelectionChanged", function()
-		delete:SetDisabled(self.widgets.scrollingTable:GetSelection() == nil)
-	end)
-
 	group:SetWidth(self.widgets.scrollingTable.frame:GetWidth())
 	group:ResumeLayout()
 	group:DoLayout()
@@ -105,18 +84,18 @@ function CharactersTab:Show(getTableData)
 	return group
 end
 
-function CharactersTab:OnRelease()
+function RealmsTab:OnRelease()
 	if self.widgets.frame then
 		self.widgets = {}
 	end
 end
 
-function CharactersTab:IsVisible()
+function RealmsTab:IsVisible()
 	return self.widgets.frame ~= nil
 end
 
 ---@param text string
-function CharactersTab:OnSetExportCharactersOutput(_, text)
+function RealmsTab:OnSetExportRealmsOutput(_, text)
 	self.widgets.exportContainer:ReleaseChildren()
 
 	local editBox
@@ -137,7 +116,7 @@ function CharactersTab:OnSetExportCharactersOutput(_, text)
 	self.widgets.exportContainer:AddChild(editBox)
 end
 
-function CharactersTab:OnMoneyUpdated()
+function RealmsTab:OnMoneyUpdated()
 	if self:IsVisible() then
 		local columns, rows = self.getTableData()
 		self.widgets.scrollingTable:SetDisplayCols(columns)
@@ -145,6 +124,6 @@ function CharactersTab:OnMoneyUpdated()
 	end
 end
 
-CharactersTab:RegisterMessage("GoldTracker_SetExportCharactersOutput", "OnSetExportCharactersOutput")
-CharactersTab:RegisterMessage("GoldTracker_MoneyUpdated", "OnMoneyUpdated")
-ns.CharactersTab = CharactersTab
+RealmsTab:RegisterMessage("GoldTracker_SetExportRealmsOutput", "OnSetExportRealmsOutput")
+RealmsTab:RegisterMessage("GoldTracker_MoneyUpdated", "OnMoneyUpdated")
+ns.RealmsTab = RealmsTab

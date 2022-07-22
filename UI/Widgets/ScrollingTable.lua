@@ -7,10 +7,12 @@ local methods = {
 	OnAcquire = function(self)
 		self.scrollingTable:EnableSelection(false)
 		self.scrollingTable:SetFilter(function() return true end)
+		self.scrollingTable:Show()
 	end,
 	OnRelease = function(self)
 		self.scrollingTable:ClearSelection()
 		self.scrollingTable:SetData({})
+		self.scrollingTable:Hide()
 	end,
 	SetDisplayCols = function(self, ...)
 		self.scrollingTable:SetDisplayCols(...)

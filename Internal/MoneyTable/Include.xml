@@ -2,7 +2,8 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Namespace.lua" />
 	<Script file="MoneyTable.lua" />
-	<Script file="From\FromTrackedMoney.lua" />
+	<Script file="Factory\Characters.lua" />
+	<Script file="Factory\Realms.lua" />
 	<Script file="To\ToCSV.lua" />
 	<Script file="To\ToJSON.lua" />
 	<Script file="To\ToScrollingTable.lua" />
