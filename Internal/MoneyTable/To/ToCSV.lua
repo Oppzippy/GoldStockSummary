@@ -1,10 +1,12 @@
+---@type string
+local addonName = ...
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local date = date or os.date
 
 local AceLocale = LibStub("AceLocale-3.0")
-local L = AceLocale:GetLocale("GoldTracker")
+local L = AceLocale:GetLocale(addonName)
 
 ---@param fields string[]
 ---@return string[]

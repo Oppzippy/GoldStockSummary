@@ -1,11 +1,13 @@
+---@type string
+local addonName = ...
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 local AceDB = LibStub("AceDB-3.0")
 
 ---@class GoldTrackerCore : AceConsole-3.0, AceEvent-3.0, AceAddon
-local Core = AceAddon:NewAddon("GoldTracker", "AceConsole-3.0", "AceEvent-3.0")
+local Core = AceAddon:NewAddon(addonName, "AceConsole-3.0", "AceEvent-3.0")
 
 function Core:OnInitialize()
 	self.db = AceDB:New("GoldTrackerDB", ns.dbDefaults, true)

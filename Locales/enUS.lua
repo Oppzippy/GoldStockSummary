@@ -1,4 +1,7 @@
-local L = LibStub("AceLocale-3.0"):NewLocale("GoldTracker", "enUS", true)
+---@type string
+local addonName = ...
+
+local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true)
 
 L.goldtracker = "GoldTracker"
 L.export_csv = "Export CSV"

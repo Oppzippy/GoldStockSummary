@@ -1,15 +1,17 @@
----@type string, ns
-local addonName, ns = ...
+---@type string
+local addonName = ...
+---@class ns
+local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
 
-local L = AceLocale:GetLocale("GoldTracker")
+local L = AceLocale:GetLocale(addonName)
 
 ---@class ConfigModule : AceEvent-3.0
-local module = AceAddon:GetAddon("GoldTracker"):NewModule("Config", "AceEvent-3.0")
+local module = AceAddon:GetAddon(addonName):NewModule("Config", "AceEvent-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
