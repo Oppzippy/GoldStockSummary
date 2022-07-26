@@ -1,6 +1,6 @@
 # Gold Stock Summary
 
-Tracks gold across all characters on an account.
+Tracks gold across all characters on an account. Guild bank money is included for characters that are guild masters.
 
 ## Commands
 
