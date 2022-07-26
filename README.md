@@ -1,10 +1,10 @@
-# GoldTracker
+# Gold Stock Summary
 
 Tracks gold across all characters on an account.
 
 ## Commands
 
-/goldtracker to show the GoldTracker UI.
+/goldstocksummary (or /gss) to show the Gold Stock Summary UI.
 
 ## Export
 

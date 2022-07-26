@@ -6,7 +6,7 @@ strmatch = string.match
 
 local namespace = {}
 function DoWoWFile(path)
-	loadfile(path)("GoldTracker", namespace)
+	loadfile(path)("GoldStockSummary", namespace)
 end
 
 --Libraries

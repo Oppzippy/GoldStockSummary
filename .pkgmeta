@@ -1,4 +1,4 @@
-package-as: GoldTracker
+package-as: GoldStockSummary
 enable-nolib-creation: no
 enable-toc-creation: yes
 

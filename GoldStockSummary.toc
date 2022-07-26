@@ -1,18 +1,18 @@
 ## Interface: 90205
 ## Interface-Classic: 11403
 ## Interface-BCC: 20504
-## Title: Gold Tracker
+## Title: Gold Stock Summary
 ## Notes: Track gold including guild bank money across characters.
 ## Author: Oppzippy
 ## Version: @project-version@
 ## OptionalDeps: Ace3, lib-st, LibJSON, LibDBIcon-1.0
-## SavedVariables: GoldTrackerDB
+## SavedVariables: GoldStockSummaryDB
 
 Libs.xml
 Locales\Include.xml
 Internal\Include.xml
 
 DB\Defaults.lua
-GoldTracker.lua
+GoldStockSummary.lua
 Modules\Include.xml
 UI\Include.xml

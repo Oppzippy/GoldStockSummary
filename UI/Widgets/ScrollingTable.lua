@@ -1,4 +1,4 @@
-local widgetType, widgetVersion = "GoldTracker-ScrollingTable", 1
+local widgetType, widgetVersion = "GoldStockSummary-ScrollingTable", 1
 
 local AceGUI = LibStub("AceGUI-3.0")
 local ScrollingTable = LibStub("ScrollingTable")

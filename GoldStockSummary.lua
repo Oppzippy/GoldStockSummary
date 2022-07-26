@@ -6,17 +6,17 @@ local ns = select(2, ...)
 local AceAddon = LibStub("AceAddon-3.0")
 local AceDB = LibStub("AceDB-3.0")
 
----@class GoldTrackerCore : AceConsole-3.0, AceEvent-3.0, AceAddon
+---@class GoldStockSummary : AceConsole-3.0, AceEvent-3.0, AceAddon
 local Core = AceAddon:NewAddon(addonName, "AceConsole-3.0", "AceEvent-3.0")
 
 function Core:OnInitialize()
-	self.db = AceDB:New("GoldTrackerDB", ns.dbDefaults, true)
+	self.db = AceDB:New("GoldStockSummaryDB", ns.dbDefaults, true)
 	ns.db = self.db
 
-	self:RegisterMessage("GoldTracker_ToggleUI", "ToggleUI")
-	self:RegisterMessage("GoldTracker_DeleteCharacter", "OnDeleteCharacter")
-	self:RegisterMessage("GoldTracker_ExportCharacters", "OnExportCharacters")
-	self:RegisterMessage("GoldTracker_ExportRealms", "OnExportRealms")
+	self:RegisterMessage("GoldStockSummary_ToggleUI", "ToggleUI")
+	self:RegisterMessage("GoldStockSummary_DeleteCharacter", "OnDeleteCharacter")
+	self:RegisterMessage("GoldStockSummary_ExportCharacters", "OnExportCharacters")
+	self:RegisterMessage("GoldStockSummary_ExportRealms", "OnExportRealms")
 end
 
 function Core:ToggleUI()
@@ -56,7 +56,7 @@ end
 ---@param nameAndRealm string
 function Core:OnDeleteCharacter(_, nameAndRealm)
 	self.db.global.characters[nameAndRealm] = nil
-	self:SendMessage("GoldTracker_MoneyUpdated")
+	self:SendMessage("GoldStockSummary_MoneyUpdated")
 end
 
 ---@param format string
@@ -71,7 +71,7 @@ function Core:OnExportCharacters(_, format)
 		output = ns.MoneyTable.To.JSON(moneyTable)
 	end
 
-	self:SendMessage("GoldTracker_SetExportCharactersOutput", output)
+	self:SendMessage("GoldStockSummary_SetExportCharactersOutput", output)
 end
 
 function Core:OnExportRealms(_, format)
@@ -85,5 +85,5 @@ function Core:OnExportRealms(_, format)
 		output = ns.MoneyTable.To.JSON(moneyTable)
 	end
 
-	self:SendMessage("GoldTracker_SetExportRealmsOutput", output)
+	self:SendMessage("GoldStockSummary_SetExportRealmsOutput", output)
 end

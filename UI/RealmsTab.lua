@@ -36,7 +36,7 @@ function RealmsTab:Show(getTableData)
 	spacer:SetHeight(10)
 	group:AddChild(spacer)
 
-	self.widgets.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
+	self.widgets.scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
 	self.widgets.scrollingTable:SetDisplayCols(columns)
 	self.widgets.scrollingTable:SetData(data)
 	self.widgets.scrollingTable:EnableSelection(true)
@@ -60,7 +60,7 @@ function RealmsTab:Show(getTableData)
 	---@cast exportCSV AceGUIButton
 	exportCSV:SetText(L.export_csv)
 	exportCSV:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportRealms", "csv")
+		self:SendMessage("GoldStockSummary_ExportRealms", "csv")
 	end)
 	group:AddChild(exportCSV)
 
@@ -68,7 +68,7 @@ function RealmsTab:Show(getTableData)
 	---@cast exportJSON AceGUIButton
 	exportJSON:SetText(L.export_json)
 	exportJSON:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportRealms", "json")
+		self:SendMessage("GoldStockSummary_ExportRealms", "json")
 	end)
 	group:AddChild(exportJSON)
 
@@ -126,6 +126,6 @@ function RealmsTab:OnMoneyUpdated()
 	end
 end
 
-RealmsTab:RegisterMessage("GoldTracker_SetExportRealmsOutput", "OnSetExportRealmsOutput")
-RealmsTab:RegisterMessage("GoldTracker_MoneyUpdated", "OnMoneyUpdated")
+RealmsTab:RegisterMessage("GoldStockSummary_SetExportRealmsOutput", "OnSetExportRealmsOutput")
+RealmsTab:RegisterMessage("GoldStockSummary_MoneyUpdated", "OnMoneyUpdated")
 ns.RealmsTab = RealmsTab

@@ -35,19 +35,19 @@ function module:OnInitialize()
 
 	local dataObject = LDB:NewDataObject(addonName, {
 		type = "launcher",
-		text = L.goldtracker,
+		text = L.gold_stock_summary,
 		icon = 133784, -- Interface/Icons/INV_Misc_Coin_01
 		OnClick = function()
-			self:SendMessage("GoldTracker_ToggleUI")
+			self:SendMessage("GoldStockSummary_ToggleUI")
 		end,
 		OnTooltipShow = function(tooltip)
-			tooltip:AddLine(L.goldtracker)
+			tooltip:AddLine(L.gold_stock_summary)
 		end,
 	})
 	LDBIcon:Register(addonName, dataObject, self.db.profile.minimapIcon)
 
 	AceConfig:RegisterOptionsTable(addonName, self.optionsTable)
-	AceConfigDialog:AddToBlizOptions(addonName, L.goldtracker)
+	AceConfigDialog:AddToBlizOptions(addonName, L.gold_stock_summary)
 end
 
 function module:IsMinimapIconShown()

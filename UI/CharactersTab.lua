@@ -36,7 +36,7 @@ function CharactersTab:Show(getTableData)
 	spacer:SetHeight(10)
 	group:AddChild(spacer)
 
-	self.widgets.scrollingTable = AceGUI:Create("GoldTracker-ScrollingTable")
+	self.widgets.scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
 	self.widgets.scrollingTable:SetDisplayCols(columns)
 	self.widgets.scrollingTable:SetData(data)
 	self.widgets.scrollingTable:EnableSelection(true)
@@ -69,7 +69,7 @@ function CharactersTab:Show(getTableData)
 		-- TODO attach the data to the row somehow rather than depending on column order
 		local name, realm = row.cols[3].value, row.cols[1].value
 		local nameAndRealm = string.format("%s-%s", name, realm)
-		self:SendMessage("GoldTracker_DeleteCharacter", nameAndRealm)
+		self:SendMessage("GoldStockSummary_DeleteCharacter", nameAndRealm)
 	end)
 	group:AddChild(delete)
 
@@ -77,7 +77,7 @@ function CharactersTab:Show(getTableData)
 	---@cast exportCSV AceGUIButton
 	exportCSV:SetText(L.export_csv)
 	exportCSV:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportCharacters", "csv")
+		self:SendMessage("GoldStockSummary_ExportCharacters", "csv")
 	end)
 	group:AddChild(exportCSV)
 
@@ -85,7 +85,7 @@ function CharactersTab:Show(getTableData)
 	---@cast exportJSON AceGUIButton
 	exportJSON:SetText(L.export_json)
 	exportJSON:SetCallback("OnClick", function()
-		self:SendMessage("GoldTracker_ExportCharacters", "json")
+		self:SendMessage("GoldStockSummary_ExportCharacters", "json")
 	end)
 	group:AddChild(exportJSON)
 
@@ -147,6 +147,6 @@ function CharactersTab:OnMoneyUpdated()
 	end
 end
 
-CharactersTab:RegisterMessage("GoldTracker_SetExportCharactersOutput", "OnSetExportCharactersOutput")
-CharactersTab:RegisterMessage("GoldTracker_MoneyUpdated", "OnMoneyUpdated")
+CharactersTab:RegisterMessage("GoldStockSummary_SetExportCharactersOutput", "OnSetExportCharactersOutput")
+CharactersTab:RegisterMessage("GoldStockSummary_MoneyUpdated", "OnMoneyUpdated")
 ns.CharactersTab = CharactersTab

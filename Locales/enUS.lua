@@ -3,7 +3,7 @@ local addonName = ...
 
 local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true)
 
-L.goldtracker = "GoldTracker"
+L.gold_stock_summary = "Gold Stock Summary"
 L.export_csv = "Export CSV"
 L.export_json = "Export JSON"
 L.delete_selected_character = "Delete Selected Character"

@@ -22,7 +22,7 @@ function MainUI:Show(getTableData)
 	---@cast frame AceGUIFrame
 	self.widgets.frame = frame
 	frame:EnableResize(false)
-	frame:SetTitle(L.goldtracker)
+	frame:SetTitle(L.gold_stock_summary)
 	frame:SetLayout("Fill")
 	frame:SetCallback("OnClose", function()
 		self:Hide()
