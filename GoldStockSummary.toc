@@ -7,6 +7,9 @@
 ## Version: @project-version@
 ## OptionalDeps: Ace3, lib-st, LibJSON, LibDBIcon-1.0
 ## SavedVariables: GoldStockSummaryDB
+## X-Curse-Project-ID: 650309
+## X-Wago-ID: XrNkE8Ka
+## X-WoWI-ID: 26374
 
 Libs.xml
 Locales\Include.xml
