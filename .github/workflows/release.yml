@@ -29,7 +29,6 @@ jobs:
       - name: Run tests
         run: lua Tests/Test.lua
       - name: Package and release
-        if: github.ref == 'refs/heads/master'
         uses: BigWigsMods/packager@v2
         with:
           # We already have externals so no need to fetch them again
