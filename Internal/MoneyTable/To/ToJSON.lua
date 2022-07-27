@@ -4,9 +4,10 @@ local _, ns = ...
 local JSON = LibStub("json.lua")
 local date = date or os.date
 
+---@param tableType string
 ---@param moneyTable MoneyTable
 ---@return string
-local function ToJSON(moneyTable)
+local function ToJSON(tableType, moneyTable)
 	moneyTable = moneyTable:ConvertTypes({
 		copper = {
 			type = "string",
@@ -24,7 +25,10 @@ local function ToJSON(moneyTable)
 		},
 	})
 
-	return JSON.encode(moneyTable.entries)
+	return JSON.encode({
+		type = tableType,
+		data = moneyTable.entries,
+	})
 end
 
 ---@class ns.MoneyTable.To

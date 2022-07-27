@@ -10,46 +10,50 @@ Tracks gold across all characters on an account and exports to csv/json. Guild b
 
 The following fields are exported:
 
-- `name` Character name
+- `name`
 - `realm` Realm
 - `faction` Faction
-- `totalMoney` Money in bags plus money in the guild bank if the character is the guild master.
-- `personalMoney` Money in bags
-- `guildBankMoney` Money in the guild bank if the character is the guild master.
-- `lastUpdate` Date and time of the last time this character's money was updated.
+- `totalMoney`
+- `personalMoney`
+- `guildBankMoney`
+- `lastUpdate`
 
 ### CSV
 
-When using CSV output, the unit used for money is gold. Note that the column names are localized.
+When using CSV export, the unit used for money is gold. Note that the column names are localized.
 
 ### JSON
 
-When using JSON output, the unit used for money is copper.
+When using JSON export, the unit used for money is copper. All money fields will be strings since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
 
-Characters Schema:
-
-```ts
-type Characters = {
-  name: string;
-  realm: string;
-  faction: "alliance" | "horde" | "neutral";
-  // Money is a string since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
-  totalMoney: string;
-  personalMoney: string;
-  guildMoney?: string;
-  lastUpdate?: string; // ISO 8601
-}[];
-```
-
-Realms Schema:
+Schema:
 
 ```ts
-type Realms = {
-  realm: string;
-  faction: "alliance" | "horde" | "neutral";
-  // Money is a string since the gold cap (in copper) is larger than the maximum value of a 32 bit integer.
-  totalMoney: string;
-  personalMoney: string;
-  guildMoney: string;
-}[];
+type JSONExport =
+  | {
+      type: "characters";
+      data: Character[];
+    }
+  | {
+      type: "realms";
+      data: Realm[];
+    };
+
+type Character = {
+  name: string; // Character name
+  realm: string; // Character realm name
+  faction: "alliance" | "horde" | "neutral"; // Character faction
+  totalMoney: string; // Money in bags plus money in the guild bank if the character is the guild master.
+  personalMoney: string; // Money in bags.
+  guildMoney?: string; // Money in the guild bank if the character is the guild master.
+  lastUpdate?: string; // Date and time of the last time this character's money was updated as ISO 8601.
+};
+
+type Realm = {
+  realm: string; // Realm name
+  faction: "alliance" | "horde" | "neutral"; // Alliance and horde are separated per realm
+  totalMoney: string; // Sum of total money for all characters on the realm and faction.
+  personalMoney: string; // Sum of personal money for all characters on the realm and faction.
+  guildMoney: string; // Sum of guild money for all characters on the realm and faction.
+};
 ```
