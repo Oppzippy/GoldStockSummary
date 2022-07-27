@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 ---@alias MoneyTableEntryType "string"|"timestamp"|"copper"|"gold"|"faction"
 

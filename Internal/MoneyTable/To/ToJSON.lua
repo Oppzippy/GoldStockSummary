@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 local JSON = LibStub("json.lua")
 local date = date or os.date

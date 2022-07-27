@@ -1,5 +1,5 @@
 ---@class ns
-local _, ns = ...
+local ns = select(2, ...)
 
 ---@class AceDBObject-3.0
 ---@field global GlobalDB
