@@ -10,6 +10,7 @@ local module = AceAddon:GetAddon(addonName):NewModule("SlashCommand", "AceConsol
 
 function module:OnInitialize()
 	self:RegisterChatCommand("goldstocksummary", "SlashCommand")
+	self:RegisterChatCommand("goldstock", "SlashCommand")
 	self:RegisterChatCommand("gss", "SlashCommand")
 end
 
