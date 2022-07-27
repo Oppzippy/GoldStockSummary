@@ -10,8 +10,8 @@ local LDBIcon = LibStub("LibDBIcon-1.0")
 
 local L = AceLocale:GetLocale(addonName)
 
----@class ConfigModule : AceEvent-3.0
-local module = AceAddon:GetAddon(addonName):NewModule("Config", "AceEvent-3.0")
+---@class OptionsModule : AceEvent-3.0
+local module = AceAddon:GetAddon(addonName):NewModule("Options", "AceEvent-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
