@@ -14,6 +14,7 @@ local ns = select(2, ...)
 ---@field owner string
 ---@field copper? number
 ---@field lastUpdate? integer
+---@field isBlacklisted? boolean
 
 local dbDefaults = {
 	---@class GlobalDB

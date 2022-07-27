@@ -15,18 +15,35 @@ local module = AceAddon:GetAddon(addonName):NewModule("Options", "AceEvent-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
+---@type AceConfigOptionsTable
 module.optionsTable = {
 	type = "group",
 	handler = module,
+	childGroups = "tab",
 	order = 1,
 	args = {
-		showMinimapIcon = {
-			type = "toggle",
-			name = L.show_minimap_icon,
-			get = "IsMinimapIconShown",
-			set = "SetMinimapIconShown",
+		general = {
+			type = "group",
+			name = L.general,
 			order = 1,
-		}
+			args = {
+				showMinimapIcon = {
+					type = "toggle",
+					name = L.show_minimap_icon,
+					get = "IsMinimapIconShown",
+					set = "SetMinimapIconShown",
+					order = 1,
+				},
+			},
+		},
+		guildBlacklist = {
+			type = "group",
+			name = L.guild_blacklist,
+			order = 2,
+			get = "IsGuildBlacklisted",
+			set = "SetGuildBlacklisted",
+			args = {},
+		},
 	},
 }
 
@@ -48,6 +65,13 @@ function module:OnInitialize()
 
 	AceConfig:RegisterOptionsTable(addonName, self.optionsTable)
 	AceConfigDialog:AddToBlizOptions(addonName, L.gold_stock_summary)
+
+	self:UpdateGuilds()
+	self:RegisterMessage("GoldStockSummary_GuildsChanged", "OnGuildsChanged")
+end
+
+function module:OnGuildsChanged()
+	self:UpdateGuilds()
 end
 
 function module:IsMinimapIconShown()
@@ -61,4 +85,42 @@ function module:SetMinimapIconShown(_, val)
 	else
 		LDBIcon:Hide(addonName)
 	end
+end
+
+function module:UpdateGuilds()
+	---@type table<string, AceConfigOptionsTable>
+	local args = {
+		help = {
+			type = "description",
+			fontSize = "medium",
+			name = L.guild_blacklist_help,
+			order = 0,
+		},
+		header = {
+			type = "header",
+			name = L.guilds,
+			order = 1,
+		},
+	}
+	local order = 2
+	for guildName in next, self.db.global.guilds do
+		args[guildName] = {
+			type = "toggle",
+			name = guildName,
+			order = order,
+			width = "full",
+		}
+		order = order + 1
+	end
+	self.optionsTable.args.guildBlacklist.args = args
+end
+
+function module:IsGuildBlacklisted(info)
+	local guild = self.db.global.guilds[info[#info]]
+	return guild and guild.isBlacklisted
+end
+
+function module:SetGuildBlacklisted(info, val)
+	local guild = self.db.global.guilds[info[#info]]
+	guild.isBlacklisted = val or nil
 end

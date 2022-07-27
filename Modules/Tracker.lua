@@ -113,6 +113,7 @@ function module:GetGuild()
 	local db = self.db.global
 	if not db.guilds[nameAndRealm] then
 		db.guilds[nameAndRealm] = {}
+		self:SendMessage("GoldStockSummary_GuildsChanged")
 	end
 	return db.guilds[nameAndRealm]
 end
