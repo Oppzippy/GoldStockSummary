@@ -15,16 +15,6 @@ Tracks gold across all characters on an account and exports to csv/json. Guild b
 
 ## Export
 
-The following fields are exported:
-
-- `name`
-- `realm` Realm
-- `faction` Faction
-- `totalMoney`
-- `personalMoney`
-- `guildBankMoney`
-- `lastUpdate`
-
 ### CSV
 
 When using CSV export, the unit used for money is gold. Note that the column names are localized.
