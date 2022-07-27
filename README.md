@@ -2,6 +2,13 @@
 
 Tracks gold across all characters on an account and exports to csv/json. Guild bank money is included for characters that are guild masters.
 
+## Download
+
+[CurseForge](https://www.curseforge.com/wow/addons/gold-stock-summary)  
+[Wago](https://addons.wago.io/addons/gold-stock-summary)  
+[WoWInterface](https://www.wowinterface.com/downloads/info26374-GoldStockSummary.html)  
+[GitHub](https://github.com/Oppzippy/GoldStockSummary/releases)
+
 ## Commands
 
 /goldstocksummary (or /gss) to show the Gold Stock Summary UI.
