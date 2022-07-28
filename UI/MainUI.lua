@@ -25,7 +25,7 @@ function MainUI:Show(getTableData)
 	-- This must be cleaned up later when frame is released
 	GoldStockSummaryFrame = frame.frame
 	self.uiSpecialFramesIndex = #UISpecialFrames + 1
-	UISpecialFrames[#UISpecialFrames + 1] = "GoldStockSummaryFrame"
+	UISpecialFrames[self.uiSpecialFramesIndex] = "GoldStockSummaryFrame"
 
 	frame:EnableResize(false)
 	frame:SetTitle(L.gold_stock_summary)
