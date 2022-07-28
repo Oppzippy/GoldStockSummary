@@ -42,6 +42,10 @@ function MainUI:Show(getTableData)
 			local realmsTab = ns.RealmsTab:Show(getTableData[group])
 			frame:SetWidth(realmsTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
 			tabGroup:AddChild(realmsTab)
+		elseif group == "total" then
+			local totalTab = ns.TotalTab:Show()
+			tabGroup:AddChild(totalTab)
+			totalTab:DoLayout()
 		end
 	end)
 
@@ -53,6 +57,10 @@ function MainUI:Show(getTableData)
 		{
 			text = L.realms,
 			value = "realms",
+		},
+		{
+			text = L.total,
+			value = "total",
 		},
 	})
 	tabGroup:SelectTab("characters")

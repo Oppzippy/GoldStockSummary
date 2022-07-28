@@ -5,4 +5,5 @@
 	<Script file="CharactersTab.lua" />
 	<Script file="MainUI.lua" />
 	<Script file="RealmsTab.lua" />
+	<Script file="TotalTab.lua" />
 </Ui>
