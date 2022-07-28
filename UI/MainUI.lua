@@ -21,6 +21,12 @@ function MainUI:Show(getTableData)
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
 	self.widgets.frame = frame
+
+	-- This must be cleaned up later when frame is released
+	GoldStockSummaryFrame = frame.frame
+	self.uiSpecialFramesIndex = #UISpecialFrames + 1
+	UISpecialFrames[#UISpecialFrames + 1] = "GoldStockSummaryFrame"
+
 	frame:EnableResize(false)
 	frame:SetTitle(L.gold_stock_summary)
 	frame:SetLayout("Fill")
@@ -73,6 +79,8 @@ function MainUI:Hide()
 	if self.widgets.frame then
 		self.widgets.frame:Release()
 		self.widgets = {}
+		table.remove(UISpecialFrames, self.uiSpecialFramesIndex)
+		GoldStockSummaryFrame = nil
 	end
 end
 
