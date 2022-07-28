@@ -45,6 +45,7 @@ function MainUI:Show(getTableData)
 		elseif group == "total" then
 			local totalTab = ns.TotalTab:Show()
 			tabGroup:AddChild(totalTab)
+			-- The layout doesn't seem to get updated automatically when the size is changed to match the parent
 			totalTab:DoLayout()
 		end
 	end)
