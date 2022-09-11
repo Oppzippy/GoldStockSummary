@@ -1,0 +1,7 @@
+---@class Filter
+---@field name string
+---@field type "whitelist"|"blacklist"|"combinedFilter"
+---@field listFilterType "characterList"|"pattern"
+---@field characters? table<string, boolean>
+---@field pattern? string
+---@field childFilterIDs unknown[]

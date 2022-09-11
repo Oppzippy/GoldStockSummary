@@ -16,7 +16,8 @@ local MainUI = {
 AceEvent:Embed(MainUI)
 
 ---@param getTableData table<string, fun(): string[], table>
-function MainUI:Show(getTableData)
+---@param db AceDBObject-3.0
+function MainUI:Show(getTableData, db)
 	if self:IsVisible() then return end
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
@@ -53,6 +54,12 @@ function MainUI:Show(getTableData)
 			tabGroup:AddChild(totalTab)
 			-- The layout doesn't seem to get updated automatically when the size is changed to match the parent
 			totalTab:DoLayout()
+		elseif group == "filters" then
+			ns.FiltersTab.characters = db.global.characters
+			ns.FiltersTab.filters = db.profile.filters
+			local filtersTab = ns.FiltersTab:Render()
+			tabGroup:AddChild(filtersTab)
+			tabGroup:DoLayout()
 		end
 	end)
 
@@ -68,6 +75,10 @@ function MainUI:Show(getTableData)
 		{
 			text = L.total,
 			value = "total",
+		},
+		{
+			text = L.filters,
+			value = "filters",
 		},
 	})
 	tabGroup:SelectTab("characters")

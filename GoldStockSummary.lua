@@ -35,7 +35,7 @@ function Core:ShowCharacterGoldTable()
 		realms = function()
 			return self:RealmsGoldTable()
 		end,
-	})
+	}, self.db)
 end
 
 local characterFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
