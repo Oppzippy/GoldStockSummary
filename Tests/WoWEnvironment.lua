@@ -6,7 +6,14 @@ strmatch = string.match
 
 local namespace = {}
 function DoWoWFile(path)
-	loadfile(path)("GoldStockSummary", namespace)
+	local func, err = loadfile(path)
+	if err then
+		error(err)
+	end
+	if not func then
+		error(string.format("error loading %s: function is nil", path))
+	end
+	func("GoldStockSummary", namespace)
 end
 
 --Libraries
