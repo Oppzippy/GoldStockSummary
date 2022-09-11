@@ -12,7 +12,7 @@ local L = AceLocale:GetLocale(addonName)
 
 ---@class FiltersTab
 ---@field characters table<string, unknown>
----@field filters table<unknown, Filter>
+---@field filters table<unknown, FilterConfiguration>
 local FiltersTab = {}
 ---@type AceConfigOptionsTable
 FiltersTab.options = {
