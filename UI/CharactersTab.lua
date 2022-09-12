@@ -122,13 +122,14 @@ function CharactersTab:OnSetExportCharactersOutput(_, text)
 	self.widgets.exportContainer:ReleaseChildren()
 
 	local editBox
-	---@cast editBox AceGUIEditBox
 	if text:find("\n", nil, true) then
 		self.widgets.exportContainer:SetLayout("Fill")
 		editBox = AceGUI:Create("MultiLineEditBox")
+		---@cast editBox AceGUIMultiLineEditBox
 	else
 		self.widgets.exportContainer:SetLayout("List")
 		editBox = AceGUI:Create("EditBox")
+		---@cast editBox AceGUIEditBox
 		editBox:SetFullWidth(true)
 	end
 	editBox:DisableButton(true)
