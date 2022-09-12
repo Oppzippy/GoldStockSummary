@@ -59,6 +59,7 @@ function module:UpdateGuildAndOwner()
 		C_Timer.After(1, function()
 			self:UpdateGuildAndOwner()
 		end)
+		return
 	end
 
 	local character = self:GetCharacter()
@@ -71,6 +72,7 @@ function module:UpdateOwner()
 		C_Timer.After(1, function()
 			self:UpdateOwner()
 		end)
+		return
 	end
 
 	if IsInGuild() then
