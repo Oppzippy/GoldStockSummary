@@ -3,4 +3,5 @@
 	<Script file="Options.lua" />
 	<Script file="SlashCommand.lua" />
 	<Script file="Tracker.lua" />
+	<Script file="UIStateUpdater.lua" />
 </Ui>

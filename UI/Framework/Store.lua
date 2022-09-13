@@ -40,7 +40,7 @@ function StorePrototype:Dispatch(action)
 	if not self.queuedUpdate then
 		self.queuedUpdate = C_Timer.NewTimer(0, function()
 			self.queuedUpdate = nil
-			for _, subscriber in self.subscribers do
+			for _, subscriber in next, self.subscribers do
 				subscriber()
 			end
 		end)

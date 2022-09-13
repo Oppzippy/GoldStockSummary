@@ -67,7 +67,7 @@ function module:OnInitialize()
 	AceConfigDialog:AddToBlizOptions(addonName, L.gold_stock_summary)
 
 	self:UpdateGuilds()
-	self:RegisterMessage("GoldStockSummary_GuildsChanged", "OnGuildsChanged")
+	self:RegisterMessage("GoldStockSummary_GuildAdded", "OnGuildsChanged")
 end
 
 function module:OnGuildsChanged()

@@ -17,7 +17,6 @@ function Core:OnInitialize()
 	self:RegisterMessage("GoldStockSummary_DeleteCharacter", "OnDeleteCharacter")
 	self:RegisterMessage("GoldStockSummary_ExportCharacters", "OnExportCharacters")
 	self:RegisterMessage("GoldStockSummary_ExportRealms", "OnExportRealms")
-	self:RegisterMessage("GoldStockSummary_MoneyUpdated", "OnMoneyUpdated")
 end
 
 function Core:ToggleUI()
@@ -57,11 +56,7 @@ end
 ---@param nameAndRealm string
 function Core:OnDeleteCharacter(_, nameAndRealm)
 	self.db.global.characters[nameAndRealm] = nil
-	self:SendMessage("GoldStockSummary_MoneyUpdated")
-end
-
-function Core:OnMoneyUpdated()
-	ns.TotalMoneyStore:Dispatch("update")
+	self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", nameAndRealm)
 end
 
 ---@param format string

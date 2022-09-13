@@ -7,11 +7,12 @@ local AceGUI = LibStub("AceGUI-3.0")
 local ComponentFactory = {}
 
 ---@param component Component
----@return AceGUISimpleGroup
-function ComponentFactory.Create(component)
+---@param props? table
+---@return {widget: AceGUISimpleGroup}
+function ComponentFactory.Create(component, props)
 	local container = AceGUI:Create("SimpleGroup")
 	---@cast container AceGUISimpleGroup
-	local returns = { component.create(container) }
+	local returns = { component.create(container, props) }
 
 	if component.watch then
 		local unsubscribeFunctions = {}
@@ -30,7 +31,9 @@ function ComponentFactory.Create(component)
 
 	component.update(unpack(returns))
 
-	return container
+	return {
+		widget = container,
+	}
 end
 
 ns.ComponentFactory = ComponentFactory

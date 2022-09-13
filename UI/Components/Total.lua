@@ -56,11 +56,21 @@ components.Total = {
 		return cells
 	end,
 	update = function(cells)
-		local state = ns.TotalMoneyStore:GetState()
-		ViragDevTool_AddData(ns.TotalMoneyStore)
-		cells[2]:SetText(GetMoneyString(state.total, true))
-		cells[4]:SetText(GetMoneyString(state.personalTotal, true))
-		cells[6]:SetText(GetMoneyString(state.guildBankTotal, true))
+		local state = ns.MoneyStore:GetState()
+		local trackedMoney = ns.TrackedMoney.Create(state.characters, state.guilds)
+		local total = 0
+		local personalTotal = 0
+		local guildBankTotal = 0
+		for name, realm in trackedMoney:IterateCharacters() do
+			local characterCopper = trackedMoney:GetCharacterCopper(name, realm)
+			total = total + characterCopper.totalCopper
+			personalTotal = personalTotal + characterCopper.personalCopper
+			guildBankTotal = guildBankTotal + (characterCopper.guildCopper or 0)
+		end
+
+		cells[2]:SetText(GetMoneyString(total, true))
+		cells[4]:SetText(GetMoneyString(personalTotal, true))
+		cells[6]:SetText(GetMoneyString(guildBankTotal, true))
 	end,
-	watch = { ns.TotalMoneyStore },
+	watch = { ns.MoneyStore },
 }

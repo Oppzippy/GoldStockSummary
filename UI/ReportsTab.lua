@@ -72,7 +72,8 @@ function ReportsTab:Show(getTableData)
 		elseif group == "realms" then
 			tab = ns.RealmsTab:Show(getTableData[group])
 		elseif group == "total" then
-			tab = ns.ComponentFactory.Create(ns.Components.Total)
+			local component = ns.ComponentFactory.Create(ns.Components.Total)
+			tab = component.widget
 		end
 
 		if tab then
