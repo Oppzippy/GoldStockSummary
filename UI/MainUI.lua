@@ -46,11 +46,12 @@ function MainUI:Show(getTableData, db)
 		if group == "reports" then
 			local tab = ns.ReportsTab:Show(getTableData, db)
 			tabGroup:AddChild(tab)
+			tab:DoLayout()
 		elseif group == "filters" then
 			ns.FiltersTab.characters = db.global.characters
 			ns.FiltersTab.filters = db.profile.filters
-			local filtersTab = ns.FiltersTab:Render()
-			tabGroup:AddChild(filtersTab)
+			local tab = ns.FiltersTab:Render()
+			tabGroup:AddChild(tab)
 			tabGroup:DoLayout()
 		end
 	end)
