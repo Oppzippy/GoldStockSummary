@@ -6,5 +6,4 @@
 
 	<Script file="FiltersTab.lua" />
 	<Script file="MainUI.lua" />
-	<Script file="ReportsTab.lua" />
 </Ui>
