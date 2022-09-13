@@ -34,6 +34,8 @@ function MainUI:Show(getTableData, db)
 	frame:SetCallback("OnClose", function()
 		self:Hide()
 	end)
+	frame:SetWidth(960)
+	frame:SetHeight(500)
 
 	local tabGroup = AceGUI:Create("TabGroup")
 	---@cast tabGroup AceGUITabGroup
@@ -41,19 +43,9 @@ function MainUI:Show(getTableData, db)
 
 	tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
 		tabGroup:ReleaseChildren()
-		if group == "characters" then
-			local charactersTab = ns.CharactersTab:Show(getTableData[group])
-			frame:SetWidth(charactersTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
-			tabGroup:AddChild(charactersTab)
-		elseif group == "realms" then
-			local realmsTab = ns.RealmsTab:Show(getTableData[group])
-			frame:SetWidth(realmsTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
-			tabGroup:AddChild(realmsTab)
-		elseif group == "total" then
-			local totalTab = ns.TotalTab:Show()
-			tabGroup:AddChild(totalTab)
-			-- The layout doesn't seem to get updated automatically when the size is changed to match the parent
-			totalTab:DoLayout()
+		if group == "reports" then
+			local tab = ns.ReportsTab:Show(getTableData, db)
+			tabGroup:AddChild(tab)
 		elseif group == "filters" then
 			ns.FiltersTab.characters = db.global.characters
 			ns.FiltersTab.filters = db.profile.filters
@@ -65,23 +57,15 @@ function MainUI:Show(getTableData, db)
 
 	tabGroup:SetTabs({
 		{
-			text = L.characters,
-			value = "characters",
-		},
-		{
-			text = L.realms,
-			value = "realms",
-		},
-		{
-			text = L.total,
-			value = "total",
+			text = L.reports,
+			value = "reports",
 		},
 		{
 			text = L.filters,
 			value = "filters",
 		},
 	})
-	tabGroup:SelectTab("characters")
+	tabGroup:SelectTab("reports")
 
 	frame:AddChild(tabGroup)
 end

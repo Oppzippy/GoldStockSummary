@@ -10,6 +10,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local L = AceLocale:GetLocale(addonName)
 
+local optionsTableName = addonName .. "-UI-FiltersTab"
+
 ---@class FiltersTab
 ---@field characters table<string, unknown>
 ---@field filters table<unknown, FilterConfiguration>
@@ -33,8 +35,11 @@ FiltersTab.options = {
 					set = function(_, name)
 						FiltersTab.filters[#FiltersTab.filters + 1] = {
 							name = name,
+							type = "whitelist",
+							listFilterType = "characterList",
 						}
 						FiltersTab:Render()
+						AceConfigDialog:SelectGroup(optionsTableName, "filterSettings", tostring(#FiltersTab.filters))
 					end,
 				},
 			},
@@ -49,7 +54,6 @@ FiltersTab.options = {
 	},
 }
 
-local optionsTableName = addonName .. "-UI-FiltersTab"
 AceConfig:RegisterOptionsTable(optionsTableName, FiltersTab.options)
 
 ---@return AceGUIWidget

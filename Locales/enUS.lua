@@ -43,6 +43,7 @@ L.characters = "Characters"
 L.add_character = "Add Character"
 L.delete = "Delete"
 L.delete_are_you_sure = "Are you sure you want to delete the filter: \"%s\"?"
+L.reports = "Reports"
 
 L["columns/name"] = "Name"
 L["columns/realm"] = "Realm"
