@@ -15,6 +15,7 @@
 Libs.xml
 Locales\Include.xml
 Internal\Include.xml
+UIFramework\Include.xml
 
 DB\Defaults.lua
 GoldStockSummary.lua
