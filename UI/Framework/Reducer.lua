@@ -1,0 +1,1 @@
+---@alias Reducer fun(state: any, action: any): newState: any

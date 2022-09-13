@@ -72,8 +72,7 @@ function ReportsTab:Show(getTableData)
 		elseif group == "realms" then
 			tab = ns.RealmsTab:Show(getTableData[group])
 		elseif group == "total" then
-			tab = ns.TotalTab:Show()
-			-- The layout doesn't seem to get updated automatically when the size is changed to match the parent
+			tab = ns.ComponentFactory.Create(ns.Components.Total)
 		end
 
 		if tab then
@@ -110,7 +109,5 @@ function ReportsTab:UpdateFilters(_, _, filters)
 	end
 	self.widgets.filterSelection:SetList(options)
 end
-
-AceEvent:RegisterMessage("GoldStockSummary_FiltersChanged")
 
 ns.ReportsTab = ReportsTab
