@@ -29,7 +29,9 @@ function ComponentFactory.Create(component, props)
 		end)
 	end
 
-	component.update(unpack(returns))
+	if component.update then
+		component.update(unpack(returns))
+	end
 
 	return {
 		widget = container,

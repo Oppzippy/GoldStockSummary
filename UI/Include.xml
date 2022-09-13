@@ -4,9 +4,7 @@
 	<Include file="Components\Include.xml" />
 	<Script file="Widgets\ScrollingTable.lua" />
 
-	<Script file="CharactersTab.lua" />
 	<Script file="FiltersTab.lua" />
 	<Script file="MainUI.lua" />
-	<Script file="RealmsTab.lua" />
 	<Script file="ReportsTab.lua" />
 </Ui>

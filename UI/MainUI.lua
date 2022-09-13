@@ -44,7 +44,8 @@ function MainUI:Show(getTableData, db)
 	tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
 		tabGroup:ReleaseChildren()
 		if group == "reports" then
-			local tab = ns.ReportsTab:Show(getTableData, db)
+			local component = ns.ComponentFactory.Create(ns.Components.Reports)
+			local tab = component.widget
 			tabGroup:AddChild(tab)
 			tab:DoLayout()
 		elseif group == "filters" then
