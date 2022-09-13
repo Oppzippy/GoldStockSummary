@@ -28,6 +28,8 @@ end
 components.Total = {
 	---@param container AceGUIContainer
 	create = function(container)
+		container:SetFullWidth(true)
+		container:SetFullHeight(true)
 		container:SetLayout("Table")
 		container:SetUserData("table", {
 			columns = {

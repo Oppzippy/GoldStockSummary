@@ -25,8 +25,13 @@ function ReportsTab:Show(getTableData)
 	frame:SetCallback("OnRelease", function()
 		self.widgets = {}
 	end)
-	frame:SetLayout("Table")
-	frame:SetUserData("table", {
+	frame:SetLayout("Flow")
+
+	local filterGroup = AceGUI:Create("SimpleGroup")
+	---@cast filterGroup AceGUISimpleGroup
+	filterGroup:SetFullWidth(true)
+	filterGroup:SetLayout("Table")
+	filterGroup:SetUserData("table", {
 		columns = {
 			{
 				width = 100,
@@ -36,27 +41,24 @@ function ReportsTab:Show(getTableData)
 			},
 		},
 	})
-	frame:SetFullWidth(true)
-	frame:SetFullHeight(true)
 	local filterLabel = AceGUI:Create("Label")
 	---@cast filterLabel AceGUILabel
 	filterLabel:SetText(L.filter)
-	frame:AddChild(filterLabel)
+	filterGroup:AddChild(filterLabel)
 
 	local filterSelection = AceGUI:Create("Dropdown")
 	---@cast filterSelection AceGUIDropdown
-	filterSelection:SetFullWidth(true)
 	self.widgets.filterSelection = filterSelection
-	frame:AddChild(filterSelection)
+	filterGroup:AddChild(filterSelection)
+
+	frame:AddChild(filterGroup)
 
 	-- The tab group needs its parent to have layout Fill
 	local tabGroupParent = AceGUI:Create("SimpleGroup")
 	---@cast tabGroupParent AceGUISimpleGroup
-	tabGroupParent:SetUserData("cell", {
-		colspan = 2,
-	})
 	tabGroupParent:SetLayout("Fill")
 	tabGroupParent:SetFullWidth(true)
+	tabGroupParent:SetFullHeight(true)
 
 	local tabGroup = AceGUI:Create("TabGroup")
 	---@cast tabGroup AceGUITabGroup

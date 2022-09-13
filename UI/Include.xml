@@ -9,5 +9,4 @@
 	<Script file="MainUI.lua" />
 	<Script file="RealmsTab.lua" />
 	<Script file="ReportsTab.lua" />
-	<Script file="TotalTab.lua" />
 </Ui>
