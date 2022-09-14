@@ -71,7 +71,7 @@ function Core:OnExportCharacters(_, format)
 		output = ns.MoneyTable.To.JSON("characters", moneyTable)
 	end
 
-	self:SendMessage("GoldStockSummary_SetExportCharactersOutput", output)
+	self:SendMessage("GoldStockSummary_CopyText", output)
 end
 
 function Core:OnExportRealms(_, format)
@@ -85,5 +85,5 @@ function Core:OnExportRealms(_, format)
 		output = ns.MoneyTable.To.JSON("realms", moneyTable)
 	end
 
-	self:SendMessage("GoldStockSummary_SetExportRealmsOutput", output)
+	self:SendMessage("GoldStockSummary_CopyText", output)
 end
