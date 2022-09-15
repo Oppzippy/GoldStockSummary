@@ -15,7 +15,6 @@ local L = AceLocale:GetLocale(addonName)
 local function createCell(justifyH, text)
 	local cell = AceGUI:Create("Label")
 	---@cast cell AceGUILabel
-	cell:SetFullWidth(true)
 	cell:SetFontObject("GameFontHighlightMedium")
 	cell:SetJustifyH(justifyH)
 	if text then
@@ -52,12 +51,16 @@ components.Total = {
 			createCell("RIGHT", L.total_guild_bank_money),
 			createCell("LEFT"),
 		}
+		container:PauseLayout()
 		for _, cell in ipairs(cells) do
 			container:AddChild(cell)
 		end
+		container:ResumeLayout()
+		container:DoLayout()
 		return {
 			watch = { ns.MoneyStore },
 		}, {
+			container = container,
 			cells = cells,
 			characters = props.characters,
 			guilds = props.guilds,
@@ -78,5 +81,6 @@ components.Total = {
 		state.cells[2]:SetText(GetMoneyString(total, true))
 		state.cells[4]:SetText(GetMoneyString(personalTotal, true))
 		state.cells[6]:SetText(GetMoneyString(guildBankTotal, true))
+		state.container:DoLayout()
 	end,
 }
