@@ -1,13 +1,20 @@
+---@type string
+local addonName = ...
 ---@class ns
 local ns = select(2, ...)
 
+local AceLocale = LibStub("AceLocale-3.0")
+local L = AceLocale:GetLocale(addonName)
+
 local defaultFilters = ns.Filter.FromConfigurations({
 	allowAll = {
+		name = L.allow_all,
 		type = "whitelist",
 		listFilterType = "pattern",
 		pattern = ".",
 	},
 	denyAll = {
+		name = L.deny_all,
 		type = "blacklist",
 		listFilterType = "pattern",
 		pattern = ".",
@@ -22,10 +29,6 @@ local actions = {
 		end
 		return filters
 	end,
-	deleteFilter = function(state, action)
-		state.filters[action.id] = nil
-		return state
-	end,
 }
 
 local function reducer(state, action)
@@ -36,4 +39,4 @@ local function reducer(state, action)
 	error(string.format("unknown action: %s", action.type))
 end
 
-ns.MoneyStore = ns.Store.Create(reducer, defaultFilters)
+ns.FilterStore = ns.Store.Create(reducer, defaultFilters)

@@ -7,22 +7,26 @@ local export = {}
 ---@field characters table<string, boolean>
 local CharacterWhitelistFilterPrototype = {}
 
-function export.Create(characters)
+---@param name string
+---@param characters string[]
+---@return CharacterWhitelistFilter
+function export.Create(name, characters)
 	return setmetatable({
+		name = name,
 		characters = characters,
 	}, { __index = CharacterWhitelistFilterPrototype })
 end
 
----@param pool table<string, boolean>
----@return table<string, boolean> pool, table<string, boolean> accepted
+---@param pool table<string, unknown>
+---@return table<string, unknown> pool, table<string, unknown> accepted
 function CharacterWhitelistFilterPrototype:Filter(pool)
 	local newPool = {}
 	local allowed = {}
-	for character in next, pool do
+	for character, value in next, pool do
 		if self.characters[character] then
-			allowed[character] = true
+			allowed[character] = value
 		else
-			newPool[character] = true
+			newPool[character] = value
 		end
 	end
 	return newPool, allowed

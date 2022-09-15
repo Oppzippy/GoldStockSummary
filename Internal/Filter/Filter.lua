@@ -12,6 +12,7 @@ local export = {}
 ---@field childFilterIDs unknown[]
 
 ---@class Filter
+---@field name string
 local Filter = {}
 
 ---@param pool table<string, boolean>
@@ -40,9 +41,9 @@ end
 ---@return Filter
 function createWhitelist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterWhitelistFilter.Create(config.characters)
+		return ns.CharacterWhitelistFilter.Create(config.name, config.characters)
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternWhitelistFilter.Create(config.pattern)
+		return ns.PatternWhitelistFilter.Create(config.name, config.pattern)
 	end
 	error(string.format("unknown whitelist list filter type: %s", tostring(config.listFilterType)))
 end
@@ -51,9 +52,9 @@ end
 ---@return Filter
 function createBlacklist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterBlacklistFilter.Create(config.characters)
+		return ns.CharacterBlacklistFilter.Create(config.name, config.characters)
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternBlacklistFilter.Create(config.pattern)
+		return ns.PatternBlacklistFilter.Create(config.name, config.pattern)
 	end
 	error(string.format("unknown blacklist list filter type: %s", tostring(config.listFilterType)))
 end

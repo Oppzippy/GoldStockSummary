@@ -2,7 +2,8 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Namespace.lua" />
 	<Script file="Characters.lua" />
+	<Script file="FilterSelection.lua" />
 	<Script file="Realms.lua" />
-	<Script file="Total.lua" />
 	<Script file="Reports.lua" />
+	<Script file="Total.lua" />
 </Ui>

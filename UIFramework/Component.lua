@@ -4,8 +4,8 @@ local Component = {}
 
 ---@param container AceGUIContainer
 ---@param props? table
----@return ...unknown
+---@return table options, unknown passthrough
 function Component.create(container, props) end
 
----@param ... unknown
-function Component.update(...) end
+---@param passthrough unknown
+function Component.update(passthrough) end

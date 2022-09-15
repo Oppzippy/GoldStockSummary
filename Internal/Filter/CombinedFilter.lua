@@ -18,16 +18,16 @@ function export.Create(name, filters)
 	}, { __index = CombinedFilterPrototype })
 end
 
----@param pool table<string, boolean>
----@return table<string, boolean> pool, table<string, boolean> accepted
+---@param pool table<string, unknown>
+---@return table<string, unknown> pool, table<string, unknown> accepted
 function CombinedFilterPrototype:Filter(pool)
 	local allowed = {}
 
 	for _, filter in ipairs(self.filters) do
 		local addToAllowed
 		pool, addToAllowed = filter:Filter(pool)
-		for character in next, addToAllowed do
-			allowed[character] = true
+		for character, value in next, addToAllowed do
+			allowed[character] = value
 		end
 	end
 

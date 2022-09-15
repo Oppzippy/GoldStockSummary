@@ -7,8 +7,12 @@ local export = {}
 ---@field pattern string
 local PatternWhitelistFilterPrototype = {}
 
-function export.Create(pattern)
+---@param name string
+---@param pattern string
+---@return PatternWhitelistFilter
+function export.Create(name, pattern)
 	return setmetatable({
+		name = name,
 		pattern = pattern,
 	}, { __index = PatternWhitelistFilterPrototype })
 end
@@ -18,11 +22,11 @@ end
 function PatternWhitelistFilterPrototype:Filter(pool)
 	local newPool = {}
 	local allowed = {}
-	for character in next, pool do
+	for character, value in next, pool do
 		if character:find(self.pattern) then
-			allowed[character] = true
+			allowed[character] = value
 		else
-			newPool[character] = true
+			newPool[character] = value
 		end
 	end
 	return newPool, allowed

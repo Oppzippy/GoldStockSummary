@@ -7,19 +7,23 @@ local export = {}
 ---@field pattern string
 local PatternBlacklistFilterPrototype = {}
 
-function export.Create(pattern)
+---@param name string
+---@param pattern string
+---@return PatternBlacklistFilter
+function export.Create(name, pattern)
 	return setmetatable({
+		name = name,
 		pattern = pattern,
 	}, { __index = PatternBlacklistFilterPrototype })
 end
 
----@param pool table<string, boolean>
----@return table<string, boolean> pool, table<string, boolean> accepted
+---@param pool table<string, unknown>
+---@return table<string, unknown> pool, table<string, unknown> accepted
 function PatternBlacklistFilterPrototype:Filter(pool)
 	local newPool = {}
-	for character in next, pool do
+	for character, value in next, pool do
 		if not character:find(self.pattern) then
-			newPool[character] = true
+			newPool[character] = value
 		end
 	end
 	return newPool, {}

@@ -27,7 +27,7 @@ end
 ---@type Component
 components.Total = {
 	---@param container AceGUIContainer
-	create = function(container)
+	create = function(container, props)
 		container:SetFullWidth(true)
 		container:SetFullHeight(true)
 		container:SetLayout("Table")
@@ -55,10 +55,15 @@ components.Total = {
 		for _, cell in ipairs(cells) do
 			container:AddChild(cell)
 		end
-		return cells
+		return {
+			watch = { ns.MoneyStore },
+		}, {
+			cells = cells,
+			characters = props.characters,
+			guilds = props.guilds,
+		}
 	end,
-	update = function(cells)
-		local state = ns.MoneyStore:GetState()
+	update = function(state)
 		local trackedMoney = ns.TrackedMoney.Create(state.characters, state.guilds)
 		local total = 0
 		local personalTotal = 0
@@ -70,9 +75,8 @@ components.Total = {
 			guildBankTotal = guildBankTotal + (characterCopper.guildCopper or 0)
 		end
 
-		cells[2]:SetText(GetMoneyString(total, true))
-		cells[4]:SetText(GetMoneyString(personalTotal, true))
-		cells[6]:SetText(GetMoneyString(guildBankTotal, true))
+		state.cells[2]:SetText(GetMoneyString(total, true))
+		state.cells[4]:SetText(GetMoneyString(personalTotal, true))
+		state.cells[6]:SetText(GetMoneyString(guildBankTotal, true))
 	end,
-	watch = { ns.MoneyStore },
 }

@@ -15,30 +15,18 @@ components.Reports = {
 	create = function(container)
 		container:SetLayout("Flow")
 
-		local filterGroup = AceGUI:Create("SimpleGroup")
-		---@cast filterGroup AceGUISimpleGroup
-		filterGroup:SetFullWidth(true)
-		filterGroup:SetLayout("Table")
-		filterGroup:SetUserData("table", {
-			columns = {
-				{
-					width = 100,
-				},
-				{
-					weight = 1,
-				},
-			},
-		})
-		local filterLabel = AceGUI:Create("Label")
-		---@cast filterLabel AceGUILabel
-		filterLabel:SetText(L.filter)
-		filterGroup:AddChild(filterLabel)
+		local selectedFilterStore = ns.ValueStore.Create(nil)
+		local selectedTabStore = ns.ValueStore.Create(nil)
 
-		local filterSelection = AceGUI:Create("Dropdown")
-		---@cast filterSelection AceGUIDropdown
-		filterGroup:AddChild(filterSelection)
-
-		container:AddChild(filterGroup)
+		local filterSelection = ns.ComponentFactory.Create(
+			ns.Components.FilterSelection,
+			{
+				setFilter = function(filter)
+					selectedFilterStore:Dispatch(filter)
+				end,
+			}
+		)
+		container:AddChild(filterSelection.widget)
 
 		-- The tab group needs its parent to have layout Fill
 		local tabGroupParent = AceGUI:Create("SimpleGroup")
@@ -52,24 +40,7 @@ components.Reports = {
 		tabGroup:SetLayout("Fill")
 
 		tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
-			tabGroup:ReleaseChildren()
-			---@type AceGUIContainer?
-			local tab
-			if group == "characters" then
-				local component = ns.ComponentFactory.Create(ns.Components.Characters)
-				tab = component.widget
-			elseif group == "realms" then
-				local component = ns.ComponentFactory.Create(ns.Components.Realms)
-				tab = component.widget
-			elseif group == "total" then
-				local component = ns.ComponentFactory.Create(ns.Components.Total)
-				tab = component.widget
-			end
-
-			if tab then
-				tabGroup:AddChild(tab)
-				tab:DoLayout()
-			end
+			selectedTabStore:Dispatch(group)
 		end)
 
 		tabGroup:SetTabs({
@@ -89,6 +60,48 @@ components.Reports = {
 		tabGroup:SelectTab("characters")
 		tabGroupParent:AddChild(tabGroup)
 		container:AddChild(tabGroupParent)
+
+		return {
+			watch = { selectedFilterStore, selectedTabStore, ns.MoneyStore },
+		}, {
+			tabGroup = tabGroup,
+			selectedTabStore = selectedTabStore,
+			selectedFilterStore = selectedFilterStore,
+		}
 	end,
-	-- update = function() end,
+	update = function(state)
+		state.tabGroup:ReleaseChildren()
+		local selectedTab = state.selectedTabStore:GetState()
+		---@type Filter?
+		local filter = state.selectedFilterStore:GetState()
+
+		local moneyState = ns.MoneyStore:GetState()
+		local characters, guilds = moneyState.characters, moneyState.guilds
+
+		if filter then
+			-- TODO add a wrapper around this so we don't have the first return
+			local _
+			_, characters = filter:Filter(characters)
+		end
+
+		local props = {
+			characters = characters,
+			guilds = guilds,
+		}
+
+		---@type Component
+		local component
+		if selectedTab == "characters" then
+			component = ns.ComponentFactory.Create(ns.Components.Characters, props)
+		elseif selectedTab == "realms" then
+			component = ns.ComponentFactory.Create(ns.Components.Realms, props)
+		elseif selectedTab == "total" then
+			component = ns.ComponentFactory.Create(ns.Components.Total, props)
+		end
+
+		if component then
+			state.tabGroup:AddChild(component.widget)
+			component.widget:DoLayout()
+		end
+	end,
 }

@@ -15,7 +15,7 @@ local tableFields = { "realm", "faction", "totalMoney", "personalMoney", "guildB
 
 ---@type Component
 components.Realms = {
-	create = function(container)
+	create = function(container, props)
 		container:PauseLayout()
 		container:SetLayout("Flow")
 
@@ -63,17 +63,18 @@ components.Realms = {
 		container:DoLayout()
 
 		return {
+			watch = { ns.MoneyStore },
+		}, {
 			scrollingTable = scrollingTable,
+			characters = props.characters,
+			guilds = props.guilds,
 		}
 	end,
-	update = function(widgets)
-		local state = ns.MoneyStore:GetState()
-
+	update = function(state)
 		local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(state.characters, state.guilds))
 		local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
 
-		widgets.scrollingTable:SetDisplayCols(columns)
-		widgets.scrollingTable:SetData(rows)
+		state.scrollingTable:SetDisplayCols(columns)
+		state.scrollingTable:SetData(rows)
 	end,
-	watch = { ns.MoneyStore },
 }

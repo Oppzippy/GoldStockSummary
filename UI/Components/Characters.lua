@@ -16,7 +16,7 @@ local tableFields = { "realm", "faction", "name", "totalMoney", "personalMoney",
 ---@type Component
 components.Characters = {
 	---@param container AceGUIContainer
-	create = function(container)
+	create = function(container, props)
 		container:PauseLayout()
 		container:SetLayout("Flow")
 
@@ -84,18 +84,17 @@ components.Characters = {
 		container:ResumeLayout()
 		container:DoLayout()
 
-		return {
+		return {}, {
 			scrollingTable = scrollingTable,
+			characters = props.characters,
+			guilds = props.guilds,
 		}
 	end,
-	update = function(widgets)
-		local state = ns.MoneyStore:GetState()
-
+	update = function(state)
 		local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(state.characters, state.guilds))
 		local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
 
-		widgets.scrollingTable:SetDisplayCols(columns)
-		widgets.scrollingTable:SetData(rows)
+		state.scrollingTable:SetDisplayCols(columns)
+		state.scrollingTable:SetData(rows)
 	end,
-	watch = { ns.MoneyStore },
 }

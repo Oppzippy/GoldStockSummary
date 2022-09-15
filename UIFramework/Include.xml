@@ -2,7 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Component.lua" />
 	<Script file="ComponentFactory.lua" />
-	<Script file="LazyStore.lua" />
-	<Script file="Store.lua" />
 	<Script file="Reducer.lua" />
+	<Script file="Store.lua" />
+	<Script file="ValueStore.lua" />
 </Ui>
