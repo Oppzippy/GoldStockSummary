@@ -55,11 +55,15 @@ local function createFilterFromConfiguration(config, filterConfigurations, seenF
 	error(string.format("filter type %s not found, list type %s", config.type, config.listFilterType or ""))
 end
 
----@param config FilterConfiguration
----@param filterConfigurations? table<unknown, FilterConfiguration>
----@return Filter
-function export.FromConfiguration(config, filterConfigurations)
-	return createFilterFromConfiguration(config, filterConfigurations)
+--- Filters can reference other filters, so they must all be created at once to make those connections
+---@param filterConfigurations table<unknown, FilterConfiguration>
+---@return table<unknown, Filter>
+function export.FromConfigurations(filterConfigurations)
+	local filters = {}
+	for id, configuration in next, filterConfigurations do
+		filters[id] = createFilterFromConfiguration(configuration, filterConfigurations)
+	end
+	return filters
 end
 
 ns.Filter = export

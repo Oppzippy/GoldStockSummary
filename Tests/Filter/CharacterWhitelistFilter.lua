@@ -12,16 +12,18 @@ local pool = {
 }
 
 function TestCharacterWhitelist:TestCharacterWhitelistAll()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {
-			["Name1-Realm"] = true,
-			["Name2-Realm"] = true,
-			["Name3-Realm2"] = true,
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {
+				["Name1-Realm"] = true,
+				["Name2-Realm"] = true,
+				["Name3-Realm2"] = true,
+			},
 		},
-	})
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, {})
@@ -29,15 +31,17 @@ function TestCharacterWhitelist:TestCharacterWhitelistAll()
 end
 
 function TestCharacterWhitelist:TestCharacterWhitelistSome()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {
-			["Name1-Realm"] = true,
-			["Name4-Realm"] = true,
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {
+				["Name1-Realm"] = true,
+				["Name4-Realm"] = true,
+			},
 		},
-	})
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, {
@@ -50,12 +54,14 @@ function TestCharacterWhitelist:TestCharacterWhitelistSome()
 end
 
 function TestCharacterWhitelist:TestCharacterWhitelistNone()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {},
-	})
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {},
+		},
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, pool)

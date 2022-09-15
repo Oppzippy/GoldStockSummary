@@ -19,11 +19,11 @@ local actions = {
 		return state
 	end,
 	deleteCharacter = function(state, action)
-		state.characters[action.character] = nil
+		state.characters[action.name] = nil
 		return state
 	end,
 	deleteGuild = function(state, action)
-		state.guilds[action.guild] = nil
+		state.guilds[action.name] = nil
 		return state
 	end,
 }

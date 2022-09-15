@@ -12,12 +12,14 @@ local pool = {
 }
 
 function TestPatternWhitelist:TestPatternWhitelistAll()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "pattern",
-		name = "?",
-		pattern = ".*",
-	})
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "pattern",
+			name = "?",
+			pattern = ".*",
+		},
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, {})
@@ -25,12 +27,14 @@ function TestPatternWhitelist:TestPatternWhitelistAll()
 end
 
 function TestPatternWhitelist:TestPatternWhitelistSome()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "pattern",
-		name = "?",
-		pattern = ".+-Realm2",
-	})
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "pattern",
+			name = "?",
+			pattern = ".+-Realm2",
+		},
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, {
@@ -43,12 +47,14 @@ function TestPatternWhitelist:TestPatternWhitelistSome()
 end
 
 function TestPatternWhitelist:TestPatternWhitelistNone()
-	local whitelist = ns.Filter.FromConfiguration({
-		type = "whitelist",
-		listFilterType = "pattern",
-		name = "?",
-		pattern = "does not match any characters",
-	})
+	local whitelist = ns.Filter.FromConfigurations({
+		{
+			type = "whitelist",
+			listFilterType = "pattern",
+			name = "?",
+			pattern = "does not match any characters",
+		},
+	})[1]
 
 	local newPool, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(newPool, pool)

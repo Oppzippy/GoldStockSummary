@@ -12,16 +12,18 @@ local pool = {
 }
 
 function TestCharacterBlacklist:TestCharacterBlacklistAll()
-	local blacklist = ns.Filter.FromConfiguration({
-		type = "blacklist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {
-			["Name1-Realm"] = true,
-			["Name2-Realm"] = true,
-			["Name3-Realm2"] = true,
+	local blacklist = ns.Filter.FromConfigurations({
+		{
+			type = "blacklist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {
+				["Name1-Realm"] = true,
+				["Name2-Realm"] = true,
+				["Name3-Realm2"] = true,
+			},
 		},
-	})
+	})[1]
 
 	local newPool, allowed = blacklist:Filter(pool)
 	luaunit.assertEquals(newPool, {})
@@ -29,15 +31,17 @@ function TestCharacterBlacklist:TestCharacterBlacklistAll()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistSome()
-	local blacklist = ns.Filter.FromConfiguration({
-		type = "blacklist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {
-			["Name1-Realm"] = true,
-			["Name4-Realm"] = true,
+	local blacklist = ns.Filter.FromConfigurations({
+		{
+			type = "blacklist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {
+				["Name1-Realm"] = true,
+				["Name4-Realm"] = true,
+			},
 		},
-	})
+	})[1]
 
 	local newPool, allowed = blacklist:Filter(pool)
 	luaunit.assertEquals(newPool, {
@@ -48,12 +52,14 @@ function TestCharacterBlacklist:TestCharacterBlacklistSome()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistNone()
-	local blacklist = ns.Filter.FromConfiguration({
-		type = "blacklist",
-		listFilterType = "characterList",
-		name = "?",
-		characters = {},
-	})
+	local blacklist = ns.Filter.FromConfigurations({
+		{
+			type = "blacklist",
+			listFilterType = "characterList",
+			name = "?",
+			characters = {},
+		},
+	})[1]
 
 	local newPool, allowed = blacklist:Filter(pool)
 	luaunit.assertEquals(newPool, pool)
