@@ -27,7 +27,7 @@ local function getSortedFilters()
 		local bIsDefaultFilter = type(bID) == "string"
 
 		if aIsDefaultFilter ~= bIsDefaultFilter then
-			return bIsDefaultFilter
+			return aIsDefaultFilter
 		end
 		return a.name < b.name
 	end)

@@ -11,9 +11,11 @@ local module = AceAddon:GetAddon(addonName):NewModule("UIStateUpdater", "AceEven
 function module:OnEnable()
 	self.db = ns.db
 	self:SetMoneyStore()
+	self:OnFiltersChanged()
 
 	self:RegisterMessage("GoldStockSummary_CharacterMoneyUpdated", "OnCharacterMoneyUpdated")
 	self:RegisterMessage("GoldStockSummary_GuildMoneyUpdated", "OnGuildMoneyUpdated")
+	self:RegisterMessage("GoldStockSummary_FiltersChanged", "OnFiltersChanged")
 end
 
 function module:SetMoneyStore()
@@ -49,5 +51,12 @@ function module:OnGuildMoneyUpdated(_, name)
 		type = "updateGuild",
 		name = name,
 		character = self.db.global.guilds[name],
+	})
+end
+
+function module:OnFiltersChanged()
+	ns.FilterStore:Dispatch({
+		type = "updateFilterConfigurations",
+		configurations = self.db.profile.filters,
 	})
 end

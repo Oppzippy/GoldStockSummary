@@ -7,15 +7,18 @@ local AceLocale = LibStub("AceLocale-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
+local AceEvent = LibStub("AceEvent-3.0")
 
 local L = AceLocale:GetLocale(addonName)
 
 local optionsTableName = addonName .. "-UI-FiltersTab"
 
----@class FiltersTab
+---@class FiltersTab : AceEvent-3.0
 ---@field characters table<string, unknown>
 ---@field filters table<unknown, FilterConfiguration>
 local FiltersTab = {}
+AceEvent:Embed(FiltersTab)
+
 ---@type AceConfigOptionsTable
 FiltersTab.options = {
 	type = "group",
@@ -56,6 +59,10 @@ FiltersTab.options = {
 
 AceConfig:RegisterOptionsTable(optionsTableName, FiltersTab.options)
 
+function FiltersTab:FireFiltersChanged()
+	self:SendMessage("GoldStockSummary_FiltersChanged")
+end
+
 ---@return AceGUIWidget
 function FiltersTab:Render()
 	local args = {}
@@ -95,6 +102,7 @@ function FiltersTab:RenderFilter(filterID)
 					func = function()
 						filter.characters[nameAndRealm] = nil
 						renderCharacterList()
+						self:FireFiltersChanged()
 					end,
 				}
 			end
@@ -134,6 +142,7 @@ function FiltersTab:RenderFilter(filterID)
 				set = function(_, name)
 					filter.name = name
 					group.name = name
+					self:FireFiltersChanged()
 				end,
 				validate = function(_, newName)
 					for _, otherFilter in next, self.filters do
@@ -153,6 +162,7 @@ function FiltersTab:RenderFilter(filterID)
 				end,
 				set = function(_, type)
 					filter.type = type
+					self:FireFiltersChanged()
 				end,
 				values = {
 					whitelist = L.whitelist,
@@ -174,6 +184,7 @@ function FiltersTab:RenderFilter(filterID)
 				end,
 				set = function(_, listFilterType)
 					filter.listFilterType = listFilterType
+					self:FireFiltersChanged()
 				end,
 				values = {
 					characterList = L.character_list,
@@ -233,6 +244,7 @@ function FiltersTab:RenderFilter(filterID)
 					end
 					filter.characters[nameAndRealm] = true
 					renderCharacterList()
+					self:FireFiltersChanged()
 				end,
 				order = 5,
 			},
@@ -258,6 +270,7 @@ function FiltersTab:RenderFilter(filterID)
 				end,
 				set = function(_, pattern)
 					filter.pattern = pattern
+					self:FireFiltersChanged()
 				end,
 			},
 
@@ -283,6 +296,7 @@ function FiltersTab:RenderFilter(filterID)
 				func = function()
 					self.filters[filterID] = nil
 					self:Render()
+					self:FireFiltersChanged()
 				end,
 				order = 99999,
 			}

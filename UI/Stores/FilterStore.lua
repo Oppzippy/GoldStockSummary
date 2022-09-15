@@ -22,8 +22,8 @@ local defaultFilters = ns.Filter.FromConfigurations({
 })
 
 local actions = {
-	setFilters = function(_, action)
-		local filters = ns.Filter.FromConfigurations(action.configuration)
+	updateFilterConfigurations = function(_, action)
+		local filters = ns.Filter.FromConfigurations(action.configurations)
 		for id, filter in next, defaultFilters do
 			filters[id] = filter
 		end

@@ -15,8 +15,8 @@ local export = {}
 ---@field name string
 local Filter = {}
 
----@param pool table<string, boolean>
----@return table<string, boolean> pool, table<string, boolean> accepted
+---@param pool table<string, unknown>
+---@return table<string, unknown> pool, table<string, unknown> accepted
 function Filter:Filter(pool) end
 
 local createWhitelist, createBlacklist, createCombinedFilter, createFilter
@@ -81,13 +81,39 @@ function createCombinedFilter(config, filterConfigurations, seenFilters)
 	return ns.CombinedFilter.Create(config.name, childFilters)
 end
 
+local hardDenyFilter = {
+	Filter = function()
+		return {}, {}
+	end,
+}
+local hardAllowFilter = {
+	Filter = function(_, pool)
+		return {}, pool
+	end
+}
+
 --- Filters can reference other filters, so they must all be created at once to make those connections
 ---@param filterConfigurations table<unknown, FilterConfiguration>
 ---@return table<unknown, Filter>
 function export.FromConfigurations(filterConfigurations)
 	local filters = {}
 	for id, configuration in next, filterConfigurations do
-		filters[id] = createFilter(configuration, filterConfigurations)
+		-- When not a part of a combined filters, whitelists should remove everything from the pool that isn't whitelisted
+		-- and blacklists should allow everything that isn't included in the backlist
+		-- In combined filters, this behavior is undesired, so it must be handled as a special case
+		if configuration.type == "whitelist" then
+			filters[id] = ns.CombinedFilter.Create(configuration.name, {
+				createFilter(configuration, filterConfigurations),
+				hardDenyFilter,
+			})
+		elseif configuration.type == "blacklist" then
+			filters[id] = ns.CombinedFilter.Create(configuration.name, {
+				createFilter(configuration, filterConfigurations),
+				hardAllowFilter,
+			})
+		else
+			filters[id] = createFilter(configuration, filterConfigurations)
+		end
 	end
 	return filters
 end
