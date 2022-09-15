@@ -43,6 +43,7 @@ FiltersTab.options = {
 						}
 						FiltersTab:Render()
 						AceConfigDialog:SelectGroup(optionsTableName, "filterSettings", tostring(#FiltersTab.filters))
+						FiltersTab:FireFiltersChanged()
 					end,
 				},
 			},

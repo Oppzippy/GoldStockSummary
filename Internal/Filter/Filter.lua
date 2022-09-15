@@ -41,9 +41,9 @@ end
 ---@return Filter
 function createWhitelist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterWhitelistFilter.Create(config.name, config.characters)
+		return ns.CharacterWhitelistFilter.Create(config.name, config.characters or {})
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternWhitelistFilter.Create(config.name, config.pattern)
+		return ns.PatternWhitelistFilter.Create(config.name, config.pattern or "")
 	end
 	error(string.format("unknown whitelist list filter type: %s", tostring(config.listFilterType)))
 end
@@ -52,9 +52,9 @@ end
 ---@return Filter
 function createBlacklist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterBlacklistFilter.Create(config.name, config.characters)
+		return ns.CharacterBlacklistFilter.Create(config.name, config.characters or {})
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternBlacklistFilter.Create(config.name, config.pattern)
+		return ns.PatternBlacklistFilter.Create(config.name, config.pattern or "")
 	end
 	error(string.format("unknown blacklist list filter type: %s", tostring(config.listFilterType)))
 end
