@@ -5,8 +5,11 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 
----@class UIStateUpdaterModule : AceConsole-3.0, AceEvent-3.0
-local module = AceAddon:GetAddon(addonName):NewModule("UIStateUpdater", "AceConsole-3.0", "AceEvent-3.0")
+local GoldStockSummary = AceAddon:GetAddon(addonName)
+---@cast GoldStockSummary GoldStockSummary
+
+---@class UIStateUpdaterModule : AceEvent-3.0
+local module = GoldStockSummary:NewModule("UIStateUpdater", "AceEvent-3.0")
 
 function module:OnEnable()
 	self.db = ns.db
@@ -55,17 +58,12 @@ function module:OnGuildMoneyUpdated(_, name)
 end
 
 function module:OnFiltersChanged()
-	local success, error = pcall(function()
-		ns.FilterStore:Dispatch({
-			type = "updateFilterConfigurations",
-			configurations = self.db.profile.filters,
-		})
-	end)
-	if not success then
-		self:Print(error)
-		ns.FilterStore:Dispatch({
-			type = "updateFilterConfigurations",
-			configurations = {},
-		})
+	local filters, errors = ns.Filter.FromConfigurations(self.db.profile.filters)
+	ns.FilterStore:Dispatch({
+		type = "updateFilterConfigurations",
+		filters = filters,
+	})
+	for id, err in next, errors do
+		GoldStockSummary:Printf("Error creating filter \"%s\": %s", tostring(self.db.profile.filters[id].name), err)
 	end
 end

@@ -24,7 +24,7 @@ local createWhitelist, createBlacklist, createCombinedFilter, createFilter
 ---@param config FilterConfiguration
 ---@param filterConfigurations table<unknown, FilterConfiguration>
 ---@param seenFilters? table<unknown, boolean>
----@return Filter
+---@return Filter? filter, string? error
 function createFilter(config, filterConfigurations, seenFilters)
 	assert(config.type, "configuration type must not be nil")
 	if config.type == "whitelist" then
@@ -34,35 +34,35 @@ function createFilter(config, filterConfigurations, seenFilters)
 	elseif config.type == "combinedFilter" then
 		return createCombinedFilter(config, filterConfigurations, seenFilters)
 	end
-	error(string.format("filter type %s not found", tostring(config.type)))
+	return nil, string.format("filter type %s not found", tostring(config.type))
 end
 
 ---@param config FilterConfiguration
----@return Filter
+---@return Filter? filter, string? error
 function createWhitelist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterWhitelistFilter.Create(config.name, config.characters or {})
+		return ns.CharacterWhitelistFilter.Create(config.name, config.characters or {}), nil
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternWhitelistFilter.Create(config.name, config.pattern or "")
+		return ns.PatternWhitelistFilter.Create(config.name, config.pattern or ""), nil
 	end
-	error(string.format("unknown whitelist list filter type: %s", tostring(config.listFilterType)))
+	return nil, string.format("unknown whitelist list filter type: %s", tostring(config.listFilterType))
 end
 
 ---@param config FilterConfiguration
----@return Filter
+---@return Filter? filter, string? error
 function createBlacklist(config)
 	if config.listFilterType == "characterList" then
-		return ns.CharacterBlacklistFilter.Create(config.name, config.characters or {})
+		return ns.CharacterBlacklistFilter.Create(config.name, config.characters or {}), nil
 	elseif config.listFilterType == "pattern" then
-		return ns.PatternBlacklistFilter.Create(config.name, config.pattern or "")
+		return ns.PatternBlacklistFilter.Create(config.name, config.pattern or ""), nil
 	end
-	error(string.format("unknown blacklist list filter type: %s", tostring(config.listFilterType)))
+	return nil, string.format("unknown blacklist list filter type: %s", tostring(config.listFilterType))
 end
 
 ---@param config FilterConfiguration
 ---@param filterConfigurations table<unknown, FilterConfiguration>
 ---@param seenFilters? table<unknown, boolean>
----@return Filter
+---@return Filter? filter, string? error
 function createCombinedFilter(config, filterConfigurations, seenFilters)
 	local childFilters = {}
 	if not seenFilters then
@@ -71,19 +71,23 @@ function createCombinedFilter(config, filterConfigurations, seenFilters)
 	if config.childFilterIDs then
 		for i, id in ipairs(config.childFilterIDs) do
 			if not filterConfigurations or not filterConfigurations[id] then
-				error(string.format("filter \"%s\" references nonexistent filter", config.name))
+				return nil, string.format("filter \"%s\" references nonexistent filter", config.name)
 			end
 			if seenFilters[id] then
-				error(string.format("filter loop found at filter \"%s\"", filterConfigurations[id].name))
+				return nil, string.format("filter loop found at filter \"%s\"", filterConfigurations[id].name)
 			end
 			-- This is basically a set of every filter in the filter call stack.
 			-- As long as no filter is a child of itself, it's fine to use a filter more than once.
 			seenFilters[id] = true
-			childFilters[i] = createFilter(filterConfigurations[id], filterConfigurations, seenFilters)
+			local childFilter, err = createFilter(filterConfigurations[id], filterConfigurations, seenFilters)
+			if err then
+				return nil, err
+			end
+			childFilters[i] = childFilter
 			seenFilters[id] = false
 		end
 	end
-	return ns.CombinedFilter.Create(config.name, childFilters)
+	return ns.CombinedFilter.Create(config.name, childFilters), nil
 end
 
 local hardDenyFilter = {
@@ -99,28 +103,34 @@ local hardAllowFilter = {
 
 --- Filters can reference other filters, so they must all be created at once to make those connections
 ---@param filterConfigurations table<unknown, FilterConfiguration>
----@return table<unknown, Filter>
+---@return table<unknown, Filter> filters, table<unknown, string> errors
 function export.FromConfigurations(filterConfigurations)
 	local filters = {}
+	local errors = {}
 	for id, configuration in next, filterConfigurations do
 		-- When not a part of a combined filters, whitelists should remove everything from the pool that isn't whitelisted
 		-- and blacklists should allow everything that isn't included in the backlist
 		-- In combined filters, this behavior is undesired, so it must be handled as a special case
-		if configuration.type == "whitelist" then
-			filters[id] = ns.CombinedFilter.Create(configuration.name, {
-				createFilter(configuration, filterConfigurations),
-				hardDenyFilter,
-			})
-		elseif configuration.type == "blacklist" then
-			filters[id] = ns.CombinedFilter.Create(configuration.name, {
-				createFilter(configuration, filterConfigurations),
-				hardAllowFilter,
-			})
+		local rawFilter, err = createFilter(configuration, filterConfigurations)
+		if err then
+			errors[id] = err
 		else
-			filters[id] = createFilter(configuration, filterConfigurations)
+			if configuration.type == "whitelist" then
+				filters[id] = ns.CombinedFilter.Create(configuration.name, {
+					rawFilter,
+					hardDenyFilter,
+				})
+			elseif configuration.type == "blacklist" then
+				filters[id] = ns.CombinedFilter.Create(configuration.name, {
+					rawFilter,
+					hardAllowFilter,
+				})
+			else
+				filters[id] = rawFilter
+			end
 		end
 	end
-	return filters
+	return filters, errors
 end
 
 ns.Filter = export

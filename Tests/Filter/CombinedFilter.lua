@@ -87,27 +87,26 @@ function TestCombinedFilter:TestEmpty()
 end
 
 function TestCombinedFilter:TestFilterLoop()
-	local success, error = pcall(function()
-		ns.Filter.FromConfigurations({
-			{
-				name = "?",
-				type = "combinedFilter",
-				childFilterIDs = { 2 },
-			},
-			{
-				name = "?",
-				type = "combinedFilter",
-				childFilterIDs = { 1 },
-			},
-		})
-	end)
+	local filters, errors = ns.Filter.FromConfigurations({
+		{
+			name = "?",
+			type = "combinedFilter",
+			childFilterIDs = { 2 },
+		},
+		{
+			name = "?",
+			type = "combinedFilter",
+			childFilterIDs = { 1 },
+		},
+	})
 
-	luaunit.assertEquals(success, false)
-	luaunit.assertStrContains(error, "filter loop")
+	luaunit.assertNil(next(filters))
+	luaunit.assertStrContains(errors[1], "filter loop")
+	luaunit.assertStrContains(errors[2], "filter loop")
 end
 
 function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
-	ns.Filter.FromConfigurations({
+	local filters, errors = ns.Filter.FromConfigurations({
 		{
 			name = "?",
 			type = "combinedFilter",
@@ -119,4 +118,7 @@ function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
 			listFilterType = "characterList",
 		},
 	})
+
+	luaunit.assertNotNil(next(filters))
+	luaunit.assertNil(next(errors))
 end
