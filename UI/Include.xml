@@ -1,9 +1,9 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
+	<Include file="Stores\Include.xml" />
+	<Include file="Components\Include.xml" />
 	<Script file="Widgets\ScrollingTable.lua" />
 
-	<Script file="CharactersTab.lua" />
+	<Script file="FiltersTab.lua" />
 	<Script file="MainUI.lua" />
-	<Script file="RealmsTab.lua" />
-	<Script file="TotalTab.lua" />
 </Ui>

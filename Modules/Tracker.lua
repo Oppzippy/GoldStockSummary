@@ -43,15 +43,21 @@ function module:IsInBrokenState()
 end
 
 function module:UpdateFaction()
-	local character = self:GetCharacter()
+	local nameAndRealm = self:GetCharacterNameAndRealm()
+	local character = self:GetCharacter(nameAndRealm)
 	local faction = UnitFactionGroup("player")
 	character.faction = faction and faction:lower() or "neutral"
+
+	self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", nameAndRealm)
 end
 
 function module:UpdateMoney()
-	local character = self:GetCharacter()
+	local nameAndRealm = self:GetCharacterNameAndRealm()
+	local character = self:GetCharacter(nameAndRealm)
 	character.copper = GetMoney()
 	character.lastUpdate = time()
+
+	self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", nameAndRealm)
 end
 
 function module:UpdateGuildAndOwner()
@@ -62,7 +68,8 @@ function module:UpdateGuildAndOwner()
 		return
 	end
 
-	local character = self:GetCharacter()
+	local nameAndRealm = self:GetCharacterNameAndRealm()
+	local character = self:GetCharacter(nameAndRealm)
 	character.guild = IsInGuild() and self:GetGuildNameAndRealm() or nil
 	self:UpdateOwner()
 end
@@ -76,15 +83,19 @@ function module:UpdateOwner()
 	end
 
 	if IsInGuild() then
-		local guild = self:GetGuild()
+		local nameAndRealm = self:GetGuildNameAndRealm()
+		local guild = self:GetGuild(nameAndRealm)
 		guild.owner = self:GetGuildOwner()
+		self:SendMessage("GoldStockSummary_GuildMoneyUpdated", nameAndRealm)
 	end
 end
 
 function module:UpdateGuildBankMoney()
 	if IsInGuild() then
-		local guild = self:GetGuild()
+		local nameAndRealm = self:GetGuildNameAndRealm()
+		local guild = self:GetGuild(nameAndRealm)
 		guild.copper = GetGuildBankMoney()
+		self:SendMessage("GoldStockSummary_GuildMoneyUpdated", nameAndRealm)
 	end
 end
 
@@ -99,9 +110,9 @@ function module:GetGuildOwner()
 	error(string.format("Unable to determine guild owner: %d members", (GetNumGuildMembers())))
 end
 
+---@param nameAndRealm string
 ---@return TrackedCharacter
-function module:GetCharacter()
-	local nameAndRealm = self:GetCharacterNameAndRealm()
+function module:GetCharacter(nameAndRealm)
 	local db = self.db.global
 	if not db.characters[nameAndRealm] then
 		db.characters[nameAndRealm] = {}
@@ -109,13 +120,13 @@ function module:GetCharacter()
 	return db.characters[nameAndRealm]
 end
 
+---@param nameAndRealm string
 ---@return TrackedGuild
-function module:GetGuild()
-	local nameAndRealm = self:GetGuildNameAndRealm()
+function module:GetGuild(nameAndRealm)
 	local db = self.db.global
 	if not db.guilds[nameAndRealm] then
 		db.guilds[nameAndRealm] = {}
-		self:SendMessage("GoldStockSummary_GuildsChanged")
+		self:SendMessage("GoldStockSummary_GuildAdded", nameAndRealm)
 	end
 	return db.guilds[nameAndRealm]
 end

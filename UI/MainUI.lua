@@ -16,7 +16,8 @@ local MainUI = {
 AceEvent:Embed(MainUI)
 
 ---@param getTableData table<string, fun(): string[], table>
-function MainUI:Show(getTableData)
+---@param db AceDBObject-3.0
+function MainUI:Show(getTableData, db)
 	if self:IsVisible() then return end
 	local frame = AceGUI:Create("Frame")
 	---@cast frame AceGUIFrame
@@ -33,6 +34,8 @@ function MainUI:Show(getTableData)
 	frame:SetCallback("OnClose", function()
 		self:Hide()
 	end)
+	frame:SetWidth(960)
+	frame:SetHeight(500)
 
 	local tabGroup = AceGUI:Create("TabGroup")
 	---@cast tabGroup AceGUITabGroup
@@ -40,37 +43,31 @@ function MainUI:Show(getTableData)
 
 	tabGroup:SetCallback("OnGroupSelected", function(_, _, group)
 		tabGroup:ReleaseChildren()
-		if group == "characters" then
-			local charactersTab = ns.CharactersTab:Show(getTableData[group])
-			frame:SetWidth(charactersTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
-			tabGroup:AddChild(charactersTab)
-		elseif group == "realms" then
-			local realmsTab = ns.RealmsTab:Show(getTableData[group])
-			frame:SetWidth(realmsTab.frame:GetWidth() + frame.frame.RightEdge:GetWidth() + 20)
-			tabGroup:AddChild(realmsTab)
-		elseif group == "total" then
-			local totalTab = ns.TotalTab:Show()
-			tabGroup:AddChild(totalTab)
-			-- The layout doesn't seem to get updated automatically when the size is changed to match the parent
-			totalTab:DoLayout()
+		if group == "reports" then
+			local component = ns.ComponentFactory.Create(ns.Components.Reports)
+			local tab = component.widget
+			tabGroup:AddChild(tab)
+			tab:DoLayout()
+		elseif group == "filters" then
+			ns.FiltersTab.characters = db.global.characters
+			ns.FiltersTab.filters = db.profile.filters
+			local tab = ns.FiltersTab:Render()
+			tabGroup:AddChild(tab)
+			tabGroup:DoLayout()
 		end
 	end)
 
 	tabGroup:SetTabs({
 		{
-			text = L.characters,
-			value = "characters",
+			text = L.reports,
+			value = "reports",
 		},
 		{
-			text = L.realms,
-			value = "realms",
-		},
-		{
-			text = L.total,
-			value = "total",
+			text = L.filters,
+			value = "filters",
 		},
 	})
-	tabGroup:SelectTab("characters")
+	tabGroup:SelectTab("reports")
 
 	frame:AddChild(tabGroup)
 end

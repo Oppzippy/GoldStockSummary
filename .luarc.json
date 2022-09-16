@@ -1,3 +1,7 @@
 {
-  "diagnostics.globals": ["COPPER_PER_GOLD", "UISpecialFrames"]
+    "diagnostics.globals": [
+        "COPPER_PER_GOLD",
+        "UISpecialFrames",
+        "GoldStockSummaryClipboardFrame"
+    ]
 }

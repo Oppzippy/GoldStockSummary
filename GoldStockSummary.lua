@@ -35,7 +35,7 @@ function Core:ShowCharacterGoldTable()
 		realms = function()
 			return self:RealmsGoldTable()
 		end,
-	})
+	}, self.db)
 end
 
 local characterFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
@@ -56,13 +56,12 @@ end
 ---@param nameAndRealm string
 function Core:OnDeleteCharacter(_, nameAndRealm)
 	self.db.global.characters[nameAndRealm] = nil
-	self:SendMessage("GoldStockSummary_MoneyUpdated")
+	self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", nameAndRealm)
 end
 
 ---@param format string
-function Core:OnExportCharacters(_, format)
-	local db = self.db.global
-	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(db.characters, db.guilds))
+function Core:OnExportCharacters(_, format, data)
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(data.characters, data.guilds))
 
 	local output = ""
 	if format == "csv" then
@@ -71,12 +70,11 @@ function Core:OnExportCharacters(_, format)
 		output = ns.MoneyTable.To.JSON("characters", moneyTable)
 	end
 
-	self:SendMessage("GoldStockSummary_SetExportCharactersOutput", output)
+	self:SendMessage("GoldStockSummary_CopyText", output)
 end
 
-function Core:OnExportRealms(_, format)
-	local db = self.db.global
-	local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(db.characters, db.guilds))
+function Core:OnExportRealms(_, format, data)
+	local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(data.characters, data.guilds))
 
 	local output = ""
 	if format == "csv" then
@@ -85,5 +83,5 @@ function Core:OnExportRealms(_, format)
 		output = ns.MoneyTable.To.JSON("realms", moneyTable)
 	end
 
-	self:SendMessage("GoldStockSummary_SetExportRealmsOutput", output)
+	self:SendMessage("GoldStockSummary_CopyText", output)
 end

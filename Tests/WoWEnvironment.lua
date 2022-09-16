@@ -6,7 +6,14 @@ strmatch = string.match
 
 local namespace = {}
 function DoWoWFile(path)
-	loadfile(path)("GoldStockSummary", namespace)
+	local func, err = loadfile(path)
+	if err then
+		error(err)
+	end
+	if not func then
+		error(string.format("error loading %s: function is nil", path))
+	end
+	func("GoldStockSummary", namespace)
 end
 
 --Libraries
@@ -18,6 +25,12 @@ DoWoWFile("Libs/json.lua/json.lua")
 DoWoWFile("Locales/enUS.lua")
 
 --- Internal
+DoWoWFile("Internal/Filter/Filter.lua")
+DoWoWFile("Internal/Filter/CharacterBlacklistFilter.lua")
+DoWoWFile("Internal/Filter/CharacterWhitelistFilter.lua")
+DoWoWFile("Internal/Filter/CombinedFilter.lua")
+DoWoWFile("Internal/Filter/PatternWhitelistFilter.lua")
+DoWoWFile("Internal/Filter/PatternBlacklistFilter.lua")
 DoWoWFile("Internal/MoneyTable/Namespace.lua")
 DoWoWFile("Internal/MoneyTable/Factory/Characters.lua")
 DoWoWFile("Internal/MoneyTable/Factory/Realms.lua")
