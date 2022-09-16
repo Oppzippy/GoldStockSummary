@@ -37,8 +37,7 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 		},
 	})[1]
 
-	local newPool, allowed = filter:Filter(pool)
-	luaunit.assertEquals(newPool, { ["Name3-Realm2"] = true })
+	local _, allowed = filter:Filter(pool)
 	luaunit.assertEquals(allowed, { ["Name2-Realm"] = true })
 end
 
@@ -68,8 +67,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 		},
 	})[1]
 
-	local newPool, allowed = filter:Filter(pool)
-	luaunit.assertEquals(newPool, { ["Name3-Realm2"] = true })
+	local _, allowed = filter:Filter(pool)
 	luaunit.assertEquals(allowed, {
 		["Name1-Realm"] = true,
 		["Name2-Realm"] = true,
@@ -84,8 +82,7 @@ function TestCombinedFilter:TestEmpty()
 			childFilterIDs = {},
 		},
 	})[1]
-	local newPool, allowed = filter:Filter(pool)
-	luaunit.assertEquals(newPool, pool)
+	local _, allowed = filter:Filter(pool)
 	luaunit.assertEquals(allowed, {})
 end
 

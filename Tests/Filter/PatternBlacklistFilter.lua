@@ -21,8 +21,7 @@ function TestPatternBlacklist:TestPatternBlacklistAll()
 		},
 	})[1]
 
-	local newPool, allowed = whitelist:Filter(pool)
-	luaunit.assertEquals(newPool, {})
+	local _, allowed = whitelist:Filter(pool)
 	luaunit.assertEquals(allowed, {})
 end
 
@@ -36,12 +35,11 @@ function TestPatternBlacklist:TestPatternBlacklistSome()
 		},
 	})[1]
 
-	local newPool, allowed = whitelist:Filter(pool)
-	luaunit.assertEquals(newPool, {
+	local _, allowed = whitelist:Filter(pool)
+	luaunit.assertEquals(allowed, {
 		["Name1-Realm"] = true,
 		["Name2-Realm"] = true,
 	})
-	luaunit.assertEquals(allowed, {})
 end
 
 function TestPatternBlacklist:TestPatternBlacklistNone()
@@ -54,7 +52,10 @@ function TestPatternBlacklist:TestPatternBlacklistNone()
 		},
 	})[1]
 
-	local newPool, allowed = whitelist:Filter(pool)
-	luaunit.assertEquals(newPool, pool)
-	luaunit.assertEquals(allowed, {})
+	local _, allowed = whitelist:Filter(pool)
+	luaunit.assertEquals(allowed, {
+		["Name1-Realm"] = true,
+		["Name2-Realm"] = true,
+		["Name3-Realm2"] = true,
+	})
 end
