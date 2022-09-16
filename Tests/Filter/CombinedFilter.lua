@@ -105,3 +105,18 @@ function TestCombinedFilter:TestFilterLoop()
 	luaunit.assertEquals(success, false)
 	luaunit.assertStrContains(error, "filter loop")
 end
+
+function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
+	ns.Filter.FromConfigurations({
+		{
+			name = "?",
+			type = "combinedFilter",
+			childFilterIDs = { 2, 2 },
+		},
+		{
+			name = "?",
+			type = "whitelist",
+			listFilterType = "characterList",
+		},
+	})
+end

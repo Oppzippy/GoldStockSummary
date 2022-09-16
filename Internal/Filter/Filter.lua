@@ -76,8 +76,11 @@ function createCombinedFilter(config, filterConfigurations, seenFilters)
 			if seenFilters[id] then
 				error(string.format("filter loop found at filter \"%s\"", filterConfigurations[id].name))
 			end
+			-- This is basically a set of every filter in the filter call stack.
+			-- As long as no filter is a child of itself, it's fine to use a filter more than once.
 			seenFilters[id] = true
 			childFilters[i] = createFilter(filterConfigurations[id], filterConfigurations, seenFilters)
+			seenFilters[id] = false
 		end
 	end
 	return ns.CombinedFilter.Create(config.name, childFilters)
