@@ -45,6 +45,14 @@ FiltersTab.options = {
 						AceConfigDialog:SelectGroup(optionsTableName, "filterSettings", tostring(#FiltersTab.filters))
 						FiltersTab:FireFiltersChanged()
 					end,
+					validate = function(_, newName)
+						for _, otherFilter in next, FiltersTab.filters do
+							if otherFilter.name == newName then
+								return L.filter_already_exists:format(otherFilter.name)
+							end
+						end
+						return true
+					end,
 				},
 			},
 		},
