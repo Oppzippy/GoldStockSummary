@@ -119,8 +119,11 @@ function FiltersTab:RenderFilter(filterID)
 		}
 		local order = {}
 		for id, f in next, self.filters do
-			values[id] = f.name
-			order[#order + 1] = id
+			-- A filter can not be a child of itself. This prevents direct children, but grandchildren and so on will error.
+			if f ~= filter then
+				values[id] = f.name
+				order[#order + 1] = id
+			end
 		end
 		table.sort(order, function(a, b)
 			return self.filters[a].name < self.filters[b].name
@@ -130,27 +133,29 @@ function FiltersTab:RenderFilter(filterID)
 
 		local args = {}
 		local function renderArgs()
-			for i = 1, #filter.childFilterIDs do
-				args[tostring(i)] = {
-					type = "select",
-					name = L.filter_x:format(i),
-					values = values,
-					sorting = orderWithRemove,
-					get = function()
-						return filter.childFilterIDs[i]
-					end,
-					set = function(_, val)
-						if val == removeSymbol then
-							table.remove(filter.childFilterIDs, i)
-							wipe(args)
-							renderArgs()
-						else
-							filter.childFilterIDs[i] = val
-						end
-						self:FireFiltersChanged()
-					end,
-					order = i,
-				}
+			if filter.childFilterIDs then
+				for i = 1, #filter.childFilterIDs do
+					args[tostring(i)] = {
+						type = "select",
+						name = L.filter_x:format(i),
+						values = values,
+						sorting = orderWithRemove,
+						get = function()
+							return filter.childFilterIDs[i]
+						end,
+						set = function(_, val)
+							if val == removeSymbol then
+								table.remove(filter.childFilterIDs, i)
+								wipe(args)
+								renderArgs()
+							else
+								filter.childFilterIDs[i] = val
+							end
+							self:FireFiltersChanged()
+						end,
+						order = i,
+					}
+				end
 			end
 			args.add = {
 				type = "select",
@@ -159,6 +164,9 @@ function FiltersTab:RenderFilter(filterID)
 				sorting = order,
 				get = function() end,
 				set = function(_, val)
+					if not filter.childFilterIDs then
+						filter.childFilterIDs = {}
+					end
 					filter.childFilterIDs[#filter.childFilterIDs + 1] = val
 					wipe(args)
 					renderArgs()

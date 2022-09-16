@@ -6,7 +6,7 @@ local ns = select(2, ...)
 local AceAddon = LibStub("AceAddon-3.0")
 
 ---@class UIStateUpdaterModule : AceConsole-3.0, AceEvent-3.0
-local module = AceAddon:GetAddon(addonName):NewModule("UIStateUpdater", "AceEvent-3.0")
+local module = AceAddon:GetAddon(addonName):NewModule("UIStateUpdater", "AceConsole-3.0", "AceEvent-3.0")
 
 function module:OnEnable()
 	self.db = ns.db
@@ -55,8 +55,17 @@ function module:OnGuildMoneyUpdated(_, name)
 end
 
 function module:OnFiltersChanged()
-	ns.FilterStore:Dispatch({
-		type = "updateFilterConfigurations",
-		configurations = self.db.profile.filters,
-	})
+	local success, error = pcall(function()
+		ns.FilterStore:Dispatch({
+			type = "updateFilterConfigurations",
+			configurations = self.db.profile.filters,
+		})
+	end)
+	if not success then
+		self:Print(error)
+		ns.FilterStore:Dispatch({
+			type = "updateFilterConfigurations",
+			configurations = {},
+		})
+	end
 end
