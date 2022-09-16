@@ -77,6 +77,8 @@ function FiltersTab:Render()
 	return target
 end
 
+local removeSymbol = {}
+
 ---@param filterID unknown
 ---@return AceConfigOptionsTable
 function FiltersTab:RenderFilter(filterID)
@@ -109,6 +111,66 @@ function FiltersTab:RenderFilter(filterID)
 			end
 		end
 		group.args.characterList.args = args
+	end
+
+	local function renderFilterChain()
+		local values = {
+			[removeSymbol] = L.remove_filter,
+		}
+		local order = {}
+		for id, f in next, self.filters do
+			values[id] = f.name
+			order[#order + 1] = id
+		end
+		table.sort(order, function(a, b)
+			return self.filters[a].name < self.filters[b].name
+		end)
+		local orderWithRemove = ns.Util.CloneTableShallow(order)
+		orderWithRemove[#orderWithRemove + 1] = removeSymbol
+
+		local args = {}
+		local function renderArgs()
+			for i = 1, #filter.childFilterIDs do
+				args[tostring(i)] = {
+					type = "select",
+					name = L.filter_x:format(i),
+					values = values,
+					sorting = orderWithRemove,
+					get = function()
+						return filter.childFilterIDs[i]
+					end,
+					set = function(_, val)
+						if val == removeSymbol then
+							table.remove(filter.childFilterIDs, i)
+							wipe(args)
+							renderArgs()
+						else
+							filter.childFilterIDs[i] = val
+						end
+						self:FireFiltersChanged()
+					end,
+					order = i,
+				}
+			end
+			args.add = {
+				type = "select",
+				name = L.add_filter,
+				values = values,
+				sorting = order,
+				get = function() end,
+				set = function(_, val)
+					filter.childFilterIDs[#filter.childFilterIDs + 1] = val
+					wipe(args)
+					renderArgs()
+					self:FireFiltersChanged()
+				end,
+				order = 999999,
+			}
+		end
+
+		renderArgs()
+
+		return args
 	end
 
 	local function isNotWhitelistOrBlacklist()
@@ -283,7 +345,7 @@ function FiltersTab:RenderFilter(filterID)
 				name = L.combined_filter,
 				hidden = isNotCombinedFilter,
 				order = 8,
-				args = {},
+				args = renderFilterChain(),
 			},
 
 			-----------------------------------------------------------

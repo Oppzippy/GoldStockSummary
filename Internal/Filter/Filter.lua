@@ -68,15 +68,17 @@ function createCombinedFilter(config, filterConfigurations, seenFilters)
 	if not seenFilters then
 		seenFilters = {}
 	end
-	for i, id in ipairs(config.childFilterIDs) do
-		if not filterConfigurations or not filterConfigurations[id] then
-			error(string.format("filter \"%s\" references nonexistent filter", config.name))
+	if config.childFilterIDs then
+		for i, id in ipairs(config.childFilterIDs) do
+			if not filterConfigurations or not filterConfigurations[id] then
+				error(string.format("filter \"%s\" references nonexistent filter", config.name))
+			end
+			if seenFilters[id] then
+				error(string.format("filter loop found at filter \"%s\"", filterConfigurations[id].name))
+			end
+			seenFilters[id] = true
+			childFilters[i] = createFilter(filterConfigurations[id], filterConfigurations, seenFilters)
 		end
-		if seenFilters[id] then
-			error(string.format("filter loop found at filter \"%s\"", filterConfigurations[id].name))
-		end
-		seenFilters[id] = true
-		childFilters[i] = createFilter(filterConfigurations[id], filterConfigurations, seenFilters)
 	end
 	return ns.CombinedFilter.Create(config.name, childFilters)
 end
