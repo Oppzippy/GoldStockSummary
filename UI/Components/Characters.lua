@@ -65,7 +65,10 @@ components.Characters = {
 		---@cast exportCSV AceGUIButton
 		exportCSV:SetText(L.export_csv)
 		exportCSV:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "csv")
+			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "csv", {
+				characters = props.characters,
+				guilds = props.guilds,
+			})
 		end)
 		container:AddChild(exportCSV)
 
@@ -73,7 +76,10 @@ components.Characters = {
 		---@cast exportJSON AceGUIButton
 		exportJSON:SetText(L.export_json)
 		exportJSON:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "json")
+			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "json", {
+				characters = props.characters,
+				guilds = props.guilds,
+			})
 		end)
 		container:AddChild(exportJSON)
 

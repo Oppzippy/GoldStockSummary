@@ -60,9 +60,8 @@ function Core:OnDeleteCharacter(_, nameAndRealm)
 end
 
 ---@param format string
-function Core:OnExportCharacters(_, format)
-	local db = self.db.global
-	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(db.characters, db.guilds))
+function Core:OnExportCharacters(_, format, data)
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(data.characters, data.guilds))
 
 	local output = ""
 	if format == "csv" then
@@ -74,9 +73,8 @@ function Core:OnExportCharacters(_, format)
 	self:SendMessage("GoldStockSummary_CopyText", output)
 end
 
-function Core:OnExportRealms(_, format)
-	local db = self.db.global
-	local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(db.characters, db.guilds))
+function Core:OnExportRealms(_, format, data)
+	local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(data.characters, data.guilds))
 
 	local output = ""
 	if format == "csv" then

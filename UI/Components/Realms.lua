@@ -47,7 +47,10 @@ components.Realms = {
 		---@cast exportCSV AceGUIButton
 		exportCSV:SetText(L.export_csv)
 		exportCSV:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportRealms", "csv")
+			AceEvent.SendMessage(container, "GoldStockSummary_ExportRealms", "csv", {
+				characters = props.characters,
+				guilds = props.guilds,
+			})
 		end)
 		container:AddChild(exportCSV)
 
@@ -55,7 +58,10 @@ components.Realms = {
 		---@cast exportJSON AceGUIButton
 		exportJSON:SetText(L.export_json)
 		exportJSON:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportRealms", "json")
+			AceEvent.SendMessage(container, "GoldStockSummary_ExportRealms", "json", {
+				characters = props.characters,
+				guilds = props.guilds,
+			})
 		end)
 		container:AddChild(exportJSON)
 
