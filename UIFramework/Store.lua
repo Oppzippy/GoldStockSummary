@@ -6,7 +6,7 @@ local ns = select(2, ...)
 ---@field state unknown
 ---@field subscribers table<number, fun()>
 ---@field lastID number
----@field queuedUpdate? Ticker
+---@field actionQueue table[]
 local StorePrototype = {}
 
 ---@param reducer Reducer
@@ -18,6 +18,7 @@ local function Create(reducer, initialState)
 		state = initialState,
 		subscribers = {},
 		lastID = 0,
+		actionQueue = {},
 	}, { __index = StorePrototype })
 
 	return store
@@ -35,16 +36,17 @@ function StorePrototype:Subscribe(func)
 end
 
 function StorePrototype:Dispatch(action)
-	self.state = self.reducer(self.state, action)
-	-- Group together updates on the next frame
-	if not self.queuedUpdate then
-		self.queuedUpdate = C_Timer.NewTimer(0, function()
-			self.queuedUpdate = nil
-			for _, subscriber in next, self.subscribers do
-				subscriber()
-			end
-		end)
+	self.actionQueue[#self.actionQueue + 1] = action
+	for _, subscriber in next, self.subscribers do
+		subscriber()
 	end
+end
+
+function StorePrototype:Update()
+	for _, action in ipairs(self.actionQueue) do
+		self.state = self.reducer(self.state, action)
+	end
+	self.actionQueue = {}
 end
 
 function StorePrototype:GetState()

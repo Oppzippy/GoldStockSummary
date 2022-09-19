@@ -10,6 +10,8 @@ local AceLocale = LibStub("AceLocale-3.0")
 
 local L = AceLocale:GetLocale(addonName)
 
+local componentPrototype = {}
+
 local function getSortedFilters()
 	local filtersByID = ns.FilterStore:GetState()
 	---@type Filter[]
@@ -34,57 +36,56 @@ local function getSortedFilters()
 	return filters, reverseIndex
 end
 
----@type Component
-components.FilterSelection = {
-	---@param container AceGUIContainer
-	create = function(container, props)
-		container:SetFullWidth(true)
-		container:SetLayout("Table")
-		container:SetUserData("table", {
-			columns = {
-				{
-					width = 100,
-				},
-				{
-					weight = 1,
-				},
+function componentPrototype:Initialize(container, props)
+	container:SetFullWidth(true)
+	container:SetLayout("Table")
+	container:SetUserData("table", {
+		columns = {
+			{
+				width = 100,
 			},
-		})
-		local label = AceGUI:Create("Label")
-		---@cast label AceGUILabel
-		label:SetText(L.filter)
-		container:AddChild(label)
+			{
+				weight = 1,
+			},
+		},
+	})
+	local label = AceGUI:Create("Label")
+	---@cast label AceGUILabel
+	label:SetText(L.filter)
+	container:AddChild(label)
 
-		local dropdown = AceGUI:Create("Dropdown")
-		---@cast dropdown AceGUIDropdown
-		dropdown:SetCallback("OnValueChanged", function(_, _, filterID)
-			local filters = ns.FilterStore:GetState()
-			props.setFilter(filters[filterID])
-		end)
-		container:AddChild(dropdown)
+	local dropdown = AceGUI:Create("Dropdown")
+	---@cast dropdown AceGUIDropdown
+	dropdown:SetCallback("OnValueChanged", function(_, _, filterID)
+		local filters = ns.FilterStore:GetState()
+		props.setFilter(filters[filterID])
+	end)
+	container:AddChild(dropdown)
 
-		return {
-			watch = { ns.FilterStore },
-		}, {
-			dropdown = dropdown,
-			setFilter = props.setFilter,
-		}
-	end,
-	update = function(props)
-		local filters, reverseIndex = getSortedFilters()
-		local list = {}
-		local order = {}
-		for i, filter in ipairs(filters) do
-			local filterID = reverseIndex[filter]
-			list[filterID] = filter.name
-			order[i] = filterID
-		end
+	self.dropdown = dropdown
+	self.setFilter = props.setFilter
 
-		props.dropdown:SetList(list, order)
-		if not props.dropdown:GetValue() then
-			local filtersByID = ns.FilterStore:GetState()
-			props.dropdown:SetValue(order[1])
-			props.setFilter(filtersByID[order[1]])
-		end
-	end,
-}
+	return {
+		stores = { ns.FilterStore },
+	}
+end
+
+function componentPrototype:Update()
+	local filters, reverseIndex = getSortedFilters()
+	local list = {}
+	local order = {}
+	for i, filter in ipairs(filters) do
+		local filterID = reverseIndex[filter]
+		list[filterID] = filter.name
+		order[i] = filterID
+	end
+
+	self.dropdown:SetList(list, order)
+	if not self.dropdown:GetValue() then
+		local filtersByID = ns.FilterStore:GetState()
+		self.dropdown:SetValue(order[1])
+		self.setFilter(filtersByID[order[1]])
+	end
+end
+
+components.FilterSelection = componentPrototype

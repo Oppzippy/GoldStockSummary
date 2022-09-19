@@ -13,94 +13,95 @@ local L = AceLocale:GetLocale(addonName)
 
 local tableFields = { "realm", "faction", "name", "totalMoney", "personalMoney", "guildBankMoney", "lastUpdate" }
 
----@type Component
-components.Characters = {
-	---@param container AceGUIContainer
-	create = function(container, props)
-		container:PauseLayout()
-		container:SetLayout("Flow")
+local componentPrototype = {}
 
-		-- The headings of the scrolling table overlap the top of the frame without a spacer
-		local spacer = AceGUI:Create("SimpleGroup")
-		---@cast spacer AceGUISimpleGroup
-		spacer:SetHeight(10)
-		container:AddChild(spacer)
+function componentPrototype:Initialize(container, props)
+	container:PauseLayout()
+	container:SetLayout("Flow")
 
-		local scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
-		scrollingTable:EnableSelection(true)
-		container:AddChild(scrollingTable)
+	-- The headings of the scrolling table overlap the top of the frame without a spacer
+	local spacer = AceGUI:Create("SimpleGroup")
+	---@cast spacer AceGUISimpleGroup
+	spacer:SetHeight(10)
+	container:AddChild(spacer)
 
-		local search = AceGUI:Create("EditBox")
-		---@cast search AceGUIEditBox
-		search:SetLabel("Search")
-		search:DisableButton(true)
-		search:SetCallback("OnTextChanged", function(_, _, text)
-			scrollingTable:SetFilter(function(_, row)
-				local query = text:lower()
-				local name, realm = row.cols[3].value, row.cols[1].value
-				local nameAndRealm = string.format("%s-%s", name, realm)
-				return nameAndRealm:lower():find(query, nil, true)
-			end)
-		end)
-		search:SetFullWidth(true)
-		container:AddChild(search)
+	local scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
+	scrollingTable:EnableSelection(true)
+	container:AddChild(scrollingTable)
 
-		local delete = AceGUI:Create("Button")
-		---@cast delete AceGUIButton
-		delete:SetText(L.delete_selected_character)
-		delete:SetDisabled(true)
-		delete:SetCallback("OnClick", function()
-			local selectedIndex = scrollingTable:GetSelection()
-			if not selectedIndex then return end
-
-			local row = scrollingTable:GetRow(selectedIndex)
-			-- TODO attach the data to the row somehow rather than depending on column order
+	local search = AceGUI:Create("EditBox")
+	---@cast search AceGUIEditBox
+	search:SetLabel("Search")
+	search:DisableButton(true)
+	search:SetCallback("OnTextChanged", function(_, _, text)
+		scrollingTable:SetFilter(function(_, row)
+			local query = text:lower()
 			local name, realm = row.cols[3].value, row.cols[1].value
 			local nameAndRealm = string.format("%s-%s", name, realm)
-			AceEvent.SendMessage(container, "GoldStockSummary_DeleteCharacter", nameAndRealm)
+			return nameAndRealm:lower():find(query, nil, true)
 		end)
-		container:AddChild(delete)
+	end)
+	search:SetFullWidth(true)
+	container:AddChild(search)
 
-		local exportCSV = AceGUI:Create("Button")
-		---@cast exportCSV AceGUIButton
-		exportCSV:SetText(L.export_csv)
-		exportCSV:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "csv", {
-				characters = props.characters,
-				guilds = props.guilds,
-			})
-		end)
-		container:AddChild(exportCSV)
+	local delete = AceGUI:Create("Button")
+	---@cast delete AceGUIButton
+	delete:SetText(L.delete_selected_character)
+	delete:SetDisabled(true)
+	delete:SetCallback("OnClick", function()
+		local selectedIndex = scrollingTable:GetSelection()
+		if not selectedIndex then return end
 
-		local exportJSON = AceGUI:Create("Button")
-		---@cast exportJSON AceGUIButton
-		exportJSON:SetText(L.export_json)
-		exportJSON:SetCallback("OnClick", function()
-			AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "json", {
-				characters = props.characters,
-				guilds = props.guilds,
-			})
-		end)
-		container:AddChild(exportJSON)
+		local row = scrollingTable:GetRow(selectedIndex)
+		-- TODO attach the data to the row somehow rather than depending on column order
+		local name, realm = row.cols[3].value, row.cols[1].value
+		local nameAndRealm = string.format("%s-%s", name, realm)
+		AceEvent.SendMessage(container, "GoldStockSummary_DeleteCharacter", nameAndRealm)
+	end)
+	container:AddChild(delete)
 
-		scrollingTable:SetCallback("OnSelectionChanged", function()
-			delete:SetDisabled(scrollingTable:GetSelection() == nil)
-		end)
-
-		container:ResumeLayout()
-		container:DoLayout()
-
-		return {}, {
-			scrollingTable = scrollingTable,
+	local exportCSV = AceGUI:Create("Button")
+	---@cast exportCSV AceGUIButton
+	exportCSV:SetText(L.export_csv)
+	exportCSV:SetCallback("OnClick", function()
+		AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "csv", {
 			characters = props.characters,
 			guilds = props.guilds,
-		}
-	end,
-	update = function(state)
-		local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(state.characters, state.guilds))
-		local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
+		})
+	end)
+	container:AddChild(exportCSV)
 
-		state.scrollingTable:SetDisplayCols(columns)
-		state.scrollingTable:SetData(rows)
-	end,
-}
+	local exportJSON = AceGUI:Create("Button")
+	---@cast exportJSON AceGUIButton
+	exportJSON:SetText(L.export_json)
+	exportJSON:SetCallback("OnClick", function()
+		AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "json", {
+			characters = props.characters,
+			guilds = props.guilds,
+		})
+	end)
+	container:AddChild(exportJSON)
+
+	scrollingTable:SetCallback("OnSelectionChanged", function()
+		delete:SetDisabled(scrollingTable:GetSelection() == nil)
+	end)
+
+	container:ResumeLayout()
+	container:DoLayout()
+
+	self.scrollingTable = scrollingTable
+	self.characters = props.characters
+	self.guilds = props.guilds
+
+	return {}
+end
+
+function componentPrototype:Update()
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(self.characters, self.guilds))
+	local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
+
+	self.scrollingTable:SetDisplayCols(columns)
+	self.scrollingTable:SetData(rows)
+end
+
+components.Characters = componentPrototype
