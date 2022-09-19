@@ -54,6 +54,12 @@ FiltersTab.options = {
 						return true
 					end,
 				},
+				help = {
+					type = "description",
+					order = 2,
+					name = L.new_filter_help,
+					fontSize = "medium",
+				},
 			},
 		},
 		filterSettings = {
