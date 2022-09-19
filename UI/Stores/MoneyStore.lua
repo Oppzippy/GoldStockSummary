@@ -40,3 +40,5 @@ ns.MoneyStore = ns.Store.Create(reducer, {
 	characters = {},
 	guilds = {},
 })
+
+ns.UIFramework:RegisterGlobalStore(ns.MoneyStore)

@@ -6,7 +6,9 @@ local AceGUI = LibStub("AceGUI-3.0")
 ---@class UIFramework
 local UIFramework = {
 	---@type table<Store, table<Component, boolean>>
-	stores = {},
+	storesToComponents = {},
+	---@type table<Store,boolean>
+	globalStores = {},
 	---@type table<Store, fun()>
 	storeUnsubscribeFunctions = {},
 	---@type table<Store, boolean>
@@ -50,27 +52,45 @@ function UIFramework:CreateComponent(prototype, props)
 	return component
 end
 
+function UIFramework:RegisterGlobalStore(store)
+	self:SubscribeToStore(store)
+	self.globalStores[store] = true
+end
+
 ---@param component Component
 ---@param store Store
 function UIFramework:SubscribeComponentToStore(component, store)
-	if not self.stores[store] then
+	self:SubscribeToStore(store)
+	self.storesToComponents[store][component] = true
+end
+
+function UIFramework:SubscribeToStore(store)
+	if not self.storesToComponents[store] then
+		self.storesToComponents[store] = {}
 		self.storeUnsubscribeFunctions[store] = store:Subscribe(function()
 			self:TriggerUpdateForStore(store)
 		end)
-		self.stores[store] = {}
 		self:TriggerUpdateForStore(store)
 	end
-	self.stores[store][component] = true
+end
+
+function UIFramework:UnregisterGlobalStore(store)
+	self.globalStores[store] = nil
+	self:UnsubscribeFromStoreIfEmpty(store)
 end
 
 ---@param component Component
 ---@param store Store
 function UIFramework:UnsubscribeComponentFromStore(component, store)
-	self.stores[store][component] = false
-	if not next(self.stores[store]) then
+	self.storesToComponents[store][component] = nil
+	self:UnsubscribeFromStoreIfEmpty(store)
+end
+
+function UIFramework:UnsubscribeFromStoreIfEmpty(store)
+	if not self.globalStores[store] and not next(self.storesToComponents[store]) then
 		self.storeUnsubscribeFunctions[store]()
 		self.storeUnsubscribeFunctions[store] = nil
-		self.stores[store] = nil
+		self.storesToComponents[store] = nil
 	end
 end
 
@@ -96,7 +116,7 @@ function UIFramework:Update()
 end
 
 function UIFramework:UpdateStores()
-	for store in next, self.stores do
+	for store in next, self.storesToComponents do
 		store:Update()
 	end
 end
@@ -106,7 +126,7 @@ function UIFramework:UpdateComponents()
 	self.storeUpdateQueue = {}
 	local num = 0
 	for store in next, queue do
-		for component in next, self.stores[store] do
+		for component in next, self.storesToComponents[store] do
 			num = num + 1
 			component:Update()
 		end

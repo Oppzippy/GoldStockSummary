@@ -15,14 +15,23 @@ local componentPrototype = {}
 function componentPrototype:Initialize(container)
 	container:SetLayout("Flow")
 
-	local selectedFilterStore = ns.ValueStore.Create(nil)
 	local selectedTabStore = ns.ValueStore.Create(nil)
+
+	local initialMoneyState = ns.MoneyStore:GetState()
+	self.filteredResultsStore = ns.ValueStore.Create({
+		characters = initialMoneyState.characters,
+		guilds = initialMoneyState.guilds,
+	})
+	self.unsubscribeMoneyStore = ns.MoneyStore:Subscribe(function()
+		self:UpdateFilteredResultsStore()
+	end)
 
 	local filterSelection = ns.UIFramework:CreateComponent(
 		ns.Components.FilterSelection,
 		{
 			setFilter = function(filter)
-				selectedFilterStore:Dispatch(filter)
+				self.filter = filter
+				self:UpdateFilteredResultsStore()
 			end,
 		}
 	)
@@ -63,31 +72,37 @@ function componentPrototype:Initialize(container)
 
 	self.tabGroup = tabGroup
 	self.selectedTabStore = selectedTabStore
-	self.selectedFilterStore = selectedFilterStore
 
 	return {
-		stores = { selectedFilterStore, selectedTabStore, ns.MoneyStore },
+		stores = { selectedTabStore },
 	}
+end
+
+function componentPrototype:OnDestroy()
+	self.unsubscribeMoneyStore()
+end
+
+function componentPrototype:UpdateFilteredResultsStore()
+	local moneyState = ns.MoneyStore:GetState()
+	local characters, guilds = moneyState.characters, moneyState.guilds
+
+	if self.filter then
+		-- TODO add a wrapper around this so we don't have the first return
+		local _
+		_, characters = self.filter:Filter(characters)
+		self.filteredResultsStore:Dispatch({
+			characters = characters,
+			guilds = guilds,
+		})
+	end
 end
 
 function componentPrototype:Update()
 	self.tabGroup:ReleaseChildren()
 	local selectedTab = self.selectedTabStore:GetState()
-	---@type Filter?
-	local filter = self.selectedFilterStore:GetState()
-
-	local moneyState = ns.MoneyStore:GetState()
-	local characters, guilds = moneyState.characters, moneyState.guilds
-
-	if filter then
-		-- TODO add a wrapper around this so we don't have the first return
-		local _
-		_, characters = filter:Filter(characters)
-	end
 
 	local props = {
-		characters = characters,
-		guilds = guilds,
+		resultsStore = self.filteredResultsStore,
 	}
 
 	---@type Component

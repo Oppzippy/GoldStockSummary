@@ -40,3 +40,4 @@ local function reducer(state, action)
 end
 
 ns.FilterStore = ns.Store.Create(reducer, defaultFilters)
+ns.UIFramework:RegisterGlobalStore(ns.FilterStore)

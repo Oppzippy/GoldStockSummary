@@ -64,9 +64,10 @@ function componentPrototype:Initialize(container, props)
 	---@cast exportCSV AceGUIButton
 	exportCSV:SetText(L.export_csv)
 	exportCSV:SetCallback("OnClick", function()
+		local results = self.resultsStore:GetState()
 		AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "csv", {
-			characters = props.characters,
-			guilds = props.guilds,
+			characters = results.characters,
+			guilds = results.guilds,
 		})
 	end)
 	container:AddChild(exportCSV)
@@ -75,9 +76,10 @@ function componentPrototype:Initialize(container, props)
 	---@cast exportJSON AceGUIButton
 	exportJSON:SetText(L.export_json)
 	exportJSON:SetCallback("OnClick", function()
+		local results = self.resultsStore:GetState()
 		AceEvent.SendMessage(container, "GoldStockSummary_ExportCharacters", "json", {
-			characters = props.characters,
-			guilds = props.guilds,
+			characters = results.characters,
+			guilds = results.guilds,
 		})
 	end)
 	container:AddChild(exportJSON)
@@ -90,14 +92,17 @@ function componentPrototype:Initialize(container, props)
 	container:DoLayout()
 
 	self.scrollingTable = scrollingTable
-	self.characters = props.characters
-	self.guilds = props.guilds
+	self.resultsStore = props.resultsStore
 
-	return {}
+	return {
+		stores = { props.resultsStore },
+	}
 end
 
 function componentPrototype:Update()
-	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(self.characters, self.guilds))
+	local results = self.resultsStore:GetState()
+
+	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(results.characters, results.guilds))
 	local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
 
 	self.scrollingTable:SetDisplayCols(columns)

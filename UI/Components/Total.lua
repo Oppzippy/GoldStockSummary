@@ -48,8 +48,7 @@ function componentPrototype:Initialize(container, props)
 
 	self.container = container
 	self.cells = cells
-	self.characters = props.characters
-	self.guilds = props.guilds
+	self.resultsStore = props.resultsStore
 
 	return {
 		stores = { ns.MoneyStore },
@@ -70,7 +69,8 @@ function componentPrototype:CreateCell(justifyH, text)
 end
 
 function componentPrototype:Update()
-	local trackedMoney = ns.TrackedMoney.Create(self.characters, self.guilds)
+	local results = self.resultsStore:GetState()
+	local trackedMoney = ns.TrackedMoney.Create(results.characters, results.guilds)
 	local total = 0
 	local personalTotal = 0
 	local guildBankTotal = 0
