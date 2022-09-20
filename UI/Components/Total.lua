@@ -51,7 +51,7 @@ function componentPrototype:Initialize(container, props)
 	self.resultsStore = props.resultsStore
 
 	return {
-		stores = { ns.MoneyStore },
+		stores = { self.resultsStore },
 	}
 end
 
