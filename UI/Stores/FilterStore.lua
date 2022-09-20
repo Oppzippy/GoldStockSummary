@@ -13,12 +13,6 @@ local defaultFilters = ns.Filter.FromConfigurations({
 		listFilterType = "pattern",
 		pattern = ".",
 	},
-	denyAll = {
-		name = L.deny_all,
-		type = "blacklist",
-		listFilterType = "pattern",
-		pattern = ".",
-	},
 })
 
 local actions = {
