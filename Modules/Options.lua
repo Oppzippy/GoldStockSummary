@@ -5,6 +5,7 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 local AceLocale = LibStub("AceLocale-3.0")
+local AceDBOptions = LibStub("AceDBOptions-3.0")
 local LDB = LibStub("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -65,6 +66,11 @@ function module:OnInitialize()
 
 	AceConfig:RegisterOptionsTable(addonName, self.optionsTable)
 	AceConfigDialog:AddToBlizOptions(addonName, L.gold_stock_summary)
+
+	local profiles = AceDBOptions:GetOptionsTable(self.db)
+	AceConfig:RegisterOptionsTable(addonName .. "_Profiles", profiles)
+	AceConfigDialog:AddToBlizOptions(addonName .. "_Profiles", L.profiles, L.gold_stock_summary)
+
 
 	self:UpdateGuilds()
 	self:RegisterMessage("GoldStockSummary_GuildAdded", "OnGuildsChanged")
