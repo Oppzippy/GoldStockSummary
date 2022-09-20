@@ -58,12 +58,13 @@ function componentPrototype:Initialize(container, props)
 	---@cast dropdown AceGUIDropdown
 	dropdown:SetCallback("OnValueChanged", function(_, _, filterID)
 		local filters = ns.FilterStore:GetState()
-		props.setFilter(filters[filterID])
+		props.setFilter(filters[filterID], filterID)
 	end)
 	container:AddChild(dropdown)
 
 	self.dropdown = dropdown
 	self.setFilter = props.setFilter
+	self.initialSelection = props.initialSelection
 
 	return {
 		stores = { ns.FilterStore },
@@ -83,8 +84,15 @@ function componentPrototype:Update()
 	self.dropdown:SetList(list, order)
 	if not self.dropdown:GetValue() then
 		local filtersByID = ns.FilterStore:GetState()
-		self.dropdown:SetValue(order[1])
-		self.setFilter(filtersByID[order[1]])
+		local selection = order[1]
+		if self.initialSelection and filtersByID[self.initialSelection] then
+			-- Make sure the selected filter isn't deleted
+			selection = self.initialSelection
+			self.initialSelection = nil
+		end
+
+		self.dropdown:SetValue(selection)
+		self.setFilter(filtersByID[selection])
 	end
 end
 

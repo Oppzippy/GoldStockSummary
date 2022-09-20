@@ -28,6 +28,7 @@ local dbDefaults = {
 		minimapIcon = {
 			hide = false,
 		},
+		selectedFilter = nil,
 		filters = {},
 	},
 }

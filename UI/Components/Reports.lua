@@ -29,10 +29,12 @@ function componentPrototype:Initialize(container)
 	local filterSelection = ns.UIFramework:CreateComponent(
 		ns.Components.FilterSelection,
 		{
-			setFilter = function(filter)
+			setFilter = function(filter, filterID)
+				ns.db.profile.selectedFilter = filterID
 				self.filter = filter
 				self:UpdateFilteredResultsStore()
 			end,
+			initialSelection = ns.db.profile.selectedFilter,
 		}
 	)
 	container:AddChild(filterSelection:GetWidget())
