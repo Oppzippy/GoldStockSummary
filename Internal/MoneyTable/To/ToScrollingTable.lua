@@ -56,11 +56,24 @@ local function MoneyTableToScrollingTableData(fields, moneyTable)
 				value = entry,
 			}
 			if entryType == "copper" or entryType == "gold" then
-				col.DoCellUpdate = cellUpdateText(col.value and GetMoneyString(col.value, true) or "")
+				col.DoCellUpdate = cellUpdateText(entry and GetMoneyString(entry, true) or "")
+				if not entry then
+					col.value = 0
+				end
 			elseif entryType == "timestamp" then
-				col.DoCellUpdate = cellUpdateText(col.value and date("%Y-%m-%d %I:%M %p", col.value) or "")
+				col.DoCellUpdate = cellUpdateText(entry and date("%Y-%m-%d %I:%M %p", entry) or "")
+				if not entry then
+					col.value = 0
+				end
 			elseif entryType == "faction" then
-				col.DoCellUpdate = cellUpdateText(col.value and L[col.value] or "")
+				col.DoCellUpdate = cellUpdateText(entry and L[entry] or "")
+				if not entry then
+					col.value = ""
+				end
+			else
+				if not entry then
+					col.value = ""
+				end
 			end
 
 			scrollingTable[i].cols[j] = col
