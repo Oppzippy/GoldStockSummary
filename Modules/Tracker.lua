@@ -138,9 +138,10 @@ function module:GetCharacterNameAndRealm()
 end
 
 function module:GetGuildNameAndRealm()
+	-- The realm name returned by GetGuildInfo is normalized and there's nothing we can do about that
 	local guildName, _, _, guildRealm = GetGuildInfo("player")
 	if not guildRealm then
-		guildRealm = GetRealmName()
+		guildRealm = GetNormalizedRealmName()
 	end
 	return string.format("%s-%s", guildName, guildRealm)
 end
