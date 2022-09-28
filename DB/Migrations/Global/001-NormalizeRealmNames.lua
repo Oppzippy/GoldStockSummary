@@ -3,9 +3,11 @@ local ns = select(2, ...)
 
 ---@param db GlobalDB
 ns.migrations.global[1] = function(db)
+	if not db or not db.characters then return end
+
 	local newCharacters = {}
 	for nameAndRealm, info in next, db.characters do
-		local name, realm = strsplit("-", nameAndRealm)
+		local name, realm = nameAndRealm:gmatch("([^-]+)-(.+)")()
 		info.name = name
 		info.realm = realm
 		local normalizedRealm = realm:gsub("[ -]", "")

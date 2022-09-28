@@ -25,6 +25,8 @@ DoWoWFile("Libs/json.lua/json.lua")
 DoWoWFile("Locales/enUS.lua")
 
 --- Internal
+DoWoWFile("DB/Defaults.lua")
+DoWoWFile("DB/Migrations/Global/001-NormalizeRealmNames.lua")
 DoWoWFile("Internal/Filter/Filter.lua")
 DoWoWFile("Internal/Filter/CharacterBlacklistFilter.lua")
 DoWoWFile("Internal/Filter/CharacterWhitelistFilter.lua")
