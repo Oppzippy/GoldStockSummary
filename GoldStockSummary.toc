@@ -17,7 +17,7 @@ Locales\Include.xml
 Internal\Include.xml
 UIFramework\Include.xml
 
-DB\Defaults.lua
+DB\Include.xml
 GoldStockSummary.lua
 Modules\Include.xml
 UI\Include.xml

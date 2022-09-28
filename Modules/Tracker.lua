@@ -13,6 +13,11 @@ function module:OnInitialize()
 end
 
 function module:OnEnable()
+	local nameAndRealm = self:GetCharacterNameAndRealm()
+	local character = self:GetCharacter(nameAndRealm)
+	character.name = UnitName("player")
+	character.realm = GetRealmName() -- Not normalized
+
 	self:UpdateFaction()
 	self:UpdateMoney()
 
@@ -133,7 +138,7 @@ end
 
 function module:GetCharacterNameAndRealm()
 	local name = UnitName("player")
-	local realm = GetRealmName()
+	local realm = GetNormalizedRealmName()
 	return string.format("%s-%s", name, realm)
 end
 

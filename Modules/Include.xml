@@ -2,6 +2,7 @@
 ..\FrameXML\UI.xsd">
 	<Script file="Clipboard.lua" />
 	<Include file="Clipboard.xml" />
+	<Script file="DBMigration.lua" />
 	<Script file="Options.lua" />
 	<Script file="SlashCommand.lua" />
 	<Script file="Tracker.lua" />

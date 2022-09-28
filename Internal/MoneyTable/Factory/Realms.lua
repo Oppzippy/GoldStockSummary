@@ -5,12 +5,13 @@ local ns = select(2, ...)
 ---@return MoneyTable
 local function Realms(trackedMoney)
 	local keyedEntries = {}
-	for name, realm, nameAndRealm in trackedMoney:IterateCharacters() do
+	for nameAndRealm in trackedMoney:IterateCharacters() do
+		local _, normalizedRealm = strsplit("-", nameAndRealm)
 		local trackedCharacter = trackedMoney.characters[nameAndRealm]
-		local key = realm .. trackedCharacter.faction
+		local key = normalizedRealm .. trackedCharacter.faction
 		if not keyedEntries[key] then
 			keyedEntries[key] = {
-				realm = realm,
+				realm = trackedCharacter.realm,
 				faction = trackedCharacter.faction,
 				totalMoney = 0,
 				personalMoney = 0,
@@ -18,7 +19,7 @@ local function Realms(trackedMoney)
 			}
 		end
 		local row = keyedEntries[key]
-		local characterCopper = trackedMoney:GetCharacterCopper(name, realm)
+		local characterCopper = trackedMoney:GetCharacterCopper(nameAndRealm)
 		row.totalMoney = row.totalMoney + characterCopper.totalCopper
 		row.personalMoney = row.personalMoney + characterCopper.personalCopper
 		row.guildBankMoney = row.guildBankMoney + (characterCopper.guildCopper or 0)

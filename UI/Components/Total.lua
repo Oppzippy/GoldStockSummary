@@ -74,8 +74,8 @@ function componentPrototype:Update()
 	local total = 0
 	local personalTotal = 0
 	local guildBankTotal = 0
-	for name, realm in trackedMoney:IterateCharacters() do
-		local characterCopper = trackedMoney:GetCharacterCopper(name, realm)
+	for nameAndRealm in trackedMoney:IterateCharacters() do
+		local characterCopper = trackedMoney:GetCharacterCopper(nameAndRealm)
 		total = total + characterCopper.totalCopper
 		personalTotal = personalTotal + characterCopper.personalCopper
 		guildBankTotal = guildBankTotal + (characterCopper.guildCopper or 0)

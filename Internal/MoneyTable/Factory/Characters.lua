@@ -6,13 +6,11 @@ local ns = select(2, ...)
 local function Characters(trackedMoney)
 	local entries = {}
 	for nameAndRealm, info in next, trackedMoney.characters do
-		local name, realm = string.match(nameAndRealm, "(.*)-(.*)")
-
-		local characterCopper = trackedMoney:GetCharacterCopper(name, realm)
+		local characterCopper = trackedMoney:GetCharacterCopper(nameAndRealm)
 
 		local entry = {
-			name = name,
-			realm = realm,
+			name = info.name,
+			realm = info.realm,
 			faction = info.faction,
 			totalMoney = characterCopper.totalCopper,
 			personalMoney = characterCopper.personalCopper,

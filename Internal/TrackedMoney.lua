@@ -19,10 +19,8 @@ local function CreateTrackedMoney(characters, guilds)
 	return trackedMoney
 end
 
----@param name string
----@param realm string
-function TrackedMoneyPrototype:GetCharacterCopper(name, realm)
-	local nameAndRealm = string.format("%s-%s", name, realm)
+---@param nameAndRealm string
+function TrackedMoneyPrototype:GetCharacterCopper(nameAndRealm)
 	local character = self.characters[nameAndRealm]
 	local guildCopper
 	if character.guild then
@@ -43,10 +41,7 @@ function TrackedMoneyPrototype:IterateCharacters()
 	local nameAndRealm
 	return function()
 		nameAndRealm = next(self.characters, nameAndRealm)
-		if nameAndRealm ~= nil then
-			local name, realm = string.match(nameAndRealm, "(.*)-(.*)")
-			return name, realm, nameAndRealm
-		end
+		return nameAndRealm
 	end
 end
 

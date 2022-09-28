@@ -5,6 +5,8 @@ local ns = select(2, ...)
 ---@field global GlobalDB
 
 ---@class TrackedCharacter
+---@field name string
+---@field realm string
 ---@field copper number
 ---@field lastUpdate integer
 ---@field faction "alliance"|"horde"|"neutral"
@@ -34,5 +36,9 @@ local dbDefaults = {
 }
 
 ns.dbDefaults = dbDefaults
+ns.migrations = {
+	---@type fun(db: AceDBObject-3.0)[]
+	global = {},
+}
 
 return dbDefaults
