@@ -8,9 +8,13 @@ TestTrackedMoneyToCharacterMoneyTable = {}
 function TestTrackedMoneyToCharacterMoneyTable:TestCharactersOnly()
 	local characters = {
 		["Test-Illidan"] = {
+			name = "Test",
+			realm = "Illidan",
 			copper = 5,
 		},
 		["Test2-Illidan"] = {
+			name = "Test2",
+			realm = "Illidan",
 			copper = 10,
 		},
 	}
@@ -39,14 +43,20 @@ end
 function TestTrackedMoneyToCharacterMoneyTable:TestGuilds()
 	local characters = {
 		["Test-Illidan"] = {
+			name = "Test",
+			realm = "Illidan",
 			copper = 5,
 			guild = "Bank-Illidan",
 		},
 		["Test2-Illidan"] = {
+			name = "Test2",
+			realm = "Illidan",
 			copper = 10,
 			guild = "Bank-Illidan",
 		},
 		["Test3-Illidan"] = {
+			name = "Test3",
+			realm = "Illidan",
 			copper = 1,
 			guild = "Bank2-Illidan",
 		},
