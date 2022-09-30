@@ -11,6 +11,14 @@ function TestMigrationGlobal001NormalizeRealmNames:TestEmptyDB()
 	luaunit.assertEquals(db, {})
 end
 
+function TestMigrationGlobal001NormalizeRealmNames:TestEmptyCharacters()
+	local db = {
+		characters = {},
+	}
+	ns.migrations.global[1](db)
+	luaunit.assertEquals(db, { characters = {} })
+end
+
 function TestMigrationGlobal001NormalizeRealmNames:TestMixedNormalizedAndUnnormalized()
 	local db = {
 		characters = {
