@@ -4,6 +4,7 @@
 	<Script file="MoneyTable.lua" />
 	<Script file="Factory\Characters.lua" />
 	<Script file="Factory\Realms.lua" />
+	<Script file="Factory\RealmsWithCombinedFactions.lua" />
 	<Script file="To\ToCSV.lua" />
 	<Script file="To\ToJSON.lua" />
 	<Script file="To\ToScrollingTable.lua" />

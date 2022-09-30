@@ -65,6 +65,7 @@ Blacklist first: B will be denied, A will be allowed.
 If you want a whitelist to match all characters on a realm, an easy way to do that is with the pattern list type. Set the pattern to "-Your Realm Name". To match multiple realms, create multiple whitelists and then combine them with a combined filter.
 ]]
 L.profiles = "Profiles"
+L.combine_factions = "Combine Factions"
 
 L["columns/name"] = "Name"
 L["columns/realm"] = "Realm"

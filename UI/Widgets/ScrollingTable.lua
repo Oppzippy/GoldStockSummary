@@ -29,8 +29,10 @@ local methods = {
 			for i, col in next, row.cols do
 				if i <= numCols then
 					col:Show()
+					col.text:Show()
 				else
 					col:Hide()
+					col.text:Hide()
 				end
 			end
 		end

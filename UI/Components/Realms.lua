@@ -11,8 +11,6 @@ local AceEvent = LibStub("AceEvent-3.0")
 
 local L = AceLocale:GetLocale(addonName)
 
-local tableFields = { "realm", "faction", "totalMoney", "personalMoney", "guildBankMoney" }
-
 local componentPrototype = {}
 
 function componentPrototype:Initialize(container, props)
@@ -42,6 +40,15 @@ function componentPrototype:Initialize(container, props)
 	end)
 	search:SetFullWidth(true)
 	container:AddChild(search)
+
+	self.combineFactionsStore = ns.ValueStore.Create(false)
+	local combineFactions = AceGUI:Create("CheckBox")
+	---@cast combineFactions AceGUICheckBox
+	combineFactions:SetLabel(L.combine_factions)
+	combineFactions:SetCallback("OnValueChanged", function(_, _, value)
+		self.combineFactionsStore:Dispatch(value)
+	end)
+	container:AddChild(combineFactions)
 
 	local exportCSV = AceGUI:Create("Button")
 	---@cast exportCSV AceGUIButton
@@ -74,15 +81,25 @@ function componentPrototype:Initialize(container, props)
 	self.resultsStore = props.resultsStore
 
 	return {
-		stores = { self.resultsStore },
+		stores = { self.resultsStore, self.combineFactionsStore },
 	}
 end
 
+local tableFields = { "realm", "faction", "totalMoney", "personalMoney", "guildBankMoney" }
+local tableFieldsWithCombinedFactions = { "realm", "totalMoney", "personalMoney", "guildBankMoney" }
+
 function componentPrototype:Update()
 	local results = self.resultsStore:GetState()
+	local trackedMoney = ns.TrackedMoney.Create(results.characters, results.guilds)
 
-	local moneyTable = ns.MoneyTable.Factory.Realms(ns.TrackedMoney.Create(results.characters, results.guilds))
-	local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
+	local columns, rows
+	if self.combineFactionsStore:GetState() then
+		local moneyTable = ns.MoneyTable.Factory.RealmsWithCombinedFactions(trackedMoney)
+		columns, rows = ns.MoneyTable.To.ScrollingTable(tableFieldsWithCombinedFactions, moneyTable)
+	else
+		local moneyTable = ns.MoneyTable.Factory.Realms(trackedMoney)
+		columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
+	end
 
 	self.scrollingTable:SetDisplayCols(columns)
 	self.scrollingTable:SetData(rows)
