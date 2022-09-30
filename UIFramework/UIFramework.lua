@@ -124,11 +124,15 @@ end
 function UIFramework:UpdateComponents()
 	local queue = self.storeUpdateQueue
 	self.storeUpdateQueue = {}
-	local num = 0
+	-- Don't update components more than once if more than one of the stores they are subscribed to changes.
+	local updatedComponents = {}
+
 	for store in next, queue do
 		for component in next, self.storesToComponents[store] do
-			num = num + 1
-			component:Update()
+			if not updatedComponents[component] then
+				updatedComponents[component] = true
+				component:Update()
+			end
 		end
 	end
 end
