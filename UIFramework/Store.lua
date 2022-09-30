@@ -5,6 +5,7 @@ local ns = select(2, ...)
 ---@field reducer Reducer
 ---@field state unknown
 ---@field subscribers table<number, fun()>
+---@field dispatchSubscribers table<number, fun()>
 ---@field lastID number
 ---@field actionQueue table[]
 local StorePrototype = {}
@@ -17,6 +18,7 @@ local function Create(reducer, initialState)
 		reducer = reducer,
 		state = initialState,
 		subscribers = {},
+		dispatchSubscribers = {},
 		lastID = 0,
 		actionQueue = {},
 	}, { __index = StorePrototype })
@@ -35,9 +37,20 @@ function StorePrototype:Subscribe(func)
 	end
 end
 
+---@param func fun()
+---@return fun()
+function StorePrototype:SubscribeToDispatches(func)
+	local id = self.lastID
+	self.dispatchSubscribers[id] = func
+	self.lastID = self.lastID + 1
+	return function()
+		self.dispatchSubscribers[id] = nil
+	end
+end
+
 function StorePrototype:Dispatch(action)
 	self.actionQueue[#self.actionQueue + 1] = action
-	for _, subscriber in next, self.subscribers do
+	for _, subscriber in next, self.dispatchSubscribers do
 		subscriber()
 	end
 end
@@ -47,6 +60,9 @@ function StorePrototype:Update()
 		self.state = self.reducer(self.state, action)
 	end
 	self.actionQueue = {}
+	for _, subscriber in next, self.subscribers do
+		subscriber()
+	end
 end
 
 function StorePrototype:GetState()

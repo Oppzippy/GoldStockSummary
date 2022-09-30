@@ -64,10 +64,11 @@ function UIFramework:SubscribeComponentToStore(component, store)
 	self.storesToComponents[store][component] = true
 end
 
+---@param store Store
 function UIFramework:SubscribeToStore(store)
 	if not self.storesToComponents[store] then
 		self.storesToComponents[store] = {}
-		self.storeUnsubscribeFunctions[store] = store:Subscribe(function()
+		self.storeUnsubscribeFunctions[store] = store:SubscribeToDispatches(function()
 			self:TriggerUpdateForStore(store)
 		end)
 		self:TriggerUpdateForStore(store)
