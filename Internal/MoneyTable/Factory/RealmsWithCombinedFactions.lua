@@ -6,7 +6,7 @@ local ns = select(2, ...)
 local function RealmsWithCombinedFactions(trackedMoney)
 	local keyedEntries = {}
 	for nameAndRealm in trackedMoney:IterateCharacters() do
-		local _, normalizedRealm = strsplit("-", nameAndRealm)
+		local _, normalizedRealm = nameAndRealm:gmatch("([^-]+)-(.+)")()
 		local trackedCharacter = trackedMoney.characters[nameAndRealm]
 		if not keyedEntries[normalizedRealm] then
 			keyedEntries[normalizedRealm] = {
