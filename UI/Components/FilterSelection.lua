@@ -84,15 +84,15 @@ function componentPrototype:Update()
 	self.dropdown:SetList(list, order)
 	if not self.dropdown:GetValue() then
 		local filtersByID = ns.FilterStore:GetState()
-		local selection = order[1]
+		local selectedFilterID = order[1]
 		if self.initialSelection and filtersByID[self.initialSelection] then
 			-- Make sure the selected filter isn't deleted
-			selection = self.initialSelection
+			selectedFilterID = self.initialSelection
 			self.initialSelection = nil
 		end
 
-		self.dropdown:SetValue(selection)
-		self.setFilter(filtersByID[selection])
+		self.dropdown:SetValue(selectedFilterID)
+		self.setFilter(filtersByID[selectedFilterID], selectedFilterID)
 	end
 end
 
