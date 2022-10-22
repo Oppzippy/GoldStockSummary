@@ -53,7 +53,7 @@ function module:OnGuildMoneyUpdated(_, name)
 	ns.MoneyStore:Dispatch({
 		type = "updateGuild",
 		name = name,
-		character = self.db.global.guilds[name],
+		guild = self.db.global.guilds[name],
 	})
 end
 
