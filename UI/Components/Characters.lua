@@ -53,10 +53,7 @@ function componentPrototype:Initialize(container, props)
 		if not selectedIndex then return end
 
 		local row = scrollingTable:GetRow(selectedIndex)
-		-- TODO attach the data to the row somehow rather than depending on column order
-		local name, realm = row.cols[3].value, row.cols[1].value
-		local nameAndRealm = string.format("%s-%s", name, realm)
-		AceEvent.SendMessage(container, "GoldStockSummary_DeleteCharacter", nameAndRealm)
+		AceEvent.SendMessage(container, "GoldStockSummary_DeleteCharacter", row.id)
 	end)
 	container:AddChild(delete)
 
@@ -102,8 +99,14 @@ end
 function componentPrototype:Update()
 	local results = self.resultsStore:GetState()
 
-	local moneyTable = ns.MoneyTable.Factory.Characters(ns.TrackedMoney.Create(results.characters, results.guilds))
+	local trackedMoney = ns.TrackedMoney.Create(results.characters, results.guilds)
+	local moneyTable = ns.MoneyTable.Factory.Characters(trackedMoney)
 	local columns, rows = ns.MoneyTable.To.ScrollingTable(tableFields, moneyTable)
+
+	local ids = moneyTable:ToRows({ "id" })
+	for i, row in ipairs(rows) do
+		row.id = ids[i][1]
+	end
 
 	self.scrollingTable:SetDisplayCols(columns)
 	self.scrollingTable:SetData(rows)

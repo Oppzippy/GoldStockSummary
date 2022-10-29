@@ -9,6 +9,7 @@ local function Characters(trackedMoney)
 		local characterCopper = trackedMoney:GetCharacterCopper(nameAndRealm)
 
 		local entry = {
+			id = nameAndRealm,
 			name = info.name,
 			realm = info.realm,
 			faction = info.faction,
@@ -21,6 +22,7 @@ local function Characters(trackedMoney)
 	end
 
 	return ns.MoneyTable.Create({
+		id = "string",
 		name = "string",
 		realm = "string",
 		faction = "faction",
