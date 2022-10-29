@@ -56,12 +56,16 @@ function StorePrototype:Dispatch(action)
 end
 
 function StorePrototype:Update()
+	local numActions = #self.actionQueue
 	for _, action in ipairs(self.actionQueue) do
 		self.state = self.reducer(self.state, action)
 	end
 	self.actionQueue = {}
-	for _, subscriber in next, self.subscribers do
-		subscriber()
+
+	if numActions > 0 then
+		for _, subscriber in next, self.subscribers do
+			subscriber()
+		end
 	end
 end
 
