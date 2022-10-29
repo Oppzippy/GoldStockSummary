@@ -112,23 +112,26 @@ function UIFramework:TriggerNextFrameUpdate()
 end
 
 function UIFramework:Update()
-	self:UpdateStores()
-	self:UpdateComponents()
+	local storeUpdateQueue = self.storeUpdateQueue
+	self.storeUpdateQueue = {}
+	self:UpdateStores(storeUpdateQueue)
+	self:UpdateComponents(storeUpdateQueue)
 end
 
-function UIFramework:UpdateStores()
-	for store in next, self.storesToComponents do
+---@param storeUpdateQueue table<Store, boolean>
+function UIFramework:UpdateStores(storeUpdateQueue)
+	for store in next, storeUpdateQueue do
 		store:Update()
+		self.storeUpdateQueue[store] = nil
 	end
 end
 
-function UIFramework:UpdateComponents()
-	local queue = self.storeUpdateQueue
-	self.storeUpdateQueue = {}
+---@param storeUpdateQueue table<Store, boolean>
+function UIFramework:UpdateComponents(storeUpdateQueue)
 	-- Don't update components more than once if more than one of the stores they are subscribed to changes.
 	local updatedComponents = {}
 
-	for store in next, queue do
+	for store in next, storeUpdateQueue do
 		for component in next, self.storesToComponents[store] do
 			if not updatedComponents[component] then
 				updatedComponents[component] = true
