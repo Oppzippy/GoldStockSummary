@@ -17,19 +17,23 @@ function module:OnCopyText(_, text)
 end
 
 function module:Copy(text)
-	local editBox = GoldStockSummaryClipboardFrame.scrollFrame.editBox
+	local frame, editBox
+
 	---@cast editBox EditBox
 	if text:find("\n", nil, true) then
-		editBox:SetMultiLine(true)
+		---@type Frame
+		frame = GoldStockSummaryMultiLineClipboardFrame
+		---@type EditBox
+		editBox = GoldStockSummaryMultiLineClipboardFrame.scrollFrame.editBox
 	else
-		editBox:SetMultiLine(false)
+		---@type Frame
+		frame = GoldStockSummarySingleLineClipboardFrame
+		---@type EditBox
+		editBox = GoldStockSummarySingleLineClipboardFrame.editBox
 	end
 
 	editBox:SetText(text)
 	editBox:HighlightText(0, #text)
-	GoldStockSummaryClipboardFrame:Show()
-end
-
-function module:Hide()
-	GoldStockSummaryClipboardFrame:Hide()
+	editBox:SetCursorPosition(0)
+	frame:Show()
 end

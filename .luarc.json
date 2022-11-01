@@ -2,6 +2,7 @@
     "diagnostics.globals": [
         "COPPER_PER_GOLD",
         "UISpecialFrames",
-        "GoldStockSummaryClipboardFrame"
+        "GoldStockSummaryMultiLineClipboardFrame",
+        "GoldStockSummarySingleLineClipboardFrame"
     ]
 }
