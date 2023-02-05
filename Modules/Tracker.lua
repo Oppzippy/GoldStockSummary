@@ -21,8 +21,14 @@ function module:OnEnable()
 	self:UpdateFaction()
 	self:UpdateMoney()
 
+	if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		-- Used by vanilla classic
+		self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
+	else
+		-- Used by wotlk+ classic and retail
+		self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+	end
 	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
-	self:RegisterEvent("GUILDBANKFRAME_OPENED", "UpdateGuildBankMoney")
 	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
 
 	-- These events can fire many times quickly. No point in repeatedly updating the same thing.
@@ -92,6 +98,14 @@ function module:UpdateOwner()
 		local guild = self:GetGuild(nameAndRealm)
 		guild.owner = self:GetGuildOwner()
 		self:SendMessage("GoldStockSummary_GuildMoneyUpdated", nameAndRealm)
+	end
+end
+
+---@param _ unknown
+---@param type Enum.PlayerInteractionType
+function module:PLAYER_INTERACTION_MANAGER_FRAME_SHOW(_, type)
+	if type == Enum.PlayerInteractionType.GuildBanker then
+		self:UpdateGuildBankMoney()
 	end
 end
 
