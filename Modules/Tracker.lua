@@ -98,6 +98,7 @@ function module:UpdateOwner()
 		local nameAndRealm = self:GetGuildNameAndRealm()
 		local guild = self:GetGuild(nameAndRealm)
 		guild.owner = self:GetGuildOwner()
+		self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", guild.owner)
 		self:SendMessage("GoldStockSummary_GuildMoneyUpdated", nameAndRealm)
 	end
 end
