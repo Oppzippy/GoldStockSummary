@@ -5,7 +5,7 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 
----@class DBMigrationModule
+---@class DBMigrationModule : AceModule
 local module = AceAddon:GetAddon(addonName):NewModule("DBMigration")
 
 function module:OnInitialize()

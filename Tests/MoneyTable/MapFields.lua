@@ -28,6 +28,7 @@ function TestMoneyTableMap:TestModifyField()
 		if field == "name" then
 			return value:sub(1, 1)
 		end
+		return value
 	end)
 
 	local expected = {

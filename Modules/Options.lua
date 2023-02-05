@@ -13,7 +13,7 @@ local LDBIcon = LibStub("LibDBIcon-1.0")
 
 local L = AceLocale:GetLocale(addonName)
 
----@class OptionsModule : AceEvent-3.0
+---@class OptionsModule : AceModule, AceEvent-3.0
 local module = AceAddon:GetAddon(addonName):NewModule("Options", "AceEvent-3.0")
 ---@type AceConfigOptionsTable
 module.optionsTable = {

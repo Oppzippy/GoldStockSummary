@@ -5,7 +5,7 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 
----@class TrackerModule : AceConsole-3.0, AceEvent-3.0
+---@class TrackerModule : AceModule, AceConsole-3.0, AceEvent-3.0, AceBucket-3.0
 local module = AceAddon:GetAddon(addonName):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
 
 function module:OnInitialize()
@@ -15,6 +15,7 @@ end
 function module:OnEnable()
 	local nameAndRealm = self:GetCharacterNameAndRealm()
 	local character = self:GetCharacter(nameAndRealm)
+	---@diagnostic disable-next-line: assign-type-mismatch
 	character.name = UnitName("player")
 	character.realm = GetRealmName() -- Not normalized
 

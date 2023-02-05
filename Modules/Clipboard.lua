@@ -5,7 +5,7 @@ local ns = select(2, ...)
 
 local AceAddon = LibStub("AceAddon-3.0")
 
----@class ClipboardModule : AceConsole-3.0, AceEvent-3.0
+---@class ClipboardModule : AceModule, AceEvent-3.0
 local module = AceAddon:GetAddon(addonName):NewModule("Clipboard", "AceEvent-3.0")
 
 function module:OnInitialize()

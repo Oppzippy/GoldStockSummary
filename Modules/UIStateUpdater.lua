@@ -8,7 +8,7 @@ local AceAddon = LibStub("AceAddon-3.0")
 local GoldStockSummary = AceAddon:GetAddon(addonName)
 ---@cast GoldStockSummary GoldStockSummary
 
----@class UIStateUpdaterModule : AceEvent-3.0
+---@class UIStateUpdaterModule : AceModule, AceEvent-3.0
 local module = GoldStockSummary:NewModule("UIStateUpdater", "AceEvent-3.0")
 
 function module:OnEnable()
