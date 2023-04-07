@@ -14,8 +14,7 @@ local pool = {
 function TestCharacterBlacklist:TestCharacterBlacklistAll()
 	local blacklist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
-			listFilterType = "characterList",
+			type = "characterBlacklist",
 			name = "?",
 			characters = {
 				["Name1-Realm"] = true,
@@ -32,8 +31,7 @@ end
 function TestCharacterBlacklist:TestCharacterBlacklistSome()
 	local blacklist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
-			listFilterType = "characterList",
+			type = "characterBlacklist",
 			name = "?",
 			characters = {
 				["Name1-Realm"] = true,
@@ -52,8 +50,7 @@ end
 function TestCharacterBlacklist:TestCharacterBlacklistNone()
 	local blacklist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
-			listFilterType = "characterList",
+			type = "characterBlacklist",
 			name = "?",
 			characters = {},
 		},

@@ -89,11 +89,9 @@ function componentPrototype:UpdateFilteredResultsStore()
 	local characters, guilds = moneyState.characters, moneyState.guilds
 
 	if self.filter then
-		-- TODO add a wrapper around this so we don't have the first return
-		local _
-		_, characters = self.filter:Filter(characters)
+		local _, filteredCharacters = self.filter:Filter(characters)
 		self.filteredResultsStore:Dispatch({
-			characters = characters,
+			characters = filteredCharacters,
 			guilds = guilds,
 		})
 	end

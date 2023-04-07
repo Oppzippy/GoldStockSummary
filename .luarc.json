@@ -3,6 +3,7 @@
         "COPPER_PER_GOLD",
         "UISpecialFrames",
         "GoldStockSummaryMultiLineClipboardFrame",
-        "GoldStockSummarySingleLineClipboardFrame"
+        "GoldStockSummarySingleLineClipboardFrame",
+        "COPPER_PER_SILVER"
     ]
 }

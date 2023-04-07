@@ -14,8 +14,7 @@ local pool = {
 function TestCharacterWhitelist:TestCharacterWhitelistAll()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 			name = "?",
 			characters = {
 				["Name1-Realm"] = true,
@@ -32,8 +31,7 @@ end
 function TestCharacterWhitelist:TestCharacterWhitelistSome()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 			name = "?",
 			characters = {
 				["Name1-Realm"] = true,
@@ -51,8 +49,7 @@ end
 function TestCharacterWhitelist:TestCharacterWhitelistNone()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 			name = "?",
 			characters = {},
 		},

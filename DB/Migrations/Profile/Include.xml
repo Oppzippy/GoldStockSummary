@@ -1,6 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-	<Script file="Defaults.lua" />
-	<Include file="Migrations\Global\Include.xml" />
-	<Include file="Migrations\Profile\Include.xml" />
+	<Script file="001-MigrateFilters.lua" />
 </Ui>

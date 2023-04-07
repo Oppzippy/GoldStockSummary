@@ -40,6 +40,7 @@ ns.dbDefaults = dbDefaults
 ns.migrations = {
 	---@type fun(db: AceDBObject-3.0)[]
 	global = {},
+	profile = {},
 }
 
 return dbDefaults

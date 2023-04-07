@@ -1,6 +1,10 @@
 ---@class ns
 local ns = select(2, ...)
 
+---@class CharacterBlacklistFilterConfiguration : FilterConfiguration
+---@field type "characterBlacklist"
+---@field characters table<string, boolean>
+
 local export = {}
 
 ---@class CharacterBlacklistFilter : Filter
@@ -17,13 +21,13 @@ function export.Create(name, characters)
 	}, { __index = CharacterBlacklistFilterPrototype })
 end
 
----@param pool table<string, unknown>
----@return table<string, unknown> pool, table<string, unknown> accepted
+---@param pool table<string, TrackedCharacter>
+---@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
 function CharacterBlacklistFilterPrototype:Filter(pool)
 	local newPool = {}
-	for character, value in next, pool do
-		if not self.characters[character] then
-			newPool[character] = value
+	for name, trackedCharacter in next, pool do
+		if not self.characters[name] then
+			newPool[name] = trackedCharacter
 		end
 	end
 	return newPool, {}

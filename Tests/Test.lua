@@ -14,5 +14,6 @@ DoWoWFile("Tests/MoneyTable/Map.lua")
 DoWoWFile("Tests/MoneyTable/MapFields.lua")
 DoWoWFile("Tests/MoneyTable/ConvertTypes.lua")
 DoWoWFile("Tests/DB/Migrations/Global/001-NormalizeRealmNames.lua")
+DoWoWFile("Tests/DB/Migrations/Profile/001-MigrateFilters.lua")
 
 os.exit(luaunit.LuaUnit.run())

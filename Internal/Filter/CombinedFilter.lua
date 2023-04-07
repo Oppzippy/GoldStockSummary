@@ -3,6 +3,10 @@ local ns = select(2, ...)
 
 local export = {}
 
+---@class CombinedFilterConfiguration : FilterConfiguration
+---@field type "combinedFilter"
+---@field childFilterIDs unknown[]
+
 ---@class CombinedFilter : Filter
 ---@field name string
 ---@field filters Filter[]
@@ -18,16 +22,16 @@ function export.Create(name, filters)
 	}, { __index = CombinedFilterPrototype })
 end
 
----@param pool table<string, unknown>
----@return table<string, unknown> pool, table<string, unknown> accepted
+---@param pool table<string, TrackedCharacter>
+---@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
 function CombinedFilterPrototype:Filter(pool)
 	local allowed = {}
 
 	for _, filter in ipairs(self.filters) do
 		local addToAllowed
 		pool, addToAllowed = filter:Filter(pool)
-		for character, value in next, addToAllowed do
-			allowed[character] = value
+		for name, trackedCharacter in next, addToAllowed do
+			allowed[name] = trackedCharacter
 		end
 	end
 

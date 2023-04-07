@@ -5,61 +5,61 @@ local export = {}
 
 ---@class FilterConfiguration
 ---@field name string
----@field type "whitelist"|"blacklist"|"combinedFilter"
----@field listFilterType "characterList"|"pattern"
----@field characters? table<string, boolean>
----@field pattern? string
----@field childFilterIDs unknown[]
+---@field type "characterWhitelist"|"characterBlacklist"|"combinedFilter"|"characterPatternWhitelist"|"characterPatternBlacklist"|"characterCopper"
 
 ---@class Filter
 ---@field name string
 local Filter = {}
 
----@param pool table<string, unknown>
----@return table<string, unknown> pool, table<string, unknown> accepted
+---@param pool table<string, TrackedCharacter>
+---@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
 function Filter:Filter(pool) return pool, {} end
 
-local createWhitelist, createBlacklist, createCombinedFilter, createFilter
+local constructors = {
+	---@param config CharacterWhitelistFilterConfiguration
+	characterWhitelist = function(config)
+		return ns.CharacterWhitelistFilter.Create(config.name, config.characters or {}), nil
+	end,
+	---@param config CharacterPatternWhitelistFilterConfiguration
+	characterPatternWhitelist = function(config)
+		return ns.CharacterPatternWhitelistFilter.Create(config.name, config.pattern or ""), nil
+	end,
+	---@param config CharacterBlacklistFilterConfiguration
+	characterBlacklist = function(config)
+		return ns.CharacterBlacklistFilter.Create(config.name, config.characters or {}), nil
+	end,
+	---@param config CharacterPatternBlacklistFilterConfiguration
+	characterPatternBlacklist = function(config)
+		return ns.CharacterPatternBlacklistFilter.Create(config.name, config.pattern or ""), nil
+	end,
+	---@param config CharacterCopperFilterConfiguration
+	characterCopper = function(config)
+		return ns.CharacterCopperFilter.Create(config.name, config.sign, config.copper), nil
+	end,
+}
+local createCombinedFilter
 
 ---@param config FilterConfiguration
 ---@param filterConfigurations table<unknown, FilterConfiguration>
 ---@param seenFilters? table<unknown, boolean>
 ---@return Filter? filter, string? error
-function createFilter(config, filterConfigurations, seenFilters)
+local function createFilter(config, filterConfigurations, seenFilters)
 	assert(config.type, "configuration type must not be nil")
-	if config.type == "whitelist" then
-		return createWhitelist(config)
-	elseif config.type == "blacklist" then
-		return createBlacklist(config)
-	elseif config.type == "combinedFilter" then
+	if config.type == "combinedFilter" then
+		---@cast config CombinedFilterConfiguration
 		return createCombinedFilter(config, filterConfigurations, seenFilters)
+	else
+		local constructor = constructors[config.type]
+		if constructor then
+			-- Type is checked by indexing the constructors table
+			---@diagnostic disable-next-line: param-type-mismatch
+			return constructor(config)
+		end
 	end
 	return nil, string.format("filter type %s not found", tostring(config.type))
 end
 
----@param config FilterConfiguration
----@return Filter? filter, string? error
-function createWhitelist(config)
-	if config.listFilterType == "characterList" then
-		return ns.CharacterWhitelistFilter.Create(config.name, config.characters or {}), nil
-	elseif config.listFilterType == "pattern" then
-		return ns.PatternWhitelistFilter.Create(config.name, config.pattern or ""), nil
-	end
-	return nil, string.format("unknown whitelist list filter type: %s", tostring(config.listFilterType))
-end
-
----@param config FilterConfiguration
----@return Filter? filter, string? error
-function createBlacklist(config)
-	if config.listFilterType == "characterList" then
-		return ns.CharacterBlacklistFilter.Create(config.name, config.characters or {}), nil
-	elseif config.listFilterType == "pattern" then
-		return ns.PatternBlacklistFilter.Create(config.name, config.pattern or ""), nil
-	end
-	return nil, string.format("unknown blacklist list filter type: %s", tostring(config.listFilterType))
-end
-
----@param config FilterConfiguration
+---@param config CombinedFilterConfiguration
 ---@param filterConfigurations table<unknown, FilterConfiguration>
 ---@param seenFilters? table<unknown, boolean>
 ---@return Filter? filter, string? error
@@ -102,8 +102,8 @@ local hardAllowFilter = {
 }
 
 --- Filters can reference other filters, so they must all be created at once to make those connections
----@param filterConfigurations table<unknown, FilterConfiguration>
----@return table<unknown, Filter> filters, table<unknown, string> errors
+---@param filterConfigurations table<any, FilterConfiguration>
+---@return table<any, Filter> filters, table<any, string> errors
 function export.FromConfigurations(filterConfigurations)
 	local filters = {}
 	local errors = {}
@@ -115,18 +115,18 @@ function export.FromConfigurations(filterConfigurations)
 		if err then
 			errors[id] = err
 		else
-			if configuration.type == "whitelist" then
-				filters[id] = ns.CombinedFilter.Create(configuration.name, {
-					rawFilter,
-					hardDenyFilter,
-				})
-			elseif configuration.type == "blacklist" then
+			if configuration.type == "combinedFilter" then
+				filters[id] = rawFilter
+			elseif configuration.type == "characterBlacklist" or configuration.type == "characterPatternBlacklist" then
 				filters[id] = ns.CombinedFilter.Create(configuration.name, {
 					rawFilter,
 					hardAllowFilter,
 				})
 			else
-				filters[id] = rawFilter
+				filters[id] = ns.CombinedFilter.Create(configuration.name, {
+					rawFilter,
+					hardDenyFilter,
+				})
 			end
 		end
 	end

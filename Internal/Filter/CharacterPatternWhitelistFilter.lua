@@ -3,6 +3,10 @@ local ns = select(2, ...)
 
 local export = {}
 
+---@class CharacterPatternWhitelistFilterConfiguration : FilterConfiguration
+---@field type "characterPatternWhitelist"
+---@field pattern string
+
 ---@class PatternWhitelistFilter : Filter
 ---@field pattern string
 local PatternWhitelistFilterPrototype = {}
@@ -17,19 +21,19 @@ function export.Create(name, pattern)
 	}, { __index = PatternWhitelistFilterPrototype })
 end
 
----@param pool table<string, boolean>
----@return table<string, boolean> pool, table<string, boolean> accepted
+---@param pool table<string, TrackedCharacter>
+---@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
 function PatternWhitelistFilterPrototype:Filter(pool)
 	local newPool = {}
 	local allowed = {}
-	for character, value in next, pool do
-		if character:find(self.pattern) then
-			allowed[character] = value
+	for name, trackedCharacer in next, pool do
+		if name:find(self.pattern) then
+			allowed[name] = trackedCharacer
 		else
-			newPool[character] = value
+			newPool[name] = trackedCharacer
 		end
 	end
 	return newPool, allowed
 end
 
-ns.PatternWhitelistFilter = export
+ns.CharacterPatternWhitelistFilter = export

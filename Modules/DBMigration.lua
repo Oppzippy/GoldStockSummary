@@ -10,6 +10,7 @@ local module = AceAddon:GetAddon(addonName):NewModule("DBMigration")
 
 function module:OnInitialize()
 	self:Migrate("global")
+	self:Migrate("profile")
 end
 
 function module:Migrate(dbType)

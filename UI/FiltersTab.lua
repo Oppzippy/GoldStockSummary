@@ -38,8 +38,7 @@ FiltersTab.options = {
 					set = function(_, name)
 						FiltersTab.filters[#FiltersTab.filters + 1] = {
 							name = name,
-							type = "whitelist",
-							listFilterType = "characterList",
+							type = "characterWhitelist",
 						}
 						FiltersTab:Render()
 						AceConfigDialog:SelectGroup(optionsTableName, "filterSettings", tostring(#FiltersTab.filters))
@@ -176,7 +175,8 @@ function FiltersTab:RenderFilter(filterID)
 				name = L.add_filter,
 				values = values,
 				sorting = order,
-				get = function() end,
+				get = function()
+				end,
 				set = function(_, val)
 					if not filter.childFilterIDs then
 						filter.childFilterIDs = {}
@@ -195,20 +195,20 @@ function FiltersTab:RenderFilter(filterID)
 		return args
 	end
 
-	local function isNotWhitelistOrBlacklist()
-		return filter.type ~= "whitelist" and filter.type ~= "blacklist"
-	end
-
 	local function isNotCombinedFilter()
 		return filter.type ~= "combinedFilter"
 	end
 
 	local function isNotCharacterListFilter()
-		return isNotWhitelistOrBlacklist() or filter.listFilterType ~= "characterList"
+		return filter.type ~= "characterBlacklist" and filter.type ~= "characterWhitelist"
 	end
 
 	local function isNotPatternFilter()
-		return isNotWhitelistOrBlacklist() or filter.listFilterType ~= "pattern"
+		return filter.type ~= "characterPatternBlacklist" and filter.type ~= "characterPatternWhitelist"
+	end
+
+	local function isNotCopperFilter()
+		return filter.type ~= "characterCopper"
 	end
 
 	group = {
@@ -237,6 +237,7 @@ function FiltersTab:RenderFilter(filterID)
 					end
 					return true
 				end,
+				width = 1.5,
 				order = 1,
 			},
 			type = {
@@ -250,35 +251,24 @@ function FiltersTab:RenderFilter(filterID)
 					self:FireFiltersChanged()
 				end,
 				values = {
-					whitelist = L.whitelist,
-					blacklist = L.blacklist,
+					characterWhitelist = L.character_whitelist,
+					characterPatternWhitelist = L.character_pattern_whitelist,
+					characterBlacklist = L.character_blacklist,
+					characterPatternBlacklist = L.character_pattern_blacklist,
+					characterCopper = L.character_money,
 					combinedFilter = L.combined_filter,
 				},
-				sorting = { "whitelist", "blacklist", "combinedFilter" },
+				sorting = {
+					"characterWhitelist",
+					"characterPatternWhitelist",
+					"characterBlacklist",
+					"characterPatternBlacklist",
+					"characterCopper",
+					"combinedFilter",
+				},
+				width = 1.5,
 				order = 2,
 			},
-
-			-----------------------------------------------------------
-			-- Whitelist/Blacklist Options
-			listFilterType = {
-				type = "select",
-				name = L.list_type,
-				hidden = isNotWhitelistOrBlacklist,
-				get = function()
-					return filter.listFilterType
-				end,
-				set = function(_, listFilterType)
-					filter.listFilterType = listFilterType
-					self:FireFiltersChanged()
-				end,
-				values = {
-					characterList = L.character_list,
-					pattern = L.pattern,
-				},
-				sorting = { "characterList", "pattern" },
-				order = 3,
-			},
-
 			-----------------------------------------------------------
 			-- Character List
 			addCharacterHeader = {
@@ -341,7 +331,6 @@ function FiltersTab:RenderFilter(filterID)
 				order = 6,
 				args = {},
 			},
-
 			-----------------------------------------------------------
 			-- Pattern
 			pattern = {
@@ -358,7 +347,83 @@ function FiltersTab:RenderFilter(filterID)
 					self:FireFiltersChanged()
 				end,
 			},
-
+			-----------------------------------------------------------
+			-- Copper
+			copperHeader = {
+				type = "header",
+				name = L.comparison,
+				hidden = isNotCopperFilter,
+				order = 7.05,
+			},
+			sign = {
+				hidden = isNotCopperFilter,
+				type = "select",
+				name = L.sign,
+				width = "half",
+				order = 7.1,
+				values = {
+					["<"] = "<",
+					["<="] = "<=",
+					["="] = "=",
+					[">="] = ">=",
+					[">"] = ">",
+				},
+				sorting = { "<", "<=", "=", ">=", ">" },
+				get = function()
+					return filter.sign
+				end,
+				set = function(_, sign)
+					filter.sign = sign
+					self:FireFiltersChanged()
+				end,
+			},
+			gold = {
+				hidden = isNotCopperFilter,
+				type = "input",
+				name = L.gold,
+				order = 7.2,
+				get = function()
+					local gold = ns.MoneyUtil.GetGold(filter.copper or 0)
+					return tostring(gold)
+				end,
+				set = function(_, gold)
+					gold = tonumber(gold) or 0
+					filter.copper = ns.MoneyUtil.SetGoldUnit(filter.copper or 0, gold)
+					self:FireFiltersChanged()
+				end,
+			},
+			silver = {
+				hidden = isNotCopperFilter,
+				type = "input",
+				name = L.silver,
+				width = "half",
+				order = 7.3,
+				get = function()
+					local silver = ns.MoneyUtil.GetSilver(filter.copper or 0)
+					return tostring(silver)
+				end,
+				set = function(_, silver)
+					silver = tonumber(silver) or 0
+					filter.copper = ns.MoneyUtil.SetSilverUnit(filter.copper or 0, silver)
+					self:FireFiltersChanged()
+				end,
+			},
+			copper = {
+				hidden = isNotCopperFilter,
+				type = "input",
+				name = L.copper,
+				width = "half",
+				order = 7.4,
+				get = function()
+					local copper = ns.MoneyUtil.GetCopper(filter.copper or 0)
+					return tostring(copper)
+				end,
+				set = function(_, copper)
+					copper = tonumber(copper) or 0
+					filter.copper = ns.MoneyUtil.SetCopperUnit(filter.copper or 0, copper)
+					self:FireFiltersChanged()
+				end,
+			},
 			-----------------------------------------------------------
 			-- Combined Filter
 			combinedFilter = {
@@ -369,7 +434,6 @@ function FiltersTab:RenderFilter(filterID)
 				order = 8,
 				args = renderFilterChain(),
 			},
-
 			-----------------------------------------------------------
 			-- Delete
 			delete = {

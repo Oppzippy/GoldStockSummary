@@ -20,16 +20,14 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 		},
 		{
 			name = "?",
-			type = "blacklist",
-			listFilterType = "characterList",
+			type = "characterBlacklist",
 			characters = {
 				["Name1-Realm"] = true,
 			},
 		},
 		{
 			name = "?",
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 			characters = {
 				["Name1-Realm"] = true,
 				["Name2-Realm"] = true,
@@ -50,8 +48,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 		},
 		{
 			name = "?",
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 			characters = {
 				["Name1-Realm"] = true,
 				["Name2-Realm"] = true,
@@ -59,8 +56,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 		},
 		{
 			name = "?",
-			type = "blacklist",
-			listFilterType = "characterList",
+			type = "characterBlacklist",
 			characters = {
 				["Name1-Realm"] = true,
 			},
@@ -114,8 +110,7 @@ function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
 		},
 		{
 			name = "?",
-			type = "whitelist",
-			listFilterType = "characterList",
+			type = "characterWhitelist",
 		},
 	})
 

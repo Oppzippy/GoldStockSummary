@@ -14,7 +14,7 @@ local pool = {
 function TestPatternBlacklist:TestPatternBlacklistAll()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
+			type = "characterPatternBlacklist",
 			listFilterType = "pattern",
 			name = "?",
 			pattern = ".*",
@@ -28,8 +28,7 @@ end
 function TestPatternBlacklist:TestPatternBlacklistSome()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
-			listFilterType = "pattern",
+			type = "characterPatternBlacklist",
 			name = "?",
 			pattern = ".+-Realm2",
 		},
@@ -45,8 +44,7 @@ end
 function TestPatternBlacklist:TestPatternBlacklistNone()
 	local whitelist = ns.Filter.FromConfigurations({
 		{
-			type = "blacklist",
-			listFilterType = "pattern",
+			type = "characterPatternBlacklist",
 			name = "?",
 			pattern = "does not match any characters",
 		},
