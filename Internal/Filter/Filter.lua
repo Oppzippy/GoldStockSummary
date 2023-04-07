@@ -17,7 +17,7 @@ local Filter = {}
 
 ---@param pool table<string, unknown>
 ---@return table<string, unknown> pool, table<string, unknown> accepted
-function Filter:Filter(pool) end
+function Filter:Filter(pool) return pool, {} end
 
 local createWhitelist, createBlacklist, createCombinedFilter, createFilter
 

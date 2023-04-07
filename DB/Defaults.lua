@@ -2,6 +2,7 @@
 local ns = select(2, ...)
 
 ---@class AceDBObject-3.0
+---@diagnostic disable-next-line: duplicate-doc-field
 ---@field global GlobalDB
 
 ---@class TrackedCharacter

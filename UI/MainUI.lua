@@ -24,6 +24,7 @@ function MainUI:Show(getTableData, db)
 	self.widgets.frame = frame
 
 	-- This must be cleaned up later when frame is released
+	---@diagnostic disable-next-line: undefined-field
 	GoldStockSummaryFrame = frame.frame
 	self.uiSpecialFramesIndex = #UISpecialFrames + 1
 	UISpecialFrames[self.uiSpecialFramesIndex] = "GoldStockSummaryFrame"
