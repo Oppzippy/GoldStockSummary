@@ -44,7 +44,7 @@ FiltersTab.options = {
 								[defaultType] = ns.FilterFactoryRegistry:DefaultConfiguration(defaultType),
 							},
 						}
-						FiltersTab:Render()
+						FiltersTab:RenderFilters()
 						AceConfigDialog:SelectGroup(optionsTableName, "filterSettings", tostring(#FiltersTab.filters))
 						FiltersTab:FireFiltersChanged()
 					end,
@@ -77,25 +77,30 @@ FiltersTab.options = {
 
 AceConfig:RegisterOptionsTable(optionsTableName, FiltersTab.options)
 
+---@private
 function FiltersTab:FireFiltersChanged()
 	self:SendMessage("GoldStockSummary_FiltersChanged")
 end
 
 ---@return AceGUIWidget
 function FiltersTab:Render()
-	local args = {}
-	for id in next, self.filters do
-		args[tostring(id)] = self:RenderFilter(id)
-	end
-	self.options.args.filterSettings.args = args
+	self:RenderFilters()
 
 	local target = AceGUI:Create("SimpleGroup")
 	AceConfigDialog:Open(optionsTableName, target)
 	return target
 end
 
-local removeSymbol = {}
+---@private
+function FiltersTab:RenderFilters()
+	local args = {}
+	for id in next, self.filters do
+		args[tostring(id)] = self:RenderFilter(id)
+	end
+	self.options.args.filterSettings.args = args
+end
 
+---@private
 ---@param filterID unknown
 ---@return AceConfigOptionsTable
 function FiltersTab:RenderFilter(filterID)
@@ -142,7 +147,7 @@ function FiltersTab:RenderFilter(filterID)
 					if not filter.typeConfig[type] then
 						filter.typeConfig[type] = ns.FilterFactoryRegistry:DefaultConfiguration(type)
 					end
-					self:Render()
+					self:RenderFilters()
 					self:FireFiltersChanged()
 				end,
 				values = {
@@ -183,7 +188,7 @@ function FiltersTab:RenderFilter(filterID)
 				width = "full",
 				func = function()
 					self.filters[filterID] = nil
-					self:Render()
+					self:RenderFilters()
 					self:FireFiltersChanged()
 				end,
 				order = 99999,
