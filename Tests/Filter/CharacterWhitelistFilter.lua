@@ -12,14 +12,18 @@ local pool = {
 }
 
 function TestCharacterWhitelist:TestCharacterWhitelistAll()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterWhitelist",
 			name = "?",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name2-Realm"] = true,
-				["Name3-Realm2"] = true,
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name2-Realm"] = true,
+						["Name3-Realm2"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -29,13 +33,17 @@ function TestCharacterWhitelist:TestCharacterWhitelistAll()
 end
 
 function TestCharacterWhitelist:TestCharacterWhitelistSome()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterWhitelist",
 			name = "?",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name4-Realm"] = true,
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name4-Realm"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -47,11 +55,15 @@ function TestCharacterWhitelist:TestCharacterWhitelistSome()
 end
 
 function TestCharacterWhitelist:TestCharacterWhitelistNone()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterWhitelist",
 			name = "?",
-			characters = {},
+			typeConfig = {
+				characterWhitelist = {
+					characters = {},
+				},
+			},
 		},
 	})[1]
 

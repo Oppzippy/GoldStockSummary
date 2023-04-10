@@ -1,39 +1,70 @@
+---@type string
+local addonName = ...
 ---@class ns
 local ns = select(2, ...)
 
-local export = {}
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
----@class CharacterPatternWhitelistFilterConfiguration : FilterConfiguration
----@field type "characterPatternWhitelist"
+---@class CharacterPatternWhitelistFilterFactory: FilterFactory
+local CharacterPatternWhitelistFilterFactory = {
+	---@type AceConfigOptionsTable
+	options = {},
+	type = "characterPatternWhitelist",
+	localizedName = L.character_pattern_whitelist,
+	terminus = "deny",
+}
+
+---@class CharacterPatternWhitelistFilterConfiguration
 ---@field pattern string
 
----@class PatternWhitelistFilter : Filter
----@field pattern string
-local PatternWhitelistFilterPrototype = {}
-
----@param name string
----@param pattern string
----@return PatternWhitelistFilter
-function export.Create(name, pattern)
-	return setmetatable({
-		name = name,
-		pattern = pattern,
-	}, { __index = PatternWhitelistFilterPrototype })
-end
-
----@param pool table<string, TrackedCharacter>
----@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
-function PatternWhitelistFilterPrototype:Filter(pool)
-	local newPool = {}
-	local allowed = {}
-	for name, trackedCharacer in next, pool do
-		if name:find(self.pattern) then
-			allowed[name] = trackedCharacer
-		else
-			newPool[name] = trackedCharacer
+---@param filterName string
+---@param config CharacterPatternWhitelistFilterConfiguration
+---@return Filter
+function CharacterPatternWhitelistFilterFactory:Create(filterName, config)
+	return ns.Filter.Create(filterName, function(pool)
+		local newPool = {}
+		local allowed = {}
+		for name, trackedCharacer in next, pool do
+			if name:find(config.pattern) then
+				allowed[name] = trackedCharacer
+			else
+				newPool[name] = trackedCharacer
+			end
 		end
-	end
-	return newPool, allowed
+		return newPool, allowed
+	end)
 end
 
-ns.CharacterPatternWhitelistFilter = export
+---@return CharacterPatternWhitelistFilterConfiguration
+function CharacterPatternWhitelistFilterFactory:DefaultConfiguration()
+	return {
+		pattern = "",
+	}
+end
+
+---@param config FilterConfiguration
+---@param db AceDBObject-3.0
+---@return AceConfigOptionsTable
+function CharacterPatternWhitelistFilterFactory:OptionsTable(config, db)
+	local typeConfig = config.typeConfig[self.type]
+	return {
+		type = "group",
+		args = {
+			pattern = {
+				type = "input",
+				name = L.pattern,
+				width = "full",
+				order = 7,
+				get = function()
+					return typeConfig.pattern
+				end,
+				set = function(_, pattern)
+					typeConfig.pattern = pattern
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
+			},
+		}
+	}
+end
+
+ns.FilterRegistry:Register(CharacterPatternWhitelistFilterFactory)

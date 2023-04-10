@@ -2,6 +2,10 @@ function GetLocale()
 	return "enUS"
 end
 
+function geterrorhandler()
+	return error
+end
+
 strmatch = string.match
 
 local namespace = {}
@@ -28,7 +32,10 @@ DoWoWFile("Locales/enUS.lua")
 DoWoWFile("DB/Defaults.lua")
 DoWoWFile("DB/Migrations/Global/001-NormalizeRealmNames.lua")
 DoWoWFile("DB/Migrations/Profile/001-MigrateFilters.lua")
-DoWoWFile("Internal/Filter/Filter.lua")
+DoWoWFile("DB/Migrations/Profile/002-MigrateFilters.lua")
+DoWoWFile("DB/Migrations/Profile/003-AddTypeConfigDefaults.lua")
+DoWoWFile("Internal/Filter.lua")
+DoWoWFile("Internal/FilterRegistry.lua")
 DoWoWFile("Internal/Filter/CharacterBlacklistFilter.lua")
 DoWoWFile("Internal/Filter/CharacterWhitelistFilter.lua")
 DoWoWFile("Internal/Filter/CombinedFilter.lua")

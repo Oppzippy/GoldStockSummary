@@ -12,25 +12,37 @@ local pool = {
 }
 
 function TestCombinedFilter:TestBlacklistThenWhitelist()
-	local filter = ns.Filter.FromConfigurations({
+	local filter = ns.FilterRegistry:Create({
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = { 2, 3 },
-		},
-		{
 			name = "?",
-			type = "characterBlacklist",
-			characters = {
-				["Name1-Realm"] = true,
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2, 3 },
+				},
 			},
 		},
 		{
+			type = "characterBlacklist",
 			name = "?",
+			typeConfig = {
+				characterBlacklist = {
+					characters = {
+						["Name1-Realm"] = true,
+					},
+				},
+			},
+		},
+		{
 			type = "characterWhitelist",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name2-Realm"] = true,
+			name = "?",
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name2-Realm"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -39,26 +51,68 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 	luaunit.assertEquals(allowed, { ["Name2-Realm"] = true })
 end
 
-function TestCombinedFilter:TestWhitelistThenBlacklist()
-	local filter = ns.Filter.FromConfigurations({
+function TestCombinedFilter:TestSingleChildFilter()
+	local filter = ns.FilterRegistry:Create({
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = { 2, 3 },
-		},
-		{
 			name = "?",
-			type = "characterWhitelist",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name2-Realm"] = true,
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2 },
+				},
 			},
 		},
 		{
+			type = "characterWhitelist",
 			name = "?",
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+					},
+				},
+			},
+		},
+	})[1]
+
+	local _, allowed = filter:Filter(pool)
+	luaunit.assertEquals(allowed, {
+		["Name1-Realm"] = true,
+	})
+end
+
+function TestCombinedFilter:TestWhitelistThenBlacklist()
+	local filter = ns.FilterRegistry:Create({
+		{
+			type = "combinedFilter",
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2, 3 },
+				},
+			},
+		},
+		{
+			type = "characterWhitelist",
+			name = "?",
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name2-Realm"] = true,
+					},
+				},
+			},
+		},
+		{
 			type = "characterBlacklist",
-			characters = {
-				["Name1-Realm"] = true,
+			name = "?",
+			typeConfig = {
+				characterBlacklist = {
+					characters = {
+						["Name1-Realm"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -71,11 +125,15 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 end
 
 function TestCombinedFilter:TestEmpty()
-	local filter = ns.Filter.FromConfigurations({
+	local filter = ns.FilterRegistry:Create({
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = {},
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = {},
+				},
+			},
 		},
 	})[1]
 	local _, allowed = filter:Filter(pool)
@@ -83,37 +141,95 @@ function TestCombinedFilter:TestEmpty()
 end
 
 function TestCombinedFilter:TestFilterLoop()
-	local filters, errors = ns.Filter.FromConfigurations({
+	local filters, errors = ns.FilterRegistry:Create({
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = { 2 },
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2 },
+				},
+			},
 		},
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = { 1 },
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 1 },
+				},
+			},
 		},
 	})
 
 	luaunit.assertNil(next(filters))
+	luaunit.assertNotNil(errors)
+	---@cast errors string[]
 	luaunit.assertStrContains(errors[1], "filter loop")
 	luaunit.assertStrContains(errors[2], "filter loop")
 end
 
 function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
-	local filters, errors = ns.Filter.FromConfigurations({
+	local filters, errors = ns.FilterRegistry:Create({
 		{
-			name = "?",
 			type = "combinedFilter",
-			childFilterIDs = { 2, 2 },
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2, 2 },
+				},
+			},
 		},
 		{
 			name = "?",
 			type = "characterWhitelist",
+			typeConfig = {
+				characterWhitelist = {
+					characters = {},
+				},
+			},
 		},
 	})
 
 	luaunit.assertNotNil(next(filters))
 	luaunit.assertNil(next(errors))
+end
+
+function TestCombinedFilter:TestNestedCombinedFilters()
+	local filter = ns.FilterRegistry:Create({
+		{
+			type = "combinedFilter",
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 2 },
+				},
+			},
+		},
+		{
+			type = "combinedFilter",
+			name = "?",
+			typeConfig = {
+				combinedFilter = {
+					childFilterIDs = { 3 },
+				},
+			},
+		},
+		{
+			type = "characterWhitelist",
+			name = "?",
+			typeConfig = {
+				characterWhitelist = {
+					characters = {
+						["Name1-Realm"] = true,
+					},
+				},
+			},
+		},
+	})[1]
+
+	local _, allowed = filter:Filter(pool)
+	luaunit.assertEquals(allowed, {
+		["Name1-Realm"] = true,
+	})
 end

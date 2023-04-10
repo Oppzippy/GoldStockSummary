@@ -1,36 +1,67 @@
+---@type string
+local addonName = ...
 ---@class ns
 local ns = select(2, ...)
 
-local export = {}
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
----@class CharacterPatternBlacklistFilterConfiguration : FilterConfiguration
----@field type "characterPatternBlacklist"
+---@class CharacterPatternBlacklistFilterFactory: FilterFactory
+local CharacterPatternBlacklistFilterFactory = {
+	---@type AceConfigOptionsTable
+	options = {},
+	type = "characterPatternBlacklist",
+	localizedName = L.character_pattern_blacklist,
+	terminus = "allow",
+}
+
+---@class CharacterPatternBlacklistFilterConfiguration
 ---@field pattern string
 
----@class PatternBlacklistFilter : Filter
----@field pattern string
-local PatternBlacklistFilterPrototype = {}
-
----@param name string
----@param pattern string
----@return PatternBlacklistFilter
-function export.Create(name, pattern)
-	return setmetatable({
-		name = name,
-		pattern = pattern,
-	}, { __index = PatternBlacklistFilterPrototype })
-end
-
----@param pool table<string, TrackedCharacter>
----@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
-function PatternBlacklistFilterPrototype:Filter(pool)
-	local newPool = {}
-	for name, trackedCharacter in next, pool do
-		if not name:find(self.pattern) then
-			newPool[name] = trackedCharacter
+---@param filterName string
+---@param config CharacterPatternBlacklistFilterConfiguration
+---@return Filter
+function CharacterPatternBlacklistFilterFactory:Create(filterName, config)
+	return ns.Filter.Create(filterName, function(pool)
+		local newPool = {}
+		for name, trackedCharacter in next, pool do
+			if not name:find(config.pattern) then
+				newPool[name] = trackedCharacter
+			end
 		end
-	end
-	return newPool, {}
+		return newPool, {}
+	end)
 end
 
-ns.CharacterPatternBlacklistFilter = export
+---@return CharacterPatternBlacklistFilterConfiguration
+function CharacterPatternBlacklistFilterFactory:DefaultConfiguration()
+	return {
+		pattern = "",
+	}
+end
+
+---@param config FilterConfiguration
+---@param db AceDBObject-3.0
+---@return AceConfigOptionsTable
+function CharacterPatternBlacklistFilterFactory:OptionsTable(config, db)
+	local typeConfig = config.typeConfig[self.type]
+	return {
+		type = "group",
+		args = {
+			pattern = {
+				type = "input",
+				name = L.pattern,
+				width = "full",
+				order = 7,
+				get = function()
+					return typeConfig.pattern
+				end,
+				set = function(_, pattern)
+					typeConfig.pattern = pattern
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
+			},
+		}
+	}
+end
+
+ns.FilterRegistry:Register(CharacterPatternBlacklistFilterFactory)

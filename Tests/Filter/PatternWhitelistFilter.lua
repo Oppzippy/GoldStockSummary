@@ -12,12 +12,15 @@ local pool = {
 }
 
 function TestPatternWhitelist:TestPatternWhitelistAll()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterPatternWhitelist",
-			listFilterType = "pattern",
 			name = "?",
-			pattern = ".*",
+			typeConfig = {
+				characterPatternWhitelist = {
+					pattern = ".*",
+				},
+			},
 		},
 	})[1]
 
@@ -26,12 +29,15 @@ function TestPatternWhitelist:TestPatternWhitelistAll()
 end
 
 function TestPatternWhitelist:TestPatternWhitelistSome()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterPatternWhitelist",
-			listFilterType = "pattern",
 			name = "?",
-			pattern = ".+-Realm2",
+			typeConfig = {
+				characterPatternWhitelist = {
+					pattern = ".+-Realm2",
+				},
+			},
 		},
 	})[1]
 
@@ -42,11 +48,15 @@ function TestPatternWhitelist:TestPatternWhitelistSome()
 end
 
 function TestPatternWhitelist:TestPatternWhitelistNone()
-	local whitelist = ns.Filter.FromConfigurations({
+	local whitelist = ns.FilterRegistry:Create({
 		{
 			type = "characterPatternWhitelist",
 			name = "?",
-			pattern = "does not match any characters",
+			typeConfig = {
+				characterPatternWhitelist = {
+					pattern = "does not match any characters",
+				},
+			},
 		},
 	})[1]
 

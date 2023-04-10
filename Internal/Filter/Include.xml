@@ -6,5 +6,4 @@
 	<Script file="CharacterPatternBlacklistFilter.lua" />
 	<Script file="CharacterPatternWhitelistFilter.lua" />
 	<Script file="CombinedFilter.lua" />
-	<Script file="Filter.lua" />
 </Ui>

@@ -12,14 +12,18 @@ local pool = {
 }
 
 function TestCharacterBlacklist:TestCharacterBlacklistAll()
-	local blacklist = ns.Filter.FromConfigurations({
+	local blacklist = ns.FilterRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name2-Realm"] = true,
-				["Name3-Realm2"] = true,
+			typeConfig = {
+				characterBlacklist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name2-Realm"] = true,
+						["Name3-Realm2"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -29,13 +33,17 @@ function TestCharacterBlacklist:TestCharacterBlacklistAll()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistSome()
-	local blacklist = ns.Filter.FromConfigurations({
+	local blacklist = ns.FilterRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",
-			characters = {
-				["Name1-Realm"] = true,
-				["Name4-Realm"] = true,
+			typeConfig = {
+				characterBlacklist = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name4-Realm"] = true,
+					},
+				},
 			},
 		},
 	})[1]
@@ -48,11 +56,15 @@ function TestCharacterBlacklist:TestCharacterBlacklistSome()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistNone()
-	local blacklist = ns.Filter.FromConfigurations({
+	local blacklist = ns.FilterRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",
-			characters = {},
+			typeConfig = {
+				characterBlacklist = {
+					characters = {},
+				},
+			},
 		},
 	})[1]
 
