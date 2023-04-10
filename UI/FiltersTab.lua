@@ -41,7 +41,7 @@ FiltersTab.options = {
 							name = name,
 							type = defaultType,
 							typeConfig = {
-								[defaultType] = ns.FilterRegistry:DefaultConfiguration(defaultType),
+								[defaultType] = ns.FilterFactoryRegistry:DefaultConfiguration(defaultType),
 							},
 						}
 						FiltersTab:Render()
@@ -140,7 +140,7 @@ function FiltersTab:RenderFilter(filterID)
 				set = function(_, type)
 					filter.type = type
 					if not filter.typeConfig[type] then
-						filter.typeConfig[type] = ns.FilterRegistry:DefaultConfiguration(type)
+						filter.typeConfig[type] = ns.FilterFactoryRegistry:DefaultConfiguration(type)
 					end
 					self:Render()
 					self:FireFiltersChanged()
@@ -168,10 +168,10 @@ function FiltersTab:RenderFilter(filterID)
 			-- Options for specific filter types
 			typeConfig = {
 				type = "group",
-				name = ns.FilterRegistry:LocalizedName(filter.type),
+				name = ns.FilterFactoryRegistry:LocalizedName(filter.type),
 				inline = true,
 				order = 2.01,
-				args = ns.FilterRegistry:OptionsTable(filter).args,
+				args = ns.FilterFactoryRegistry:OptionsTable(filter).args,
 			},
 			-----------------------------------------------------------
 			-- Delete

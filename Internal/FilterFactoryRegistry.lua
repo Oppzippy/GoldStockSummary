@@ -9,13 +9,13 @@ local ns = select(2, ...)
 ---@field localizedName string
 
 ---@class FilterRegistry
-local FilterRegistry = {
+local FilterFactoryRegistry = {
 	---@type table<string, FilterFactory>
 	factories = {},
 }
-ns.FilterRegistry = FilterRegistry
+ns.FilterFactoryRegistry = FilterFactoryRegistry
 
-function FilterRegistry:Register(filter)
+function FilterFactoryRegistry:Register(filter)
 	self.factories[filter.type] = filter
 end
 
@@ -27,7 +27,7 @@ end
 ---@generic T
 ---@param configurations table<T, FilterConfiguration>
 ---@return Filter[], string[]
-function FilterRegistry:Create(configurations)
+function FilterFactoryRegistry:Create(configurations)
 	local filters = {}
 	local errors = {}
 	for id in next, configurations do
@@ -40,19 +40,19 @@ end
 
 ---@param config FilterConfiguration
 ---@return AceConfigOptionsTable
-function FilterRegistry:OptionsTable(config)
+function FilterFactoryRegistry:OptionsTable(config)
 	return self.factories[config.type]:OptionsTable(config, ns.db)
 end
 
 ---@param filterType string
 ---@return string
-function FilterRegistry:LocalizedName(filterType)
+function FilterFactoryRegistry:LocalizedName(filterType)
 	return self.factories[filterType].localizedName
 end
 
 ---@param filterType string
 ---@return table
-function FilterRegistry:DefaultConfiguration(filterType)
+function FilterFactoryRegistry:DefaultConfiguration(filterType)
 	return self.factories[filterType]:DefaultConfiguration()
 end
 
@@ -69,7 +69,7 @@ end)
 ---@param id T
 ---@param seenIds table<T, boolean>
 ---@return Filter?, string?
-function FilterRegistry:CreateOne(configurations, id, seenIds)
+function FilterFactoryRegistry:CreateOne(configurations, id, seenIds)
 	local config = configurations[id]
 	if not config then
 		return nil, string.format("Filter with id %s does not exist", tostring(id))
@@ -124,7 +124,7 @@ end
 ---@param name string
 ---@param filters Filter[]
 ---@return Filter
-function FilterRegistry:CombineFilters(name, filters)
+function FilterFactoryRegistry:CombineFilters(name, filters)
 	return self.factories["combinedFilter"]:Create(name, {
 		childFilters = filters,
 	})

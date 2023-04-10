@@ -5,38 +5,33 @@ local ns = select(2, ...)
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
----@class CharacterWhitelistFilterFactory: FilterFactory
-local CharacterWhitelistFilterFactory = {
-	---@type AceConfigOptionsTable
-	options = {},
-	type = "characterWhitelist",
-	localizedName = L.character_whitelist,
-	terminus = "deny",
+---@class CharacterBlacklistFilterFactory: FilterFactory
+local CharacterBlacklistFilterFactory = {
+	type = "characterBlacklist",
+	localizedName = L.character_blacklist,
+	terminus = "allow",
 }
 
----@class CharacterWhitelistFilterConfiguration
+---@class CharacterBlacklistFilterConfiguration
 ---@field characters table<string, boolean>
 
 ---@param filterName string
----@param config CharacterWhitelistFilterConfiguration
+---@param config CharacterBlacklistFilterConfiguration
 ---@return Filter
-function CharacterWhitelistFilterFactory:Create(filterName, config)
+function CharacterBlacklistFilterFactory:Create(filterName, config)
 	return ns.Filter.Create(filterName, function(pool)
 		local newPool = {}
-		local allowed = {}
 		for name, trackedCharacter in next, pool do
-			if config.characters[name] then
-				allowed[name] = trackedCharacter
-			else
+			if not config.characters[name] then
 				newPool[name] = trackedCharacter
 			end
 		end
-		return newPool, allowed
+		return newPool, {}
 	end)
 end
 
----@return CharacterWhitelistFilterConfiguration
-function CharacterWhitelistFilterFactory:DefaultConfiguration()
+---@return CharacterBlacklistFilterConfiguration
+function CharacterBlacklistFilterFactory:DefaultConfiguration()
 	return {
 		characters = {},
 	}
@@ -45,7 +40,7 @@ end
 ---@param config FilterConfiguration
 ---@param db AceDBObject-3.0
 ---@return AceConfigOptionsTable
-function CharacterWhitelistFilterFactory:OptionsTable(config, db)
+function CharacterBlacklistFilterFactory:OptionsTable(config, db)
 	---@type fun()
 	local renderCharacterList
 	local selectedRealm
@@ -142,4 +137,4 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 	return optionsTable
 end
 
-ns.FilterRegistry:Register(CharacterWhitelistFilterFactory)
+ns.FilterFactoryRegistry:Register(CharacterBlacklistFilterFactory)

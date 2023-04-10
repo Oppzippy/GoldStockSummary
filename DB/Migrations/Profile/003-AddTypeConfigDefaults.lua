@@ -9,7 +9,7 @@ ns.migrations.profile[3] = function(db)
 			config.typeConfig[config.type] = {}
 		end
 		for type, typeConfig in next, config.typeConfig do
-			local defaultTypeConfig = ns.FilterRegistry:DefaultConfiguration(type)
+			local defaultTypeConfig = ns.FilterFactoryRegistry:DefaultConfiguration(type)
 			for k, v in next, defaultTypeConfig do
 				if not typeConfig[k] then
 					typeConfig[k] = v

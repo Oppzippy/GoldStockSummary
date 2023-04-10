@@ -6,7 +6,7 @@ local ns = select(2, ...)
 local AceLocale = LibStub("AceLocale-3.0")
 local L = AceLocale:GetLocale(addonName)
 
-local defaultFilters = ns.FilterRegistry:Create({
+local defaultFilters = ns.FilterFactoryRegistry:Create({
 	allowAll = {
 		name = L.allow_all,
 		type = "characterPatternWhitelist",

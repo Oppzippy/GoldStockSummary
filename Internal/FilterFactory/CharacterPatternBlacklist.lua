@@ -64,4 +64,4 @@ function CharacterPatternBlacklistFilterFactory:OptionsTable(config, db)
 	}
 end
 
-ns.FilterRegistry:Register(CharacterPatternBlacklistFilterFactory)
+ns.FilterFactoryRegistry:Register(CharacterPatternBlacklistFilterFactory)

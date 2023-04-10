@@ -12,7 +12,7 @@ local pool = {
 }
 
 function TestCombinedFilter:TestBlacklistThenWhitelist()
-	local filter = ns.FilterRegistry:Create({
+	local filter = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -52,7 +52,7 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 end
 
 function TestCombinedFilter:TestSingleChildFilter()
-	local filter = ns.FilterRegistry:Create({
+	local filter = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -82,7 +82,7 @@ function TestCombinedFilter:TestSingleChildFilter()
 end
 
 function TestCombinedFilter:TestWhitelistThenBlacklist()
-	local filter = ns.FilterRegistry:Create({
+	local filter = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -125,7 +125,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 end
 
 function TestCombinedFilter:TestEmpty()
-	local filter = ns.FilterRegistry:Create({
+	local filter = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -141,7 +141,7 @@ function TestCombinedFilter:TestEmpty()
 end
 
 function TestCombinedFilter:TestFilterLoop()
-	local filters, errors = ns.FilterRegistry:Create({
+	local filters, errors = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -170,7 +170,7 @@ function TestCombinedFilter:TestFilterLoop()
 end
 
 function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
-	local filters, errors = ns.FilterRegistry:Create({
+	local filters, errors = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",
@@ -196,7 +196,7 @@ function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
 end
 
 function TestCombinedFilter:TestNestedCombinedFilters()
-	local filter = ns.FilterRegistry:Create({
+	local filter = ns.FilterFactoryRegistry:Create({
 		{
 			type = "combinedFilter",
 			name = "?",

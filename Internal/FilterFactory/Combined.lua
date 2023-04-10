@@ -119,4 +119,4 @@ function CombinedFilterFactory:OptionsTable(config, db)
 	}
 end
 
-ns.FilterRegistry:Register(CombinedFilterFactory)
+ns.FilterFactoryRegistry:Register(CombinedFilterFactory)

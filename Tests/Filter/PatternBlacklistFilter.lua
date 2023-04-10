@@ -12,7 +12,7 @@ local pool = {
 }
 
 function TestPatternBlacklist:TestPatternBlacklistAll()
-	local whitelist = ns.FilterRegistry:Create({
+	local whitelist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterPatternBlacklist",
 			name = "?",
@@ -29,7 +29,7 @@ function TestPatternBlacklist:TestPatternBlacklistAll()
 end
 
 function TestPatternBlacklist:TestPatternBlacklistSome()
-	local whitelist = ns.FilterRegistry:Create({
+	local whitelist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterPatternBlacklist",
 			name = "?",
@@ -49,7 +49,7 @@ function TestPatternBlacklist:TestPatternBlacklistSome()
 end
 
 function TestPatternBlacklist:TestPatternBlacklistNone()
-	local whitelist = ns.FilterRegistry:Create({
+	local whitelist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterPatternBlacklist",
 			name = "?",

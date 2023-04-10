@@ -67,4 +67,4 @@ function CharacterPatternWhitelistFilterFactory:OptionsTable(config, db)
 	}
 end
 
-ns.FilterRegistry:Register(CharacterPatternWhitelistFilterFactory)
+ns.FilterFactoryRegistry:Register(CharacterPatternWhitelistFilterFactory)

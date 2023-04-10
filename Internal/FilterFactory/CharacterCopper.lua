@@ -140,4 +140,4 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 	}
 end
 
-ns.FilterRegistry:Register(CharacterCopperFilterFactory)
+ns.FilterFactoryRegistry:Register(CharacterCopperFilterFactory)

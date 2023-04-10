@@ -12,7 +12,7 @@ local pool = {
 }
 
 function TestCharacterBlacklist:TestCharacterBlacklistAll()
-	local blacklist = ns.FilterRegistry:Create({
+	local blacklist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",
@@ -33,7 +33,7 @@ function TestCharacterBlacklist:TestCharacterBlacklistAll()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistSome()
-	local blacklist = ns.FilterRegistry:Create({
+	local blacklist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",
@@ -56,7 +56,7 @@ function TestCharacterBlacklist:TestCharacterBlacklistSome()
 end
 
 function TestCharacterBlacklist:TestCharacterBlacklistNone()
-	local blacklist = ns.FilterRegistry:Create({
+	local blacklist = ns.FilterFactoryRegistry:Create({
 		{
 			type = "characterBlacklist",
 			name = "?",

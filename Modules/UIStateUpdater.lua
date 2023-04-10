@@ -58,7 +58,7 @@ function module:OnGuildMoneyUpdated(_, name)
 end
 
 function module:OnFiltersChanged()
-	local filters, errors = ns.FilterRegistry:Create(self.db.profile.filters)
+	local filters, errors = ns.FilterFactoryRegistry:Create(self.db.profile.filters)
 	ns.FilterStore:Dispatch({
 		type = "updateFilterConfigurations",
 		filters = filters,
