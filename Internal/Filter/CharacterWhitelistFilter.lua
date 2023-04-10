@@ -70,7 +70,7 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 					local realms = {}
 					local typeConfig = config.typeConfig[config.type]
 					for nameAndRealm in next, db.global.characters do
-						if not typeConfig.characters or not typeConfig.characters[nameAndRealm] then
+						if not typeConfig.characters[nameAndRealm] then
 							local _, realm = strsplit("-", nameAndRealm)
 							realms[realm] = realm
 						end
@@ -87,7 +87,7 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 					local typeConfig = config.typeConfig[config.type]
 					for nameAndRealm in next, db.global.characters do
 						local character, realm = strsplit("-", nameAndRealm)
-						if selectedRealm == realm and (not typeConfig.characters or not typeConfig.characters[nameAndRealm]) then
+						if selectedRealm == realm and not typeConfig.characters[nameAndRealm] then
 							realmCharacters[nameAndRealm] = character
 						end
 					end
@@ -95,9 +95,6 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 				end,
 				set = function(_, nameAndRealm)
 					local typeConfig = config.typeConfig[config.type]
-					if not typeConfig.characters then
-						typeConfig.characters = {}
-					end
 					typeConfig.characters[nameAndRealm] = true
 					renderCharacterList()
 					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
@@ -117,28 +114,26 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 	renderCharacterList = function()
 		local args = {}
 		local characters = config.typeConfig[self.type].characters
-		if characters then
-			for nameAndRealm in next, characters do
-				local name, realm = strsplit("-", nameAndRealm)
-				if not args[realm] then
-					args[realm] = {
-						type = "group",
-						inline = true,
-						name = realm,
-						args = {},
-					}
-				end
-				args[realm].args[name] = {
-					type = "execute",
-					name = name,
-					desc = L.click_to_remove,
-					func = function()
-						characters[nameAndRealm] = nil
-						renderCharacterList()
-						LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
-					end,
+		for nameAndRealm in next, characters do
+			local name, realm = strsplit("-", nameAndRealm)
+			if not args[realm] then
+				args[realm] = {
+					type = "group",
+					inline = true,
+					name = realm,
+					args = {},
 				}
 			end
+			args[realm].args[name] = {
+				type = "execute",
+				name = name,
+				desc = L.click_to_remove,
+				func = function()
+					characters[nameAndRealm] = nil
+					renderCharacterList()
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
+			}
 		end
 		optionsTable.args.characterList.args = args
 	end
