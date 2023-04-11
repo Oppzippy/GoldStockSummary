@@ -47,7 +47,7 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 		},
 	})[1]
 
-	local _, allowed = filter:Filter(pool)
+	local _, allowed = filter:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, { ["Name2-Realm"] = true })
 end
 
@@ -75,7 +75,7 @@ function TestCombinedFilter:TestSingleChildFilter()
 		},
 	})[1]
 
-	local _, allowed = filter:Filter(pool)
+	local _, allowed = filter:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {
 		["Name1-Realm"] = true,
 	})
@@ -117,7 +117,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 		},
 	})[1]
 
-	local _, allowed = filter:Filter(pool)
+	local _, allowed = filter:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {
 		["Name1-Realm"] = true,
 		["Name2-Realm"] = true,
@@ -136,7 +136,7 @@ function TestCombinedFilter:TestEmpty()
 			},
 		},
 	})[1]
-	local _, allowed = filter:Filter(pool)
+	local _, allowed = filter:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {})
 end
 
@@ -228,7 +228,7 @@ function TestCombinedFilter:TestNestedCombinedFilters()
 		},
 	})[1]
 
-	local _, allowed = filter:Filter(pool)
+	local _, allowed = filter:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {
 		["Name1-Realm"] = true,
 	})

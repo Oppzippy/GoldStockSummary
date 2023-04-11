@@ -24,11 +24,11 @@ function CharacterPatternWhitelistFilterFactory:Create(filterName, config)
 	return ns.Filter.Create(filterName, function(pool)
 		local newPool = {}
 		local allowed = {}
-		for name, trackedCharacer in next, pool do
+		for name in next, pool do
 			if name:find(config.pattern) then
-				allowed[name] = trackedCharacer
+				allowed[name] = true
 			else
-				newPool[name] = trackedCharacer
+				newPool[name] = true
 			end
 		end
 		return newPool, allowed

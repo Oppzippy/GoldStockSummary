@@ -31,6 +31,7 @@ function componentPrototype:Initialize(container)
 		{
 			setFilter = function(filter, filterID)
 				ns.db.profile.selectedFilter = filterID
+				---@cast filter Filter
 				self.filter = filter
 				self:UpdateFilteredResultsStore()
 			end,
@@ -87,9 +88,21 @@ end
 function componentPrototype:UpdateFilteredResultsStore()
 	local moneyState = ns.MoneyStore:GetState()
 	local characters, guilds = moneyState.characters, moneyState.guilds
+	---@cast characters table<string, TrackedCharacter>
+	---@cast guilds table<string, TrackedGuild>
+
+	---@type table<string, boolean>
+	local characterNameSet = {}
+	for name in next, characters do
+		characterNameSet[name] = true
+	end
 
 	if self.filter then
-		local _, filteredCharacters = self.filter:Filter(characters)
+		local _, filteredCharacterNames = self.filter:Filter(characterNameSet, ns.TrackedMoney.Create(characters, guilds))
+		local filteredCharacters = {}
+		for name in next, filteredCharacterNames do
+			filteredCharacters[name] = characters[name]
+		end
 		self.filteredResultsStore:Dispatch({
 			characters = filteredCharacters,
 			guilds = guilds,

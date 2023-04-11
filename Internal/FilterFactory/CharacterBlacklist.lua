@@ -21,9 +21,9 @@ local CharacterBlacklistFilterFactory = {
 function CharacterBlacklistFilterFactory:Create(filterName, config)
 	return ns.Filter.Create(filterName, function(pool)
 		local newPool = {}
-		for name, trackedCharacter in next, pool do
+		for name in next, pool do
 			if not config.characters[name] then
-				newPool[name] = trackedCharacter
+				newPool[name] = true
 			end
 		end
 		return newPool, {}

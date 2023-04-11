@@ -1,7 +1,7 @@
 ---@class ns
 local ns = select(2, ...)
 
----@alias FilterFunction fun(pool: table<string, TrackedCharacter>): pool: table<string, TrackedCharacter>, accepted: table<string, TrackedCharacter>
+---@alias FilterFunction fun(pool: table<string, boolean>, trackedMoney: TrackedMoney): pool: table<string, boolean>, accepted: table<string, boolean>
 
 ---@class Filter
 ---@field name string
@@ -10,10 +10,11 @@ local FilterPrototype = {}
 
 local filterMetatable = { __index = FilterPrototype }
 
----@param pool table<string, TrackedCharacter>
----@return table<string, TrackedCharacter> pool, table<string, TrackedCharacter> accepted
-function FilterPrototype:Filter(pool)
-	return self.filterFunc(pool)
+---@param pool table<string, boolean>
+---@param trackedMoney TrackedMoney
+---@return table<string, boolean> pool, table<string, boolean> accepted
+function FilterPrototype:Filter(pool, trackedMoney)
+	return self.filterFunc(pool, trackedMoney)
 end
 
 ns.Filter = {

@@ -6,6 +6,11 @@ local ns = select(2, ...)
 ---@field guilds table<string, TrackedGuild>
 local TrackedMoneyPrototype = {}
 
+---@class CharacterMoney
+---@field totalCopper integer
+---@field personalCopper integer
+---@field guildCopper integer
+
 ---@param characters table<string, TrackedCharacter>
 ---@param guilds table<string, TrackedGuild>
 ---@return TrackedMoney
@@ -20,6 +25,7 @@ local function CreateTrackedMoney(characters, guilds)
 end
 
 ---@param nameAndRealm string
+---@return CharacterMoney
 function TrackedMoneyPrototype:GetCharacterCopper(nameAndRealm)
 	local character = self.characters[nameAndRealm]
 	local guildCopper
@@ -38,12 +44,13 @@ function TrackedMoneyPrototype:GetCharacterCopper(nameAndRealm)
 end
 
 function TrackedMoneyPrototype:IterateCharacters()
-	local nameAndRealm
+	local nameAndRealm, trackedCharacter
 	return function()
-		nameAndRealm = next(self.characters, nameAndRealm)
-		return nameAndRealm
+		nameAndRealm, trackedCharacter = next(self.characters, nameAndRealm)
+		return nameAndRealm, trackedCharacter
 	end
 end
 
-local export = { Create = CreateTrackedMoney }
-ns.TrackedMoney = export
+ns.TrackedMoney = {
+	Create = CreateTrackedMoney,
+}

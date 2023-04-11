@@ -24,7 +24,7 @@ function TestPatternWhitelist:TestPatternWhitelistAll()
 		},
 	})[1]
 
-	local _, allowed = whitelist:Filter(pool)
+	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, pool)
 end
 
@@ -41,7 +41,7 @@ function TestPatternWhitelist:TestPatternWhitelistSome()
 		},
 	})[1]
 
-	local _, allowed = whitelist:Filter(pool)
+	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {
 		["Name3-Realm2"] = true,
 	})
@@ -60,6 +60,6 @@ function TestPatternWhitelist:TestPatternWhitelistNone()
 		},
 	})[1]
 
-	local _, allowed = whitelist:Filter(pool)
+	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {})
 end

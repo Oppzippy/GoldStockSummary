@@ -36,14 +36,15 @@ local compareFunction = setmetatable({
 ---@param config CharacterCopperFilterConfiguration
 ---@return Filter
 function CharacterCopperFilterFactory:Create(filterName, config)
-	return ns.Filter.Create(filterName, function(pool)
+	return ns.Filter.Create(filterName, function(pool, trackedMoney)
 		local allowed = {}
 		local newPool = {}
-		for name, trackedCharacter in next, pool do
-			if compareFunction[config.sign](trackedCharacter.copper, config.copper) then
-				allowed[name] = trackedCharacter
+		for name in next, pool do
+			local characterMoney = trackedMoney:GetCharacterCopper(name)
+			if compareFunction[config.sign](characterMoney.personalCopper, config.copper) then
+				allowed[name] = true
 			else
-				newPool[name] = trackedCharacter
+				newPool[name] = true
 			end
 		end
 		return newPool, allowed
