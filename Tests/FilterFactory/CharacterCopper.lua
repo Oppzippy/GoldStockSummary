@@ -23,10 +23,11 @@ function TestCharacterCopper:TestAllSigns()
 	for sign, expectedAllowed in next, signs do
 		local filter = ns.FilterFactoryRegistry:Create({
 			{
-				type = "characterCopper",
+				type = "copper",
 				name = "?",
 				typeConfig = {
-					characterCopper = {
+					copper = {
+						leftHandSide = "character",
 						sign = sign,
 						copper = copper,
 					},
@@ -45,17 +46,18 @@ function TestCharacterCopper:TestAllSigns()
 				copper = copper + 1,
 			},
 		}, {}))
-		luaunit.assertEquals(allowed, expectedAllowed)
+		luaunit.assertEquals(allowed, expectedAllowed, string.format("%s sign", sign))
 	end
 end
 
 function TestCharacterCopper:TestIgnoresGuildMoney()
 	local filter = ns.FilterFactoryRegistry:Create({
 		{
-			type = "characterCopper",
+			type = "copper",
 			name = "?",
 			typeConfig = {
-				characterCopper = {
+				copper = {
+					leftHandSide = "character",
 					sign = "=",
 					copper = 100,
 				},

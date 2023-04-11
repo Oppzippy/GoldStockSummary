@@ -155,7 +155,7 @@ function FiltersTab:RenderFilter(filterID)
 					characterPatternWhitelist = L.character_pattern_whitelist,
 					characterBlacklist = L.character_blacklist,
 					characterPatternBlacklist = L.character_pattern_blacklist,
-					characterCopper = L.character_money,
+					copper = L.money,
 					combinedFilter = L.combined_filter,
 				},
 				sorting = {
@@ -163,7 +163,7 @@ function FiltersTab:RenderFilter(filterID)
 					"characterPatternWhitelist",
 					"characterBlacklist",
 					"characterPatternBlacklist",
-					"characterCopper",
+					"copper",
 					"combinedFilter",
 				},
 				width = 1.5,

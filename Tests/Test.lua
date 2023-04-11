@@ -18,5 +18,6 @@ DoWoWFile("Tests/DB/Migrations/Global/001-NormalizeRealmNames.lua")
 DoWoWFile("Tests/DB/Migrations/Profile/001-MigrateFilters.lua")
 DoWoWFile("Tests/DB/Migrations/Profile/002-MigrateFilters.lua")
 DoWoWFile("Tests/DB/Migrations/Profile/003-AddTypeConfigDefaults.lua")
+DoWoWFile("Tests/DB/Migrations/Profile/004-CharacterCopperToGenericCopper.lua")
 
 os.exit(luaunit.LuaUnit.run())

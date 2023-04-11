@@ -9,7 +9,7 @@ local TrackedMoneyPrototype = {}
 ---@class CharacterMoney
 ---@field totalCopper integer
 ---@field personalCopper integer
----@field guildCopper integer
+---@field guildCopper? integer
 
 ---@param characters table<string, TrackedCharacter>
 ---@param guilds table<string, TrackedGuild>

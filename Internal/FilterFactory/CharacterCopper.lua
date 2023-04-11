@@ -9,15 +9,15 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 local CharacterCopperFilterFactory = {
 	---@type AceConfigOptionsTable
 	options = {},
-	type = "characterCopper",
-	localizedName = L.character_money,
+	type = "copper",
+	localizedName = L.money,
 	terminus = "deny",
 }
 
 ---@class CharacterCopperFilterConfiguration
+---@field leftHandSide "character"|"guild"|"total"
 ---@field sign "<" | "<=" | "=" | ">=" | ">"
 ---@field copper number
-
 
 local compareFunction = setmetatable({
 	["<"] = function(a, b) return a < b end,
@@ -41,7 +41,15 @@ function CharacterCopperFilterFactory:Create(filterName, config)
 		local newPool = {}
 		for name in next, pool do
 			local characterMoney = trackedMoney:GetCharacterCopper(name)
-			if compareFunction[config.sign](characterMoney.personalCopper, config.copper) then
+			local leftHandSide
+			if config.leftHandSide == "character" then
+				leftHandSide = characterMoney.personalCopper
+			elseif config.leftHandSide == "guild" then
+				leftHandSide = characterMoney.guildCopper
+			elseif config.leftHandSide == "total" then
+				leftHandSide = characterMoney.totalCopper
+			end
+			if compareFunction[config.sign](leftHandSide or 0, config.copper) then
 				allowed[name] = true
 			else
 				newPool[name] = true
@@ -54,6 +62,7 @@ end
 ---@return CharacterCopperFilterConfiguration
 function CharacterCopperFilterFactory:DefaultConfiguration()
 	return {
+		leftHandSide = "total",
 		sign = ">",
 		copper = 0,
 	}
@@ -64,13 +73,48 @@ end
 ---@return AceConfigOptionsTable
 function CharacterCopperFilterFactory:OptionsTable(config, db)
 	local typeConfig = config.typeConfig[self.type]
+	---@cast typeConfig CharacterCopperFilterConfiguration
 	return {
 		type = "group",
 		args = {
-			copperHeader = {
-				type = "header",
-				name = L.comparison,
-				order = 7.05,
+			character = {
+				type = "toggle",
+				name = L.character,
+				order = 7.01,
+				width = 0.7,
+				get = function()
+					return typeConfig.leftHandSide == "character"
+				end,
+				set = function()
+					typeConfig.leftHandSide = "character"
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
+			},
+			guild = {
+				type = "toggle",
+				name = L.guild,
+				order = 7.02,
+				width = 0.7,
+				get = function()
+					return typeConfig.leftHandSide == "guild"
+				end,
+				set = function()
+					typeConfig.leftHandSide = "guild"
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
+			},
+			total = {
+				type = "toggle",
+				name = L.total,
+				order = 7.03,
+				width = 0.7,
+				get = function()
+					return typeConfig.leftHandSide == "total"
+				end,
+				set = function()
+					typeConfig.leftHandSide = "total"
+					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
+				end,
 			},
 			sign = {
 				type = "select",
