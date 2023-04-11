@@ -80,7 +80,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 			character = {
 				type = "toggle",
 				name = L.character,
-				order = 7.01,
+				order = 1,
 				width = 0.7,
 				get = function()
 					return typeConfig.leftHandSide == "character"
@@ -93,7 +93,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 			guild = {
 				type = "toggle",
 				name = L.guild,
-				order = 7.02,
+				order = 2,
 				width = 0.7,
 				get = function()
 					return typeConfig.leftHandSide == "guild"
@@ -106,7 +106,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 			total = {
 				type = "toggle",
 				name = L.total,
-				order = 7.03,
+				order = 3,
 				width = 0.7,
 				get = function()
 					return typeConfig.leftHandSide == "total"
@@ -120,7 +120,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 				type = "select",
 				name = L.sign,
 				width = "half",
-				order = 7.1,
+				order = 4,
 				values = {
 					["<"] = "<",
 					["<="] = "<=",
@@ -140,7 +140,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 			gold = {
 				type = "input",
 				name = L.gold,
-				order = 7.2,
+				order = 5,
 				get = function()
 					local gold = ns.MoneyUtil.GetGold(typeConfig.copper or 0)
 					return tostring(gold)
@@ -155,7 +155,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 				type = "input",
 				name = L.silver,
 				width = "half",
-				order = 7.3,
+				order = 6,
 				get = function()
 					local silver = ns.MoneyUtil.GetSilver(typeConfig.copper or 0)
 					return tostring(silver)
@@ -170,7 +170,7 @@ function CharacterCopperFilterFactory:OptionsTable(config, db)
 				type = "input",
 				name = L.copper,
 				width = "half",
-				order = 7.4,
+				order = 7,
 				get = function()
 					local copper = ns.MoneyUtil.GetCopper(typeConfig.copper or 0)
 					return tostring(copper)

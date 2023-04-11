@@ -54,7 +54,7 @@ function CharacterPatternWhitelistFilterFactory:OptionsTable(config, db)
 				type = "input",
 				name = L.pattern,
 				width = "full",
-				order = 7,
+				order = 1,
 				get = function()
 					return typeConfig.pattern
 				end,

@@ -55,7 +55,7 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 			addCharacterHeader = {
 				type = "header",
 				name = L.add_character,
-				order = 3.9,
+				order = 1,
 			},
 			addCharacterRealm = {
 				type = "select",
@@ -77,7 +77,7 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 					end
 					return realms
 				end,
-				order = 4,
+				order = 2,
 			},
 			addCharacter = {
 				type = "select",
@@ -99,13 +99,13 @@ function CharacterWhitelistFilterFactory:OptionsTable(config, db)
 					renderCharacterList()
 					LibStub("AceEvent-3.0"):SendMessage("GoldStockSummary_FiltersChanged")
 				end,
-				order = 5,
+				order = 3,
 			},
 			characterList = {
 				type = "group",
 				inline = true,
 				name = L.characters,
-				order = 6,
+				order = 4,
 				args = {},
 			}
 		},

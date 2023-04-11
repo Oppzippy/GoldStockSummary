@@ -175,7 +175,7 @@ function FiltersTab:RenderFilter(filterID)
 				type = "group",
 				name = ns.FilterFactoryRegistry:LocalizedName(filter.type),
 				inline = true,
-				order = 2.01,
+				order = 3,
 				args = ns.FilterFactoryRegistry:OptionsTable(filter).args,
 			},
 			-----------------------------------------------------------
@@ -191,7 +191,7 @@ function FiltersTab:RenderFilter(filterID)
 					self:RenderFilters()
 					self:FireFiltersChanged()
 				end,
-				order = 99999,
+				order = 4,
 			},
 		},
 	}
