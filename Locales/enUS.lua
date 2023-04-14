@@ -52,17 +52,24 @@ L.add_filter = "Add Filter"
 L.remove_filter = "Remove Filter"
 L.new_filter_help = [[
 Filters can be used to display and export a subset of your characters. The following filter types are available:
-Whitelist: Set characters to be shown.
-Blacklist: Set characters to be hidden.
-Combined: Combine whitelist and blacklist filters.
+Character: Match against a list of characters.
+Character Pattern: Match character names containing a lua string pattern.
+Money: Match characters based on personal/guild/total money.
+Combined: Chain filters together.
 
-Whitelist and Blacklist filters have a List Type option. Character List lets you provide a list of characters that the filter should match. Pattern lets you provide a string, and the filter will match any character names containing that string.
+The following actions can be applied to matches of a filter:
+Allow Matches: Anything that matches the filter is allowed. If this filter is not a child of a Combined Filter, anything that does not match is denied.
+Deny Matches: Anything that matches the filter is denied. If this filter is not a child of a Combined Filter, anything that does not match is allowed.
+Allow All Except Matches: Anything that does not match the filter is allowed. If this filter is not a child of a Combined Filter, anything that does match is denied.
+Deny All Except Matches: Anything that does not match the filter is denied. If this filter is not a child of a Combined Filter, anything that does match is allowed.
 
-When filters are combined, they will be evaluated from first to last. As soon as a character matches a filter, it will be either allowed or denied and no more filters will be evaluated for that character. For example, you have character A and character B with a blacklist containing B whiltelist containing both A and B, you would get the following results:
-Whitelist first: Both A and B will be allowed.
-Blacklist first: B will be denied, A will be allowed.
+Note that for combined filters with a deny action, characters allowed by child filters will be denied.
 
-If you want a whitelist to match all characters on a realm, an easy way to do that is with the pattern list type. Set the pattern to "-Your Realm Name". To match multiple realms, create multiple whitelists and then combine them with a combined filter.
+When filters are combined, they will be evaluated from first to last. As soon as a character matches a filter, it will be either allowed or denied according to the filter, and no more filters will be evaluated for that character. For example, if you have character A and character B, and a combined filter containing a Deny Matches filter matching B and an Allow Matches filter containing both A and B, you would get the following results:
+Deny Matches filter first: B will be denied, A will be allowed.
+Allow Matches filter first: Both A and B will be allowed.
+
+If you want an allow filter to match all characters on a realm, an easy way to do that is with the Character Pattern filter type. Set the pattern to "-Your Realm Name". To match multiple realms, create multiple Character Pattern filters and then combine them with a combined filter.
 ]]
 L.profiles = "Profiles"
 L.combine_factions = "Combine Factions"
