@@ -36,10 +36,11 @@ FiltersTab.options = {
 					width = "full",
 					order = 1,
 					set = function(_, name)
-						local defaultType = "characterWhitelist"
+						local defaultType = "character"
 						FiltersTab.filters[#FiltersTab.filters + 1] = {
 							name = name,
 							type = defaultType,
+							action = "allow",
 							typeConfig = {
 								[defaultType] = ns.FilterFactoryRegistry:DefaultConfiguration(defaultType),
 							},
