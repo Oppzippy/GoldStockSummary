@@ -9,12 +9,13 @@ local L = AceLocale:GetLocale(addonName)
 local defaultFilters = ns.FilterFactoryRegistry:Create({
 	allowAll = {
 		name = L.allow_all,
-		type = "characterPatternWhitelist",
+		type = "characterPattern",
+		action = "allow",
 		typeConfig = {
-			characterPatternWhitelist = {
+			characterPattern = {
 				pattern = ".",
-			}
-		}
+			},
+		},
 	},
 })
 
