@@ -3,15 +3,15 @@ local ns = select(2, ...)
 
 local luaunit = require("luaunit")
 
-TestMigrationProfile003MigrateFilters = {}
+TestMigrationProfile003AddTypeConfigDefaults = {}
 
-function TestMigrationProfile003MigrateFilters:TestEmptyDB()
+function TestMigrationProfile003AddTypeConfigDefaults:TestEmptyDB()
 	local db = {}
 	ns.migrations.profile[3](db)
 	luaunit.assertEquals(db, {})
 end
 
-function TestMigrationProfile003MigrateFilters:TestNoFilters()
+function TestMigrationProfile003AddTypeConfigDefaults:TestNoFilters()
 	local db = {
 		filters = {},
 	}
@@ -19,7 +19,7 @@ function TestMigrationProfile003MigrateFilters:TestNoFilters()
 	luaunit.assertEquals(db, { filters = {} })
 end
 
-function TestMigrationProfile003MigrateFilters:TestNoTypeConfigs()
+function TestMigrationProfile003AddTypeConfigDefaults:TestNoTypeConfigs()
 	local db = {
 		filters = {
 			{
@@ -43,7 +43,7 @@ function TestMigrationProfile003MigrateFilters:TestNoTypeConfigs()
 	})
 end
 
-function TestMigrationProfile003MigrateFilters:TestSomeMissingFields()
+function TestMigrationProfile003AddTypeConfigDefaults:TestSomeMissingFields()
 	local db = {
 		filters = {
 			{
@@ -72,7 +72,7 @@ function TestMigrationProfile003MigrateFilters:TestSomeMissingFields()
 	})
 end
 
-function TestMigrationProfile003MigrateFilters:TestMultipleTypeConfigs()
+function TestMigrationProfile003AddTypeConfigDefaults:TestMultipleTypeConfigs()
 	local db = {
 		filters = {
 			{

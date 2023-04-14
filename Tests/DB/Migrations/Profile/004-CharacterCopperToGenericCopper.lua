@@ -3,15 +3,15 @@ local ns = select(2, ...)
 
 local luaunit = require("luaunit")
 
-TestMigrationProfile004MigrateFilters = {}
+TestMigrationProfile004CharacterCopperToGenericCopper = {}
 
-function TestMigrationProfile004MigrateFilters:TestEmptyDB()
+function TestMigrationProfile004CharacterCopperToGenericCopper:TestEmptyDB()
 	local db = {}
 	ns.migrations.profile[4](db)
 	luaunit.assertEquals(db, {})
 end
 
-function TestMigrationProfile004MigrateFilters:TestNoFilters()
+function TestMigrationProfile004CharacterCopperToGenericCopper:TestNoFilters()
 	local db = {
 		filters = {},
 	}
@@ -19,7 +19,7 @@ function TestMigrationProfile004MigrateFilters:TestNoFilters()
 	luaunit.assertEquals(db, { filters = {} })
 end
 
-function TestMigrationProfile004MigrateFilters:TestSelectedFilterType()
+function TestMigrationProfile004CharacterCopperToGenericCopper:TestSelectedFilterType()
 	local db = {
 		filters = {
 			{
@@ -50,7 +50,7 @@ function TestMigrationProfile004MigrateFilters:TestSelectedFilterType()
 	})
 end
 
-function TestMigrationProfile004MigrateFilters:TestNotSelectedFilterType()
+function TestMigrationProfile004CharacterCopperToGenericCopper:TestNotSelectedFilterType()
 	local db = {
 		filters = {
 			{
