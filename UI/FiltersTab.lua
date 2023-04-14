@@ -170,10 +170,12 @@ function FiltersTab:RenderFilter(filterID)
 					self:FireFiltersChanged()
 				end,
 				values = {
-					allow = L.allow,
-					deny = L.deny,
+					allow = L.allow_matches,
+					deny = L.deny_matches,
+					allowExcept = L.allow_all_except_matches,
+					denyExcept = L.deny_all_except_matches,
 				},
-				sorting = { "allow", "deny" },
+				sorting = { "allow", "deny", "allowExcept", "denyExcept" },
 				width = 1.5,
 				order = 3,
 			},

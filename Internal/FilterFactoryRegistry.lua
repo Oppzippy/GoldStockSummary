@@ -95,6 +95,7 @@ function FilterFactoryRegistry:CreateOne(configurations, id, seenIds)
 		config = {
 			name = config.name,
 			type = config.type,
+			action = config.action,
 			typeConfig = {
 				[config.type] = {
 					childFilters = childFilters
@@ -113,9 +114,9 @@ function FilterFactoryRegistry:CreateOne(configurations, id, seenIds)
 		-- Default action is allow, so we only need to cover the deny case
 		-- If this is a top level filter and not a chlid of combined filter, we're done, so the filter should be terminated
 		if not next(seenIds) then
-			if config.action == "deny" then
+			if config.action == "deny" or config.action == "denyExcept" then
 				filterChain[#filterChain + 1] = allowAllFilter
-			elseif config.action == "allow" then
+			elseif config.action == "allow" or config.action == "allowExcept" then
 				filterChain[#filterChain + 1] = denyAllFilter
 			end
 		end

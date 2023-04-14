@@ -2,6 +2,7 @@ local luaunit = require("luaunit")
 
 require("Tests.WoWEnvironment")
 
+DoWoWFile("Tests/Filter.lua")
 DoWoWFile("Tests/FilterFactory/Character.lua")
 DoWoWFile("Tests/FilterFactory/Combined.lua")
 DoWoWFile("Tests/FilterFactory/CharacterPattern.lua")
