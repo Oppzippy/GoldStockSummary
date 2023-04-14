@@ -18,21 +18,21 @@ local CombinedFilterFactory = {
 ---@field childFilters? Filter[]
 
 ---@param filterName string
+---@param action FilterAction
 ---@param config CombinedFilterConfiguration
 ---@return Filter
-function CombinedFilterFactory:Create(filterName, config)
-	return ns.Filter.Create(filterName, function(pool, trackedMoney)
-		local allowed = {}
-
+function CombinedFilterFactory:Create(filterName, action, config)
+	return ns.Filter.Create(filterName, action, function(pool, trackedMoney)
+		local selected = {}
 		for _, filter in ipairs(config.childFilters) do
-			local addToAllowed
-			pool, addToAllowed = filter:Filter(pool, trackedMoney)
-			for name in next, addToAllowed do
-				allowed[name] = true
+			local addToSelected
+			pool, addToSelected = filter:Filter(pool, trackedMoney)
+			for name in next, addToSelected do
+				selected[name] = true
 			end
 		end
 
-		return pool, allowed
+		return pool, selected
 	end)
 end
 

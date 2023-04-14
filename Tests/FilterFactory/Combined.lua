@@ -16,6 +16,7 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2, 3 },
@@ -23,10 +24,11 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 			},
 		},
 		{
-			type = "characterBlacklist",
+			type = "character",
 			name = "?",
+			action = "deny",
 			typeConfig = {
-				characterBlacklist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 					},
@@ -34,10 +36,11 @@ function TestCombinedFilter:TestBlacklistThenWhitelist()
 			},
 		},
 		{
-			type = "characterWhitelist",
+			type = "character",
 			name = "?",
+			action = "allow",
 			typeConfig = {
-				characterWhitelist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 						["Name2-Realm"] = true,
@@ -56,6 +59,7 @@ function TestCombinedFilter:TestSingleChildFilter()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2 },
@@ -63,10 +67,11 @@ function TestCombinedFilter:TestSingleChildFilter()
 			},
 		},
 		{
-			type = "characterWhitelist",
+			type = "character",
 			name = "?",
+			action = "allow",
 			typeConfig = {
-				characterWhitelist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 					},
@@ -86,6 +91,7 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2, 3 },
@@ -93,10 +99,11 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 			},
 		},
 		{
-			type = "characterWhitelist",
+			type = "character",
 			name = "?",
+			action = "allow",
 			typeConfig = {
-				characterWhitelist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 						["Name2-Realm"] = true,
@@ -105,10 +112,11 @@ function TestCombinedFilter:TestWhitelistThenBlacklist()
 			},
 		},
 		{
-			type = "characterBlacklist",
+			type = "character",
 			name = "?",
+			action = "deny",
 			typeConfig = {
-				characterBlacklist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 					},
@@ -129,6 +137,7 @@ function TestCombinedFilter:TestEmpty()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = {},
@@ -145,6 +154,7 @@ function TestCombinedFilter:TestFilterLoop()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2 },
@@ -154,6 +164,7 @@ function TestCombinedFilter:TestFilterLoop()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 1 },
@@ -174,6 +185,7 @@ function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2, 2 },
@@ -182,9 +194,10 @@ function TestCombinedFilter:TestSiblingFiltersShouldntCauseLoop()
 		},
 		{
 			name = "?",
-			type = "characterWhitelist",
+			type = "character",
+			action = "allow",
 			typeConfig = {
-				characterWhitelist = {
+				character = {
 					characters = {},
 				},
 			},
@@ -200,6 +213,7 @@ function TestCombinedFilter:TestNestedCombinedFilters()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 2 },
@@ -209,6 +223,7 @@ function TestCombinedFilter:TestNestedCombinedFilters()
 		{
 			type = "combinedFilter",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				combinedFilter = {
 					childFilterIDs = { 3 },
@@ -216,10 +231,11 @@ function TestCombinedFilter:TestNestedCombinedFilters()
 			},
 		},
 		{
-			type = "characterWhitelist",
+			type = "character",
 			name = "?",
+			action = "allow",
 			typeConfig = {
-				characterWhitelist = {
+				character = {
 					characters = {
 						["Name1-Realm"] = true,
 					},

@@ -1,9 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-	<Script file="CharacterBlacklist.lua" />
-	<Script file="CharacterCopper.lua" />
-	<Script file="CharacterWhitelist.lua" />
-	<Script file="CharacterPatternBlacklist.lua" />
-	<Script file="CharacterPatternWhitelist.lua" />
+	<Script file="Character.lua" />
+	<Script file="Copper.lua" />
+	<Script file="CharacterPattern.lua" />
 	<Script file="Combined.lua" />
 </Ui>

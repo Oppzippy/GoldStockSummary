@@ -25,6 +25,7 @@ function TestCharacterCopper:TestAllSigns()
 			{
 				type = "copper",
 				name = "?",
+				action = "allow",
 				typeConfig = {
 					copper = {
 						leftHandSide = "character",
@@ -55,6 +56,7 @@ function TestCharacterCopper:TestIgnoresGuildMoney()
 		{
 			type = "copper",
 			name = "?",
+			action = "allow",
 			typeConfig = {
 				copper = {
 					leftHandSide = "character",

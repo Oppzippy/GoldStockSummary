@@ -4,4 +4,5 @@
 	<Script file="002-MigrateFilters.lua" />
 	<Script file="003-AddTypeConfigDefaults.lua" />
 	<Script file="004-CharacterCopperToGenericCopper.lua" />
+	<Script file="005-AllowAndDenyFilters.lua" />
 </Ui>

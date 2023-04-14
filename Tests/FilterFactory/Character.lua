@@ -3,7 +3,7 @@ local ns = select(2, ...)
 
 local luaunit = require("luaunit")
 
-TestPatternBlacklist = {}
+TestCharacterWhitelist = {}
 
 local pool = {
 	["Name1-Realm"] = true,
@@ -11,14 +11,61 @@ local pool = {
 	["Name3-Realm2"] = true,
 }
 
-function TestPatternBlacklist:TestPatternBlacklistAll()
+function TestCharacterWhitelist:TestCharacterWhitelistAll()
 	local whitelist = ns.FilterFactoryRegistry:Create({
 		{
-			type = "characterPatternBlacklist",
+			type = "character",
 			name = "?",
+			action = "allow",
 			typeConfig = {
-				characterPatternBlacklist = {
-					pattern = ".*",
+				character = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name2-Realm"] = true,
+						["Name3-Realm2"] = true,
+					},
+				},
+			},
+		},
+	})[1]
+
+	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
+
+	luaunit.assertEquals(allowed, pool)
+end
+
+function TestCharacterWhitelist:TestCharacterWhitelistSome()
+	local whitelist = ns.FilterFactoryRegistry:Create({
+		{
+			type = "character",
+			name = "?",
+			action = "allow",
+			typeConfig = {
+				character = {
+					characters = {
+						["Name1-Realm"] = true,
+						["Name4-Realm"] = true,
+					},
+				},
+			},
+		},
+	})[1]
+
+	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
+	luaunit.assertEquals(allowed, {
+		["Name1-Realm"] = true,
+	})
+end
+
+function TestCharacterWhitelist:TestCharacterWhitelistNone()
+	local whitelist = ns.FilterFactoryRegistry:Create({
+		{
+			type = "character",
+			name = "?",
+			action = "allow",
+			typeConfig = {
+				character = {
+					characters = {},
 				},
 			},
 		},
@@ -26,45 +73,4 @@ function TestPatternBlacklist:TestPatternBlacklistAll()
 
 	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
 	luaunit.assertEquals(allowed, {})
-end
-
-function TestPatternBlacklist:TestPatternBlacklistSome()
-	local whitelist = ns.FilterFactoryRegistry:Create({
-		{
-			type = "characterPatternBlacklist",
-			name = "?",
-			typeConfig = {
-				characterPatternBlacklist = {
-					pattern = ".+-Realm2",
-				},
-			},
-		},
-	})[1]
-
-	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
-	luaunit.assertEquals(allowed, {
-		["Name1-Realm"] = true,
-		["Name2-Realm"] = true,
-	})
-end
-
-function TestPatternBlacklist:TestPatternBlacklistNone()
-	local whitelist = ns.FilterFactoryRegistry:Create({
-		{
-			type = "characterPatternBlacklist",
-			name = "?",
-			typeConfig = {
-				characterPatternBlacklist = {
-					pattern = "does not match any characters",
-				},
-			},
-		},
-	})[1]
-
-	local _, allowed = whitelist:Filter(pool, ns.TrackedMoney.Create({}, {}))
-	luaunit.assertEquals(allowed, {
-		["Name1-Realm"] = true,
-		["Name2-Realm"] = true,
-		["Name3-Realm2"] = true,
-	})
 end

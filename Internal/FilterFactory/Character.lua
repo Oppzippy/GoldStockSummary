@@ -5,33 +5,38 @@ local ns = select(2, ...)
 
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
----@class CharacterBlacklistFilterFactory: FilterFactory
-local CharacterBlacklistFilterFactory = {
-	type = "characterBlacklist",
-	localizedName = L.character_blacklist,
-	terminus = "allow",
+---@class CharacterFilterFactory: FilterFactory
+local CharacterFilterFactory = {
+	---@type AceConfigOptionsTable
+	options = {},
+	type = "character",
+	localizedName = L.character,
 }
 
----@class CharacterBlacklistFilterConfiguration
+---@class CharacterFilterConfiguration
 ---@field characters table<string, boolean>
 
 ---@param filterName string
----@param config CharacterBlacklistFilterConfiguration
+---@param action FilterAction
+---@param config CharacterFilterConfiguration
 ---@return Filter
-function CharacterBlacklistFilterFactory:Create(filterName, config)
-	return ns.Filter.Create(filterName, function(pool)
+function CharacterFilterFactory:Create(filterName, action, config)
+	return ns.Filter.Create(filterName, action, function(pool)
 		local newPool = {}
+		local selected = {}
 		for name in next, pool do
-			if not config.characters[name] then
+			if config.characters[name] then
+				selected[name] = true
+			else
 				newPool[name] = true
 			end
 		end
-		return newPool, {}
+		return newPool, selected
 	end)
 end
 
----@return CharacterBlacklistFilterConfiguration
-function CharacterBlacklistFilterFactory:DefaultConfiguration()
+---@return CharacterFilterConfiguration
+function CharacterFilterFactory:DefaultConfiguration()
 	return {
 		characters = {},
 	}
@@ -40,7 +45,7 @@ end
 ---@param config FilterConfiguration
 ---@param db AceDBObject-3.0
 ---@return AceConfigOptionsTable
-function CharacterBlacklistFilterFactory:OptionsTable(config, db)
+function CharacterFilterFactory:OptionsTable(config, db)
 	---@type fun()
 	local renderCharacterList
 	local selectedRealm
@@ -137,4 +142,4 @@ function CharacterBlacklistFilterFactory:OptionsTable(config, db)
 	return optionsTable
 end
 
-ns.FilterFactoryRegistry:Register(CharacterBlacklistFilterFactory)
+ns.FilterFactoryRegistry:Register(CharacterFilterFactory)

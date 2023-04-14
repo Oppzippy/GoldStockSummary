@@ -2,10 +2,9 @@
 local ns = select(2, ...)
 
 ---@class FilterFactory
----@field Create fun(self: FilterFactory, name: string, config: table): Filter
+---@field Create fun(self: FilterFactory, name: string, action: FilterAction, config: table): Filter
 ---@field OptionsTable fun(self: FilterFactory, config: FilterConfiguration, db: AceDBObject-3.0): AceConfigOptionsTable
 ---@field DefaultConfiguration fun(self: FilterFactory): table
----@field terminus? "allow"|"deny"
 ---@field localizedName string
 
 ---@class FilterRegistry
@@ -22,6 +21,7 @@ end
 ---@class FilterConfiguration
 ---@field type string
 ---@field name string
+---@field action FilterAction
 ---@field typeConfig table<string, table>
 
 ---@generic T
@@ -56,10 +56,10 @@ function FilterFactoryRegistry:DefaultConfiguration(filterType)
 	return self.factories[filterType]:DefaultConfiguration()
 end
 
-local denyAllFilter  = ns.Filter.Create("Deny All", function(pool)
+local denyAllFilter = ns.Filter.Create("Deny All", "allow", function(pool)
 	return {}, {}
 end)
-local allowAllFilter = ns.Filter.Create("Allow All", function(pool)
+local allowAllFilter = ns.Filter.Create("Allow All", "allow", function(pool)
 	return {}, pool
 end)
 
@@ -106,14 +106,21 @@ function FilterFactoryRegistry:CreateOne(configurations, id, seenIds)
 	if filterFactory then
 		local filter = filterFactory:Create(
 			config.name,
+			config.action,
 			config.typeConfig[config.type] or filterFactory:DefaultConfiguration()
 		)
+		local filterChain = { filter }
+		-- Default action is allow, so we only need to cover the deny case
+		-- If this is a top level filter and not a chlid of combined filter, we're done, so the filter should be terminated
 		if not next(seenIds) then
-			if filterFactory.terminus == "allow" then
-				return self:CombineFilters(filter.name, { filter, allowAllFilter })
-			elseif filterFactory.terminus == "deny" then
-				return self:CombineFilters(filter.name, { filter, denyAllFilter })
+			if config.action == "deny" then
+				filterChain[#filterChain + 1] = allowAllFilter
+			elseif config.action == "allow" then
+				filterChain[#filterChain + 1] = denyAllFilter
 			end
+		end
+		if filterChain[2] then
+			filter = self:CombineFilters(filter.name, filterChain)
 		end
 		return filter
 	end
@@ -125,7 +132,7 @@ end
 ---@param filters Filter[]
 ---@return Filter
 function FilterFactoryRegistry:CombineFilters(name, filters)
-	return self.factories["combinedFilter"]:Create(name, {
+	return self.factories["combinedFilter"]:Create(name, "allow", {
 		childFilters = filters,
 	})
 end

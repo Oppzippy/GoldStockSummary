@@ -11,7 +11,6 @@ local CharacterCopperFilterFactory = {
 	options = {},
 	type = "copper",
 	localizedName = L.money,
-	terminus = "deny",
 }
 
 ---@class CharacterCopperFilterConfiguration
@@ -33,11 +32,12 @@ local compareFunction = setmetatable({
 })
 
 ---@param filterName string
+---@param action FilterAction
 ---@param config CharacterCopperFilterConfiguration
 ---@return Filter
-function CharacterCopperFilterFactory:Create(filterName, config)
-	return ns.Filter.Create(filterName, function(pool, trackedMoney)
-		local allowed = {}
+function CharacterCopperFilterFactory:Create(filterName, action, config)
+	return ns.Filter.Create(filterName, action, function(pool, trackedMoney)
+		local selected = {}
 		local newPool = {}
 		for name in next, pool do
 			local characterMoney = trackedMoney:GetCharacterCopper(name)
@@ -50,12 +50,12 @@ function CharacterCopperFilterFactory:Create(filterName, config)
 				leftHandSide = characterMoney.totalCopper
 			end
 			if compareFunction[config.sign](leftHandSide or 0, config.copper) then
-				allowed[name] = true
+				selected[name] = true
 			else
 				newPool[name] = true
 			end
 		end
-		return newPool, allowed
+		return newPool, selected
 	end)
 end
 

@@ -106,6 +106,11 @@ end
 function FiltersTab:RenderFilter(filterID)
 	local filter = self.filters[filterID]
 
+	local filterTypes = {}
+	for name, factory in next, ns.FilterFactoryRegistry.factories do
+		filterTypes[name] = factory.localizedName
+	end
+
 	local group
 	group = {
 		type = "group",
@@ -150,24 +155,27 @@ function FiltersTab:RenderFilter(filterID)
 					self:RenderFilters()
 					self:FireFiltersChanged()
 				end,
-				values = {
-					characterWhitelist = L.character_whitelist,
-					characterPatternWhitelist = L.character_pattern_whitelist,
-					characterBlacklist = L.character_blacklist,
-					characterPatternBlacklist = L.character_pattern_blacklist,
-					copper = L.money,
-					combinedFilter = L.combined_filter,
-				},
-				sorting = {
-					"characterWhitelist",
-					"characterPatternWhitelist",
-					"characterBlacklist",
-					"characterPatternBlacklist",
-					"copper",
-					"combinedFilter",
-				},
+				values = filterTypes,
 				width = 1.5,
 				order = 2,
+			},
+			action = {
+				type = "select",
+				name = L.action,
+				get = function()
+					return filter.action
+				end,
+				set = function(_, action)
+					filter.action = action
+					self:FireFiltersChanged()
+				end,
+				values = {
+					allow = L.allow,
+					deny = L.deny,
+				},
+				sorting = { "allow", "deny" },
+				width = 1.5,
+				order = 3,
 			},
 			-----------------------------------------------------------
 			-- Options for specific filter types
@@ -175,7 +183,7 @@ function FiltersTab:RenderFilter(filterID)
 				type = "group",
 				name = ns.FilterFactoryRegistry:LocalizedName(filter.type),
 				inline = true,
-				order = 3,
+				order = 4,
 				args = ns.FilterFactoryRegistry:OptionsTable(filter).args,
 			},
 			-----------------------------------------------------------
@@ -191,7 +199,7 @@ function FiltersTab:RenderFilter(filterID)
 					self:RenderFilters()
 					self:FireFiltersChanged()
 				end,
-				order = 4,
+				order = 5,
 			},
 		},
 	}
