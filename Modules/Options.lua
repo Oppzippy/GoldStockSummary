@@ -36,10 +36,32 @@ module.optionsTable = {
 				},
 			},
 		},
+		export = {
+			type = "group",
+			name = L.export,
+			order = 2,
+			args = {
+				csv = {
+					type = "group",
+					name = L.csv,
+					order = 1,
+					inline = true,
+					args = {
+						csvFloorGold = {
+							type = "toggle",
+							get = "GetOption",
+							set = "SetOption",
+							name = L.round_gold_down,
+							desc = L.round_gold_down_desc,
+						},
+					},
+				},
+			},
+		},
 		guildBlacklist = {
 			type = "group",
 			name = L.guild_blacklist,
-			order = 2,
+			order = 3,
 			get = "IsGuildBlacklisted",
 			set = "SetGuildBlacklisted",
 			args = {},
@@ -128,4 +150,12 @@ end
 function module:SetGuildBlacklisted(info, val)
 	local guild = self.db.global.guilds[info[#info]]
 	guild.isBlacklisted = val or nil
+end
+
+function module:GetOption(info)
+	return self.db.profile[info[#info]]
+end
+
+function module:SetOption(info, val)
+	self.db.profile[info[#info]] = val
 end

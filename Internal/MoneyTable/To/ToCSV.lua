@@ -18,14 +18,24 @@ local function LocalizeFields(fields)
 	return localized
 end
 
+---@class ToCSVOptions
+---@field floorGold? boolean
+
 ---@param fields string[]
 ---@param moneyTable MoneyTable
+---@param options ToCSVOptions
 ---@return string
-local function ToCSV(fields, moneyTable)
+local function ToCSV(fields, moneyTable, options)
 	moneyTable = moneyTable:ConvertTypes({
 		copper = {
 			type = "gold",
-			converter = function(value) return value and value / COPPER_PER_GOLD end,
+			converter = function(value)
+				if value then
+					local gold = value / COPPER_PER_GOLD
+					return options.floorGold and math.floor(gold) or gold
+				end
+				return nil
+			end,
 		},
 		timestamp = {
 			type = "string",

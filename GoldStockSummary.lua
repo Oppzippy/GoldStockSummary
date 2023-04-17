@@ -65,7 +65,9 @@ function Core:OnExportCharacters(_, format, data)
 
 	local output = ""
 	if format == "csv" then
-		output = ns.MoneyTable.To.CSV(characterFields, moneyTable)
+		output = ns.MoneyTable.To.CSV(characterFields, moneyTable, {
+			floorGold = self.db.profile.csvFloorGold,
+		})
 	elseif format == "json" then
 		output = ns.MoneyTable.To.JSON("characters", moneyTable)
 	end
@@ -78,7 +80,9 @@ function Core:OnExportRealms(_, format, data)
 
 	local output = ""
 	if format == "csv" then
-		output = ns.MoneyTable.To.CSV(realmFields, moneyTable)
+		output = ns.MoneyTable.To.CSV(realmFields, moneyTable, {
+			floorGold = self.db.profile.csvFloorGold,
+		})
 	elseif format == "json" then
 		output = ns.MoneyTable.To.JSON("realms", moneyTable)
 	end

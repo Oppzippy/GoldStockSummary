@@ -31,6 +31,7 @@ local dbDefaults = {
 		minimapIcon = {
 			hide = false,
 		},
+		csvFloorGold = false,
 		selectedFilter = nil,
 		filters = {},
 	},
