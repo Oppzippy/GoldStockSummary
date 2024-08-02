@@ -32,6 +32,12 @@ function module:OnEnable()
 	self:RegisterEvent("PLAYER_MONEY", "UpdateMoney")
 	self:RegisterEvent("GUILDBANK_UPDATE_MONEY", "UpdateGuildBankMoney")
 
+	-- Account bank only exists on retail
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+		self:UpdateAccountBankMoney()
+		self:RegisterEvent("ACCOUNT_MONEY", "UpdateAccountBankMoney")
+	end
+
 	-- These events can fire many times quickly. No point in repeatedly updating the same thing.
 	self:RegisterBucketEvent("GUILD_RANKS_UPDATE", 1, "UpdateOwner")
 	self:RegisterBucketEvent("PLAYER_GUILD_UPDATE", 1, "UpdateGuildAndOwner")
@@ -70,6 +76,13 @@ function module:UpdateMoney()
 	character.lastUpdate = time()
 
 	self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", nameAndRealm)
+end
+
+function module:UpdateAccountBankMoney()
+	local accountBank = self:GetAccountBank()
+	accountBank.copper = C_Bank.FetchDepositedMoney(Enum.BankType.Account)
+	accountBank.lastUpdate = time()
+	self:SendMessage("GoldStockSummary_AccountBankMoneyUpdated")
 end
 
 function module:UpdateGuildAndOwner()
@@ -139,6 +152,18 @@ function module:GetCharacter(nameAndRealm)
 		db.characters[nameAndRealm] = {}
 	end
 	return db.characters[nameAndRealm]
+end
+
+---@return TrackedAccountBank
+function module:GetAccountBank()
+	local db = self.db.global
+	if not db.accountBank then
+		db.accountBank = {
+			copper = 0,
+			lastUpdate = 0,
+		}
+	end
+	return db.accountBank
 end
 
 ---@param nameAndRealm string

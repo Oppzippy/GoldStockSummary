@@ -18,6 +18,7 @@ function module:OnEnable()
 
 	self:RegisterMessage("GoldStockSummary_CharacterMoneyUpdated", "OnCharacterMoneyUpdated")
 	self:RegisterMessage("GoldStockSummary_GuildMoneyUpdated", "OnGuildMoneyUpdated")
+	self:RegisterMessage("GoldStockSummary_AccountBankMoneyUpdated", "OnAccountBankMoneyUpdated")
 	self:RegisterMessage("GoldStockSummary_FiltersChanged", "OnFiltersChanged")
 end
 
@@ -39,6 +40,11 @@ function module:SetMoneyStore()
 		type = "setGuilds",
 		guilds = guilds,
 	})
+
+	ns.MoneyStore:Dispatch({
+		type = "setAccountBank",
+		accountBank = self.db.global.accountBank,
+	})
 end
 
 function module:OnCharacterMoneyUpdated(_, name)
@@ -54,6 +60,13 @@ function module:OnGuildMoneyUpdated(_, name)
 		type = "updateGuild",
 		name = name,
 		guild = self.db.global.guilds[name],
+	})
+end
+
+function module:OnAccountBankMoneyUpdated()
+	ns.MoneyStore:Dispatch({
+		type = "setAccountBank",
+		accountBank = self.db.global.accountBank,
 	})
 end
 

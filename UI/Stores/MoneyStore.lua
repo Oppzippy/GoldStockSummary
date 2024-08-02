@@ -6,6 +6,10 @@ local actions = {
 		state.characters = action.characters
 		return state
 	end,
+	setAccountBank = function(state, action)
+		state.accountBank = action.accountBank
+		return state
+	end,
 	setGuilds = function(state, action)
 		state.guilds = action.guilds
 		return state

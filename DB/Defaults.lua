@@ -13,6 +13,10 @@ local ns = select(2, ...)
 ---@field faction "alliance"|"horde"|"neutral"
 ---@field guild? string
 
+---@class TrackedAccountBank
+---@field copper number
+---@field lastUpdate integer
+
 ---@class TrackedGuild
 ---@field owner string
 ---@field copper? number
@@ -26,6 +30,8 @@ local dbDefaults = {
 		characters = {},
 		---@type table<string, TrackedGuild>
 		guilds = {},
+		---@type TrackedAccountBank?
+		accountBank = nil,
 	},
 	profile = {
 		minimapIcon = {
