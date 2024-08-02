@@ -26,6 +26,7 @@ L.total_money = "Total Money:"
 L.total_personal_money = "Total Personal Money:"
 L.total_guild_bank_money = "Total Guild Bank Money:"
 L.total_account_bank_money = "Total Account Bank Money:"
+L.include_account_bank_in_total = "Include Account Bank in Total"
 
 L.filters = "Filters"
 L.name = "Name"

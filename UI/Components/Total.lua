@@ -15,10 +15,15 @@ local componentPrototype = {}
 ---@param container AceGUIContainer
 ---@param props table
 function componentPrototype:Initialize(container, props)
+	container:SetLayout("List")
 	container:SetFullWidth(true)
 	container:SetFullHeight(true)
-	container:SetLayout("Table")
-	container:SetUserData("table", {
+
+	local grid = AceGUI:Create("SimpleGroup")
+	---@cast grid AceGUISimpleGroup
+	grid:SetFullWidth(true)
+	grid:SetLayout("Table")
+	grid:SetUserData("table", {
 		columns = {
 			{
 				width = 0.5,
@@ -45,20 +50,53 @@ function componentPrototype:Initialize(container, props)
 		cells[#cells + 1] = self:CreateCell("LEFT")
 	end
 
-	container:PauseLayout()
+	grid:PauseLayout()
 	for _, cell in ipairs(cells) do
-		container:AddChild(cell)
+		grid:AddChild(cell)
 	end
-	container:ResumeLayout()
-	container:DoLayout()
+	grid:ResumeLayout()
+	grid:DoLayout()
+
+	container:AddChild(grid)
+
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+		local optionsGroup = AceGUI:Create("InlineGroup")
+		---@cast optionsGroup AceGUIInlineGroup
+		optionsGroup:SetFullWidth(true)
+		optionsGroup:SetLayout("Flow")
+
+		-- When using filters, including the account bank may or may not make sense, so
+		-- an option is provided to include/exclude it from the total
+		local includeAccountBankStore = ns.ValueStore.Create(ns.db.profile.includeAccountBankInTotal)
+		local accountBankCheckBox = AceGUI:Create("CheckBox")
+		---@cast accountBankCheckBox AceGUICheckBox
+		accountBankCheckBox:SetValue(includeAccountBankStore:GetState())
+		accountBankCheckBox:SetLabel(L.include_account_bank_in_total)
+		accountBankCheckBox:SetFullWidth(true)
+		accountBankCheckBox:SetCallback("OnValueChanged", function(_, _, isChecked)
+			self:SetIncludeAccountBankInTotal(isChecked)
+		end)
+		optionsGroup:AddChild(accountBankCheckBox)
+
+		container:AddChild(optionsGroup)
+		self.includeAccountBankStore = includeAccountBankStore
+	end
 
 	self.container = container
 	self.cells = cells
 	self.resultsStore = props.resultsStore
 
 	return {
-		stores = { self.resultsStore, ns.MoneyStore },
+		-- includeAccountBankStore can be nil, but since it's the last element in the table,
+		-- that will not create any holes, so it's fine.
+		stores = { self.resultsStore, ns.MoneyStore, self.includeAccountBankStore },
 	}
+end
+
+---@param isIncluded boolean
+function componentPrototype:SetIncludeAccountBankInTotal(isIncluded)
+	self.includeAccountBankStore:Dispatch(isIncluded)
+	ns.db.profile.includeAccountBankInTotal = isIncluded
 end
 
 ---@param justifyH "LEFT"|"CENTER"|"RIGHT"
@@ -79,7 +117,7 @@ function componentPrototype:Update()
 	local results = self.resultsStore:GetState()
 	local trackedMoney = ns.TrackedMoney.Create(results.characters, results.guilds)
 	local total = 0
-	if moneyState.accountBank then
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and self.includeAccountBankStore:GetState() and moneyState.accountBank then
 		total = total + moneyState.accountBank.copper
 	end
 	local personalTotal = 0

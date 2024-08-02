@@ -40,6 +40,7 @@ local dbDefaults = {
 		csvFloorGold = false,
 		selectedFilter = nil,
 		filters = {},
+		includeAccountBankInTotal = true,
 	},
 }
 
