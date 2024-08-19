@@ -87,6 +87,9 @@ end
 
 function module:UpdateGuildAndOwner()
 	if self:IsInBrokenState() then
+		if self.db.profile.debugMode then
+			self:Print("guild info in broken state, retrying")
+		end
 		C_Timer.After(1, function()
 			self:UpdateGuildAndOwner()
 		end)
@@ -101,6 +104,9 @@ end
 
 function module:UpdateOwner()
 	if self:IsInBrokenState() then
+		if self.db.profile.debugMode then
+			self:Print("guild info in broken state, retrying")
+		end
 		C_Timer.After(1, function()
 			self:UpdateOwner()
 		end)

@@ -34,6 +34,12 @@ module.optionsTable = {
 					set = "SetMinimapIconShown",
 					order = 1,
 				},
+				debugMode = {
+					type = "toggle",
+					name = L.debug_mode,
+					get = "GetOption",
+					set = "SetOption",
+				},
 			},
 		},
 		export = {

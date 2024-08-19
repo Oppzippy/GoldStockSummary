@@ -41,6 +41,7 @@ local dbDefaults = {
 		selectedFilter = nil,
 		filters = {},
 		includeAccountBankInTotal = true,
+		debugMode = false,
 	},
 }
 
