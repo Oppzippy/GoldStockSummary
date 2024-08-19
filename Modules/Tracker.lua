@@ -102,7 +102,7 @@ function module:UpdateGuildAndOwner()
 	local nameAndRealm = self:GetCharacterNameAndRealm()
 	local character = self:GetCharacter(nameAndRealm)
 	character.guild = IsInGuild() and self:GetGuildNameAndRealm() or nil
-	self:UpdateOwner()
+	self:ForceUpdateOwner()
 end
 
 function module:UpdateOwner()
@@ -115,7 +115,10 @@ function module:UpdateOwner()
 		end)
 		return
 	end
+	self:ForceUpdateOwner()
+end
 
+function module:ForceUpdateOwner()
 	if IsInGuild() then
 		local nameAndRealm = self:GetGuildNameAndRealm()
 		local guild = self:GetGuild(nameAndRealm)
