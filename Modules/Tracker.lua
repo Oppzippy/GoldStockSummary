@@ -53,10 +53,13 @@ end
 
 function module:IsInBrokenState()
 	-- When events fire, these functions can return conflicting information.
+	local hasGuildInfo = GetGuildInfo("player") ~= nil
+	local hasGuildMemberCount = GetNumGuildMembers() ~= 0
 	if IsInGuild() then
-		return GetGuildInfo("player") == nil or GetNumGuildMembers() == 0
+		local hasGuildOwner = self:GetGuildOwner() ~= nil
+		return not hasGuildInfo or not hasGuildMemberCount or not hasGuildOwner
 	else
-		return GetGuildInfo("player") ~= nil or GetNumGuildMembers() ~= 0
+		return hasGuildInfo or hasGuildMemberCount
 	end
 end
 
@@ -116,7 +119,12 @@ function module:UpdateOwner()
 	if IsInGuild() then
 		local nameAndRealm = self:GetGuildNameAndRealm()
 		local guild = self:GetGuild(nameAndRealm)
-		guild.owner = self:GetGuildOwner()
+		local guildOwner = self:GetGuildOwner()
+		if guildOwner then
+			guild.owner = guildOwner
+		else
+			error("not in broken state, so guild owner should not be nil")
+		end
 		self:SendMessage("GoldStockSummary_CharacterMoneyUpdated", guild.owner)
 		self:SendMessage("GoldStockSummary_GuildMoneyUpdated", nameAndRealm)
 	end
@@ -139,7 +147,7 @@ function module:UpdateGuildBankMoney()
 	end
 end
 
----@return string
+---@return string?
 function module:GetGuildOwner()
 	for i = 1, GetNumGuildMembers() do
 		local name, _, rankIndex = GetGuildRosterInfo(i)
@@ -147,7 +155,6 @@ function module:GetGuildOwner()
 			return name
 		end
 	end
-	error(string.format("Unable to determine guild owner: %d members", (GetNumGuildMembers())))
 end
 
 ---@param nameAndRealm string
