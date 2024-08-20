@@ -7,6 +7,8 @@ local AceAddon = LibStub("AceAddon-3.0")
 
 ---@class TrackerModule : AceModule, AceConsole-3.0, AceEvent-3.0, AceBucket-3.0
 local module = AceAddon:GetAddon(addonName):NewModule("Tracker", "AceConsole-3.0", "AceEvent-3.0", "AceBucket-3.0")
+---@type FunctionContainer?
+module.updateTicker = nil
 
 function module:OnInitialize()
 	self.db = ns.db
@@ -39,16 +41,42 @@ function module:OnEnable()
 	end
 
 	-- These events can fire many times quickly. No point in repeatedly updating the same thing.
-	self:RegisterBucketEvent("GUILD_RANKS_UPDATE", 1, "UpdateOwner")
-	self:RegisterBucketEvent("PLAYER_GUILD_UPDATE", 1, "UpdateGuildAndOwner")
+	self:RegisterBucketEvent({ "GUILD_RANKS_UPDATE", "PLAYER_GUILD_UPDATE" }, 1, "QueueGuildUpdate")
 
 	C_Timer.After(0, function()
 		-- GetGuildInfo will return nil until PLAYER_GUILD_UPDATE fires, but it's inconsistent and doesn't always fire when logging in.
 		-- It seems to always be ready by the first frame, so we can just wait until then.
 		-- TODO switch to https://wowpedia.fandom.com/wiki/FIRST_FRAME_RENDERED if classic supports it
 		self.isFirstFrameRendered = true
-		self:UpdateGuildAndOwner()
+		self:QueueGuildUpdate()
 	end)
+end
+
+function module:Debugf(...)
+	if self.db.profile.debugMode then
+		self:Printf(...)
+	end
+end
+
+function module:QueueGuildUpdate()
+	-- If we're not in a broken state but a ticker already exists, let it handle the update
+	if not self.updateTicker then
+		if not self:IsInBrokenState() then
+			self:UpdateGuild()
+		else
+			self:Debugf("guild info in broken state, starting ticker")
+			self.updateTicker = C_Timer.NewTicker(1, function(ticker)
+				if self:IsInBrokenState() then
+					self:Debugf("guild info in broken state, retrying")
+				else
+					self:Debugf("guild info valid, updating")
+					ticker:Cancel()
+					self.updateTicker = nil
+					self:UpdateGuild()
+				end
+			end)
+		end
+	end
 end
 
 function module:IsInBrokenState()
@@ -88,37 +116,18 @@ function module:UpdateAccountBankMoney()
 	self:SendMessage("GoldStockSummary_AccountBankMoneyUpdated")
 end
 
-function module:UpdateGuildAndOwner()
-	if self:IsInBrokenState() then
-		if self.db.profile.debugMode then
-			self:Print("guild info in broken state, retrying")
-		end
-		C_Timer.After(1, function()
-			self:UpdateGuildAndOwner()
-		end)
-		return
-	end
+function module:UpdateGuild()
+	self:UpdateGuildName()
+	self:UpdateGuildOwner()
+end
 
+function module:UpdateGuildName()
 	local nameAndRealm = self:GetCharacterNameAndRealm()
 	local character = self:GetCharacter(nameAndRealm)
 	character.guild = IsInGuild() and self:GetGuildNameAndRealm() or nil
-	self:ForceUpdateOwner()
 end
 
-function module:UpdateOwner()
-	if self:IsInBrokenState() then
-		if self.db.profile.debugMode then
-			self:Print("guild info in broken state, retrying")
-		end
-		C_Timer.After(1, function()
-			self:UpdateOwner()
-		end)
-		return
-	end
-	self:ForceUpdateOwner()
-end
-
-function module:ForceUpdateOwner()
+function module:UpdateGuildOwner()
 	if IsInGuild() then
 		local nameAndRealm = self:GetGuildNameAndRealm()
 		local guild = self:GetGuild(nameAndRealm)
