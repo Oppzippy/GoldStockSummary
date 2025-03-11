@@ -28,7 +28,6 @@ function componentPrototype:Initialize(container, props)
 
 	local scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
 	scrollingTable:SetFullWidth(true)
-	scrollingTable:EnableSelection(true)
 	scrollingTable:SetCallback("OnSortingChanged", function(_, _, column, direction)
 		persistentSortColumn = column
 		persistentSortDirection = direction
