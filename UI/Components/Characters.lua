@@ -15,6 +15,8 @@ local tableFields = { "realm", "faction", "name", "totalMoney", "personalMoney",
 
 local componentPrototype = {}
 
+local persistentSortColumn, persistentSortDirection
+
 function componentPrototype:Initialize(container, props)
 	container:PauseLayout()
 	container:SetLayout("Flow")
@@ -26,7 +28,12 @@ function componentPrototype:Initialize(container, props)
 	container:AddChild(spacer)
 
 	local scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
+	scrollingTable:SetFullWidth(true)
 	scrollingTable:EnableSelection(true)
+	scrollingTable:SetCallback("OnSortingChanged", function(_, _, column, direction)
+		persistentSortColumn = column
+		persistentSortDirection = direction
+	end)
 	container:AddChild(scrollingTable)
 
 	local search = AceGUI:Create("EditBox")
@@ -110,6 +117,10 @@ function componentPrototype:Update()
 
 	self.scrollingTable:SetDisplayCols(columns)
 	self.scrollingTable:SetData(rows)
+
+	if persistentSortColumn then
+		self.scrollingTable:SetSort(persistentSortColumn, persistentSortDirection)
+	end
 end
 
 components.Characters = componentPrototype

@@ -13,6 +13,9 @@ local L = AceLocale:GetLocale(addonName)
 
 local componentPrototype = {}
 
+local persistentSortColumn, persistentSortDirection
+local persistentCombineFactions = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+
 function componentPrototype:Initialize(container, props)
 	container:PauseLayout()
 	container:SetLayout("Flow")
@@ -24,7 +27,12 @@ function componentPrototype:Initialize(container, props)
 	container:AddChild(spacer)
 
 	local scrollingTable = AceGUI:Create("GoldStockSummary-ScrollingTable")
+	scrollingTable:SetFullWidth(true)
 	scrollingTable:EnableSelection(true)
+	scrollingTable:SetCallback("OnSortingChanged", function(_, _, column, direction)
+		persistentSortColumn = column
+		persistentSortDirection = direction
+	end)
 	container:AddChild(scrollingTable)
 
 	local search = AceGUI:Create("EditBox")
@@ -41,11 +49,16 @@ function componentPrototype:Initialize(container, props)
 	search:SetFullWidth(true)
 	container:AddChild(search)
 
-	self.combineFactionsStore = ns.ValueStore.Create(false)
+	self.combineFactionsStore = ns.ValueStore.Create(persistentCombineFactions)
 	local combineFactions = AceGUI:Create("CheckBox")
 	---@cast combineFactions AceGUICheckBox
+	combineFactions:SetValue(self.combineFactionsStore:GetState())
 	combineFactions:SetLabel(L.combine_factions)
 	combineFactions:SetCallback("OnValueChanged", function(_, _, value)
+		persistentCombineFactions = value
+		-- the number of columns changes, so reset sorting
+		persistentSortColumn = nil
+		persistentSortDirection = nil
 		self.combineFactionsStore:Dispatch(value)
 	end)
 	container:AddChild(combineFactions)
@@ -103,6 +116,10 @@ function componentPrototype:Update()
 
 	self.scrollingTable:SetDisplayCols(columns)
 	self.scrollingTable:SetData(rows)
+
+	if persistentSortColumn then
+		self.scrollingTable:SetSort(persistentSortColumn, persistentSortDirection)
+	end
 end
 
 components.Realms = componentPrototype
