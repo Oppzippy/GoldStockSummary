@@ -134,7 +134,7 @@ function componentPrototype:Update()
 	self.cells[6]:SetText(GetMoneyString(guildBankTotal, true))
 	-- Account bank gold for retail only
 	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
-		self.cells[8]:SetText(GetMoneyString(moneyState.accountBank and moneyState.accountBank.copper or 0))
+		self.cells[8]:SetText(GetMoneyString(moneyState.accountBank and moneyState.accountBank.copper or 0, true))
 	end
 
 	self.container:DoLayout()
