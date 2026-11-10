@@ -17,9 +17,8 @@ end
 function module:OnEnable()
 	local nameAndRealm = self:GetCharacterNameAndRealm()
 	local character = self:GetCharacter(nameAndRealm)
-	---@diagnostic disable-next-line: assign-type-mismatch
-	character.name = UnitName("player")
-	character.realm = GetRealmName() -- Not normalized
+	character.name = self:GetCharacterName()
+	character.realm = self:GetRealmName() -- Not normalized
 
 	self:UpdateFaction()
 	self:UpdateMoney()
@@ -203,16 +202,61 @@ function module:GetGuild(nameAndRealm)
 end
 
 function module:GetCharacterNameAndRealm()
-	local name = UnitName("player")
-	local realm = GetNormalizedRealmName()
+	local name = self:GetCharacterName()
+	local realm = self:GetNormalizedRealmName()
 	return string.format("%s-%s", name, realm)
+end
+
+function module:GetCharacterName()
+	if RegionalUniqueNamesEnabled and RegionalUniqueNamesEnabled() then
+		local firstName, lastName = UnitNameUnmodified("player")
+		return string.format("%s %s", firstName, lastName)
+	else
+		local name = UnitNameUnmodified("player")
+		return name
+	end
+end
+
+function module:GetNormalizedRealmName()
+	if RegionalUniqueNamesEnabled and RegionalUniqueNamesEnabled() then
+		return self:GetRealmName():gsub("-", "")
+	else
+		return GetNormalizedRealmName()
+	end
+end
+
+function module:GetRealmName()
+	if RegionalUniqueNamesEnabled and RegionalUniqueNamesEnabled() then
+		local isHardcore = C_GameRules.IsGameRuleActive(Enum.GameRule.HardcoreRuleset)
+		local isRP = C_GameRules.IsGameRuleActive(Enum.GameRule.RPRuleset)
+		local isPVP = C_GameRules.IsGameRuleActive(Enum.GameRule.PvPRuleset)
+		local gameType = nil
+		if isHardcore then
+			if isPVP or isRP then
+				error(string.format("realm type hardcore with pvp: %s, rp: %s is unhandled", isPVP, isRP))
+			end
+			gameType = "Hardcore"
+		elseif isRP and isPVP then
+			gameType = "RP-PvP"
+		elseif isRP then
+			gameType = "RP"
+		elseif isPVP then
+			gameType = "PvP"
+		else
+			gameType = "PvE"
+		end
+		local region = GetCurrentRegionName()
+		return string.format("%s %s", region, gameType)
+	else
+		return GetRealmName()
+	end
 end
 
 function module:GetGuildNameAndRealm()
 	-- The realm name returned by GetGuildInfo is normalized and there's nothing we can do about that
 	local guildName, _, _, guildRealm = GetGuildInfo("player")
-	if not guildRealm then
-		guildRealm = GetNormalizedRealmName()
+	if not guildRealm or (RegionalUniqueNamesEnabled and RegionalUniqueNamesEnabled()) then
+		guildRealm = self:GetNormalizedRealmName()
 	end
 	return string.format("%s-%s", guildName, guildRealm)
 end
