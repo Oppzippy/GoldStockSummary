@@ -3,7 +3,7 @@
 ## Notes: Track gold including guild bank money across characters.
 ## Author: Oppzippy
 ## Version: @project-version@
-## OptionalDeps: Ace3, lib-st, LibJSON, LibDBIcon-1.0
+## OptionalDeps: Ace3, lib-st, LibDBIcon-1.0
 ## SavedVariables: GoldStockSummaryDB
 ## X-Curse-Project-ID: 650309
 ## X-Wago-ID: XrNkE8Ka

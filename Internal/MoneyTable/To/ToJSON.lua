@@ -1,7 +1,6 @@
 ---@class ns
 local ns = select(2, ...)
 
-local JSON = LibStub("json.lua")
 local date = date or os.date
 
 ---@param tableType string
@@ -25,7 +24,7 @@ local function ToJSON(tableType, moneyTable)
 		},
 	})
 
-	return JSON.encode({
+	return C_EncodingUtil.SerializeJSON({
 		type = tableType,
 		data = moneyTable.entries,
 	})

@@ -23,7 +23,6 @@ end
 --Libraries
 DoWoWFile("Libs/LibStub/LibStub.lua")
 DoWoWFile("Libs/AceLocale-3.0/AceLocale-3.0.lua")
-DoWoWFile("Libs/json.lua/json.lua")
 
 -- Locales
 DoWoWFile("Locales/enUS.lua")
